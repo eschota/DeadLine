@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PublishSingleFile>true</PublishSingleFile>
+    <Nullable>enable</Nullable>
+    <SelfContained>true</SelfContained>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="whisper\**" />
+    <EmbeddedResource Remove="whisper\**" />
+    <None Remove="whisper\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Telegram.Bot" Version="19.0.0" />
+    
+  </ItemGroup>
+
+</Project>
