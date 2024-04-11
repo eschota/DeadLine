@@ -15,7 +15,7 @@ using static Worker;
 internal static class TSParse
 {
             private static List<string> pages= new List<string>();
-            private static List<Product> products= new List<Product>();
+            public static List<Product> products= new List<Product>();
       public static async void ParseTopPages(string[] dirs)
       {
         Stopwatch stopwatch = new Stopwatch();
@@ -33,14 +33,17 @@ internal static class TSParse
 
             // Using a local variable to avoid captured variable issue in loops.
             var page = pages[i];
-            var task = Task.Run(async () => await ParseTopPagByID(page));
-            if (i % 1000 == 0) Console.Write($"products:[{products.Count}]");
-            tasks.Add(task);
+            if (!File.Exists(page.Replace(".html", ".json")))
+            {
+                var task = Task.Run(async () => await ParseTopPagByID(page));
+                if (i % 1000 == 0) Console.Write($"products:[{products.Count}]");
+                tasks.Add(task);
+            }
         }
 
         // Wait for all tasks to complete.
         await Task.WhenAll(tasks);
-        File.WriteAllText(Path.Combine(Paths.ParseFolder, Program.TS.RawFolder, System.Text.RegularExpressions.Regex.Replace(DateTime.Now.Date.ToString("dd/MM/yyyy"), "[\\/:*?\"<>|]", "_"), "Completed.log"),"");
+        //File.WriteAllText(Path.Combine(Paths.ParseFolder, Program.TS.RawFolder, System.Text.RegularExpressions.Regex.Replace(DateTime.Now.Date.ToString("dd/MM/yyyy"), "[\\/:*?\"<>|]", "_"), "Completed.log"),"");
         
     }
     public static async Task ParseTopPagByID(string page)
@@ -53,7 +56,8 @@ internal static class TSParse
         {
             var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(html);
-            
+
+            string pages = "";
             int PageID = 0;
             int.TryParse(Path.GetFileNameWithoutExtension(page), out PageID);
             PageID--;
@@ -61,7 +65,7 @@ internal static class TSParse
             var productNodes = htmlDoc.DocumentNode.SelectNodes("//div[contains(@class, 'search-lab')]"); // XPath to select product nodes, adjust based on actual HTML
             if (productNodes != null)
             {
-                for(int i = 0;i < productNodes.Count;i++) 
+                for (int i = 0;i < productNodes.Count;i++) 
                 {
                     var node = productNodes[i];
                     var product = new Product();
@@ -86,7 +90,7 @@ internal static class TSParse
                     if (product.ProductDate.Count!=0 && (newdate - product.ProductDate.Last()).TotalHours <= 12) continue;
                     product.ProductDate.Add(newdate);
                     product.Pos.Add(PageID * 100 + i);
-
+                    pages = pages + (PageID * 100 + i).ToString() + "\n";
                     var nameNode = node.SelectSingleNode(".//div[contains(@class, 'asset_name_item')]");
                     if (nameNode != null)
                     {
@@ -122,9 +126,10 @@ internal static class TSParse
                     // Add more extraction logic as needed for other properties
                     //Console.WriteLine($"{product.ProductName} {product.ProductPrice} {product.ProductUrl} {product.ProductID}");
                     product.Save(filePage);
-
+                    
                 }
             }
+            File.WriteAllText(page.Replace(".html", ".json"),pages);
             //if(File.Exists(page)) File.Delete(page);
         }
         catch (Exception ex)
@@ -179,6 +184,7 @@ internal static class TSParse
         if (File.Exists(productJson))
         {
             product = Product.Load(productJson);
+            if (product.ProductAuthor != "") return;
         }
 
 

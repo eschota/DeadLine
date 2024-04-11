@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using OpenAIClient;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -34,8 +35,31 @@ public class Product
     }
 
     public async Task Save(string filePath)
-    {
-        await File.WriteAllTextAsync(filePath, JsonConvert.SerializeObject(this));
+    { 
+        int attempts = 0;
+
+        while (attempts < 3)
+        {
+            try
+            {
+                File.WriteAllText(filePath, JsonConvert.SerializeObject(this));
+                break; 
+            }
+            catch (Exception e) when (e is UnauthorizedAccessException || e is DirectoryNotFoundException || e is IOException)
+            {
+                attempts++;
+                Logger.AddLog($"Attempt {attempts} failed when saving to {filePath}. Error: {e.Message}");
+
+                if (attempts >= 3) 
+                { 
+                    Logger.AddLog($"Failed to save to {filePath} after {3} attempts.");
+                    break;
+                }
+
+                // Wait a bit before retrying (500 milliseconds here)
+                await Task.Delay(1000);
+            }
+        }
     }
     public class CustomDateTimeConverter : IsoDateTimeConverter
     {

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 {
     public class Page
     {
+        public int tryCount = 0;
         public enum pageType {None, Top, Product}
         public pageType Type = pageType.None;
         public string url;
@@ -119,6 +120,13 @@ using System.Threading.Tasks;
                 //    Console.Write("*");
                 //    return false;
                 //}
+                if(p.tryCount>10)
+                {
+                    int currentIndex = pagesToParse.IndexOf(p);
+                    pagesToParse.RemoveAt(currentIndex);
+                    Console.WriteLine("More then 10 try to download");
+                    return false;
+                }
                 string safari = new Random().Next(470, 537).ToString()+"."+ new Random().Next(10, 36).ToString();
                 client.DefaultRequestHeaders.Add("User-Agent", $"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/{safari} (KHTML, like Gecko) Chrome/{new Random().Next(70,110)}.0.0.0 Safari/{safari}"); // Установка случайного User-Agent
                 if (p == null) return false;
@@ -132,12 +140,12 @@ using System.Threading.Tasks;
                     currentPagesDownload++;
                     if(currentPagesDownload % 100 == 0) 
                     { 
-                        Console.WriteLine($"\n\n[{pagesToParse.Count}] FPS: [{(100/byTen.Elapsed.TotalSeconds ).ToString("0.0")}]  :: {DateTime.Now}\n");byTen.Restart();
+                        Console.WriteLine($"\n\nProds[{TSParse.products.Count}] [{pagesToParse.Count}] FPS: [{(100/byTen.Elapsed.TotalSeconds ).ToString("0.0")}]  :: {DateTime.Now}\n");byTen.Restart();
                     }
                     if (!Directory.Exists(Path.GetDirectoryName(p.filePage))) Directory.CreateDirectory(Path.GetDirectoryName(p.filePage));
                     File.WriteAllText(p.filePage, content);
                     if(p.Type==Page.pageType.Product) TSParse.GetNewProductAfterParse(p.filePage);
-                    if(p.Type==Page.pageType.Top) TSParse.ParseTopPages(new string[] { Path.GetDirectoryName(p.filePage) });
+                    //if(p.Type==Page.pageType.Top) TSParse.ParseTopPages(new string[] { Path.GetDirectoryName(p.filePage) });
 
                     int currentIndex = pagesToParse.IndexOf(p);
                     pagesToParse.RemoveAt(currentIndex); // Удаляем текущий обработанный элемент
@@ -170,7 +178,7 @@ using System.Threading.Tasks;
                     {
                         Console.Write($"[F{repeat}]");
                         await Task.Delay(new Random().Next(1000, 2500));
-                        DownloadPage(-1, pagesToParse[new Random().Next(0, pagesToParse.Count - 1)], proxy, --repeat);
+                        DownloadPage(-1, pagesToParse[new Random().Next(0, pagesToParse.Count - 1)], Proxys.proxies[new Random().Next(0, Proxys.proxies.Count)], --repeat);
                     }
                     else
                     {

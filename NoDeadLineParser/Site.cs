@@ -63,10 +63,11 @@ using static Worker.Page;
                         foreach (int pageId in pageIds)
                         {
                             string url = Url.Replace("page_num=1", $"page_num={pageId}");
+            
                             if(url.Contains("unity"))
                             url = Url.Replace("page=0", $"page={pageId}");
-
-                            string filePage = Path.Combine(Paths.ParseFolder, RawFolder, System.Text.RegularExpressions.Regex.Replace(DateTime.Now.Date.ToString("dd/MM/yyyy"), "[\\/:*?\"<>|]", "_"), pageId.ToString("0000") + ".html");
+            if (url == "") Console.WriteLine("Exception ebat!");
+            string filePage = Path.Combine(Paths.ParseFolder, RawFolder, System.Text.RegularExpressions.Regex.Replace(DateTime.Now.Date.ToString("dd/MM/yyyy"), "[\\/:*?\"<>|]", "_"), pageId.ToString("0000") + ".html");
 
                             if (!Directory.Exists(Path.GetDirectoryName(filePage))) Directory.CreateDirectory(Path.GetDirectoryName(filePage));
 
