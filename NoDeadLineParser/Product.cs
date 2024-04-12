@@ -8,6 +8,7 @@ using System.IO;
 
 public class Product
 {
+    public string Div = "";
     public int ProductID = -1;
     public string ProductName = "";
     [JsonProperty("Url")]

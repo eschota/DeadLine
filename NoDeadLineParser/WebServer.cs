@@ -23,7 +23,7 @@ public static class WebServer
             ContentRootPath = Directory.GetCurrentDirectory(),
             WebRootPath = "wwwroot" // Designates the folder for static files
         });
-
+        
         // Service configuration
         builder.Services.AddControllersWithViews(); // For using controllers and views
         builder.Services.AddCors(options => // Enable CORS
@@ -49,13 +49,25 @@ public static class WebServer
         {
             using var reader = new StreamReader(request.Body);
             var body = await reader.ReadToEndAsync();
-            //body = body.Replace("procgartist", "MYFavoriteAuthor");
-            // Process received data here...
-            Console.WriteLine("Extension Update Page"); // Use Logger instead of Console.WriteLine
-            body = body.Replace("3D", "5D");
-            var response = Results.Content(body, "text/html; charset=utf-8");
 
-            return response;
+            // Разделяем полученные данные на URL и HTML
+            var splitIndex = body.IndexOf("<!--URL-->");
+            var pageUrl = body.Substring(0, splitIndex);
+            var htmlContent = body.Substring(splitIndex + "<!--URL-->".Length);
+
+
+            string newbody = null;
+            if(pageUrl.ToLower().Contains("index.cfm?keyword=new")|| pageUrl.ToLower().Contains("index.cfm?keyword=trend") || pageUrl.ToLower().Contains("index.cfm?keyword=top"))
+            {
+                newbody = TSExtension.ProcessKeyword(pageUrl,htmlContent);
+            }
+            else            
+                newbody = TSExtension.TSProductSearch(htmlContent);
+
+            if (newbody == null)
+                return null;
+
+            return Results.Content(newbody, "text/html; charset=utf-8");
         });
 
         var provider = new FileExtensionContentTypeProvider();

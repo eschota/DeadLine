@@ -15,7 +15,7 @@ using static Worker;
 internal static class TSParse
 {
             private static List<string> pages= new List<string>();
-            public static List<Product> products= new List<Product>();
+            
       public static async void ParseTopPages(string[] dirs)
       {
         Stopwatch stopwatch = new Stopwatch();
@@ -36,7 +36,7 @@ internal static class TSParse
             if (!File.Exists(page.Replace(".html", ".json")))
             {
                 var task = Task.Run(async () => await ParseTopPagByID(page));
-                if (i % 1000 == 0) Console.Write($"products:[{products.Count}]");
+                
                 tasks.Add(task);
             }
         }
@@ -139,28 +139,7 @@ internal static class TSParse
            
              
     }
-    public static void GetProducts()
-    {
-        products.Clear();
-        var files = Directory.GetFiles(Program.TS.ProductsFolder, "*.json");
-        foreach (var file in files)
-        {
-            Product p = Product.Load(file);
-            if(p.SubmitDate== new DateTime(1, 1, 1))
-            { 
-                products.Add(p);
-                Worker.pagesToParse.Add(new Worker.Page(p.url, Program.TS, Path.Combine(Program.TS.ProductPagesFolder, p.ProductID + ".html"), Page.pageType.Product));
-            }
-            else 
-                products.Add(p);
-        }
-        Console.WriteLine($"Pages to Parse: {pagesToParse.Count}");
-        if (products.Count > 0)
-        {
-            Console.WriteLine($"Products: [{products.Count(x => x.Tags.Count > 0)}/{products.Count}]");
-            Console.WriteLine($"Products with more than 1 day parse: {products.Count(x => x.Pos.Count > 1)}");
-        }
-    }
+    
     public static async void GetNewProductAfterParse(string filePage)
     {        
             if (File.Exists(filePage))
@@ -195,11 +174,7 @@ internal static class TSParse
         {
             product.ProductName= titleNode.InnerText.Trim();
         }
-
-        int id = -1;
-        int.TryParse(page.Replace(".html", ""), out id);
-        if (id != -1)
-            product.ProductID = id;
+ 
 
 
 

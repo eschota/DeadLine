@@ -45,8 +45,7 @@ using System.Threading.Tasks;
         while (true) // Infinite loop to continuously check for messages
         {
             FindAllPagesFromAllSites();
-            TSParse.ParseTopPages(Program.TS.RawFoldersAll);
-            TSParse.GetProducts();
+            TSParse.ParseTopPages(Program.TS.RawFoldersAll); 
 
             Stopwatch Total = Stopwatch.StartNew();  byTen.Start(); currentPagesDownload = 0;
             while (pagesToParse.Count > 0)
@@ -114,7 +113,7 @@ using System.Threading.Tasks;
            
             try
             {
-                
+                if (p == null) return false;
                 //if (string.IsNullOrEmpty(proxy) || proxy.Split(':').Length != 2)
                 //{
                 //    Console.Write("*");
@@ -140,7 +139,7 @@ using System.Threading.Tasks;
                     currentPagesDownload++;
                     if(currentPagesDownload % 100 == 0) 
                     { 
-                        Console.WriteLine($"\n\nProds[{TSParse.products.Count}] [{pagesToParse.Count}] FPS: [{(100/byTen.Elapsed.TotalSeconds ).ToString("0.0")}]  :: {DateTime.Now}\n");byTen.Restart();
+                        Console.WriteLine($"\n\nProds[{Program.TS.products.Count}] [{pagesToParse.Count}] FPS: [{(100/byTen.Elapsed.TotalSeconds ).ToString("0.0")}]  :: {DateTime.Now}\n");byTen.Restart();
                     }
                     if (!Directory.Exists(Path.GetDirectoryName(p.filePage))) Directory.CreateDirectory(Path.GetDirectoryName(p.filePage));
                     File.WriteAllText(p.filePage, content);

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "CGTrends",
-  "version": "1.0",
+  "version": "1.01",
   "description": "Нет Дедлайнам!",
   "icons": {
     "128": "icon.png"
@@ -22,5 +22,5 @@
   "host_permissions": [
     "*://*.turbosquid.com/*"
   ],
-  "update_url": "https://github.com/eschota/DeadLine/raw/main/CGTrends/updates.xml"
+  "update_url": "https://github.com/eschota/DeadLine/releases/download/release/updates.xml"
 }
