@@ -1,7 +1,7 @@
 // Здесь указываем URL сервера, на который будет отправлен HTML
-const serverUrl = 'https://4b05-37-192-2-126.ngrok-free.app';
+const serverUrl = 'https://qwertystock.com';
 
-fetch(`${serverUrl}/api/data`, {
+fetch(`${serverUrl}/tunnel-for-trends`, {
     method: 'POST',
     headers: {
         'Content-Type': 'text/html',

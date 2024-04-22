@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,10 +12,6 @@ using Microsoft.Extensions.Hosting;
 
 public static class WebServer
 {
-    /// <summary>
-    /// Runs the web server asynchronously on the specified port, with CORS enabled to allow specific origins.
-    /// </summary>
-    /// <param name="port">The port on which the server will listen.</param>
     public static async Task RunServerAsync(int port)
     {
         var builder = WebApplication.CreateBuilder(new WebApplicationOptions
@@ -21,67 +19,45 @@ public static class WebServer
             Args = new string[] { },
             ApplicationName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name,
             ContentRootPath = Directory.GetCurrentDirectory(),
-            WebRootPath = "wwwroot" // Designates the folder for static files
+            WebRootPath = "wwwroot"
         });
-        
-        // Service configuration
-        builder.Services.AddControllersWithViews(); // For using controllers and views
-        builder.Services.AddCors(options => // Enable CORS
+        builder.WebHost.ConfigureKestrel(serverOptions =>
         {
-            options.AddPolicy("AllowSpecificOrigin", builder =>
+            serverOptions.Listen(System.Net.IPAddress.Any, port, listenOptions =>
             {
-                builder.WithOrigins("https://www.turbosquid.com") // Allow this origin
-                       .AllowAnyHeader()
-                       .AllowAnyMethod()
-                       .AllowCredentials(); // Allow credentials for cross-origin requests
+                // Используем PFX файл для HTTPS
+                listenOptions.UseHttps(@"c:\DeadLine\DeadLine\NoDeadLineParser\bin\Debug\net8.0\renderfin.com.pfx", "3dhelpmustdie");
             });
         });
+        // Настройка сервисов
+        builder.Services.AddControllersWithViews();
 
         var app = builder.Build();
+        app.MapGet("/", () => "Hello Nodes!");
+        app.MapGet("/nodes", () => "Hello Я рендерфин!");
+        app.MapGet("/api", () => "Hello Я suka!");
 
-        // Middleware to use CORS
-        app.UseCors("AllowSpecificOrigin");
-
-        // Route configuration
-        app.MapGet("/", () => "Hello World!");
-
-        app.MapPost("/api/data", async (HttpRequest request) =>
+        app.MapPost("/", async (HttpRequest request) =>
         {
             using var reader = new StreamReader(request.Body);
-            var body = await reader.ReadToEndAsync();
+            var json = await reader.ReadToEndAsync();
 
-            // Разделяем полученные данные на URL и HTML
-            var splitIndex = body.IndexOf("<!--URL-->");
-            var pageUrl = body.Substring(0, splitIndex);
-            var htmlContent = body.Substring(splitIndex + "<!--URL-->".Length);
-
-
-            string newbody = null;
-            if(pageUrl.ToLower().Contains("index.cfm?keyword=new")|| pageUrl.ToLower().Contains("index.cfm?keyword=trend") || pageUrl.ToLower().Contains("index.cfm?keyword=top"))
-            {
-                newbody = TSExtension.ProcessKeyword(pageUrl,htmlContent);
-            }
-            else            
-                newbody = TSExtension.TSProductSearch(htmlContent);
-
-            if (newbody == null)
-                return null;
-
-            return Results.Content(newbody, "text/html; charset=utf-8");
+            Console.WriteLine("Node Received!");
+            NodeStats.WriteJson(json); // Вызов функции обработчика с JSON в качестве аргумента
+            
+            return "Node Stats Received "; // Возвращаем результат функции обработчика в формате JSON
         });
-
         var provider = new FileExtensionContentTypeProvider();
-        // Add MIME type for .crx files
         provider.Mappings[".crx"] = "application/x-chrome-extension";
-
-        // Enable support for static files with customizable ContentTypeProvider
         app.UseStaticFiles(new StaticFileOptions
         {
             ContentTypeProvider = provider
         });
 
-        app.Urls.Add($"http://*:{port}"); // Configure the server to listen on the specified port
+        app.Urls.Add($"https://nodes.renderfin.com:{port}");
+        app.Urls.Add($"https://cgtrends.renderfin.com:{port}");
 
+        NodeStats.GenerateHTML();
         await app.RunAsync();
     }
 
@@ -95,3 +71,58 @@ public static class WebServer
         Console.WriteLine(logMessage);
     }
 }
+
+//app.MapPost("/tunnel-for-trends", async (HttpRequest request) =>
+//{
+//    Console.WriteLine("Tunnel Works!");
+//    using var reader = new StreamReader(request.Body);
+//    var body = await reader.ReadToEndAsync();
+
+//    var splitIndex = body.IndexOf("<!--URL-->");
+//    var pageUrl = body.Substring(0, splitIndex);
+//    var htmlContent = body.Substring(splitIndex + "<!--URL-->".Length);
+
+//    string newbody = TSExtension.ProcessKeyword(pageUrl, htmlContent) ?? TSExtension.TSProductSearch(htmlContent);
+
+//    if (newbody == null)
+//        return Results.Content("No content", "text/plain");
+
+//    return Results.Content(newbody, "text/html; charset=utf-8");
+//});
+//app.Use(async (context, next) =>
+//{
+//    if (context.Request.Method == "OPTIONS")
+//    {
+//        var requestedOrigin = context.Request.Headers["Origin"].ToString();
+//        if (requestedOrigin == "https://www.turbosquid.com" || requestedOrigin == "https://qwertystock.com")
+//        {
+//            context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+//            context.Response.Headers.Add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//            context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+//            context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+//            context.Response.StatusCode = 204; // No Content
+//            return;
+//        }
+//        else
+//        {
+//            Console.WriteLine($"Invalid CORS attempt from origin: {requestedOrigin}");
+//            context.Response.StatusCode = 403; // Forbidden
+//            return;
+//        }
+//    }
+//    await next();
+//});
+
+//Настройка маршрутов
+
+//app.MapGet("/tunnel-for-trends", () => "Hello Tunnel!");
+
+//app.MapPost("/nodes", async (HttpRequest request) =>
+//{
+//    Console.WriteLine("Node Received!");
+
+
+
+
+//    return "Node Received!";
+//});

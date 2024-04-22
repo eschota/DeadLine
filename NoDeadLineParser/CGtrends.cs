@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -12,14 +13,20 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 internal class CGtrends
 {
     static StringBuilder htmlBuilder = new StringBuilder();
+    
     public static void GenerateProductsPage(List<Product> products)
     {
         DateTime currentDate = DateTime.Now;
         var filteredSortedProducts = products
-            .Where(p => (currentDate - p.SubmitDate).Days <= 14 && p.Certificate == "")
-            //.OrderByDescending(p => p.Pos.LastOrDefault())
-            .OrderBy(p => Guid.NewGuid()) 
-            .TakeLast(200)
+            .Where(p => (currentDate - p.SubmitDate).Days <= Program.TS.TotalDays && p.Certificate == Product.cert.No && p.Pos.Last() < p.Pos.First())
+            .Select(p => new
+            {
+                Product = p,
+                PosDifference =  p.Pos.Last() - p.Pos.First()
+            })
+            .OrderByDescending(p => p.PosDifference)
+            .Select(p => p.Product)
+            .Take(100)
             .ToList();
 
         var htmlBuilder = new StringBuilder();
@@ -29,36 +36,39 @@ internal class CGtrends
         htmlBuilder.AppendLine("<link rel=\"stylesheet\" href=\"styles.css\">");
         
 
-        htmlBuilder.AppendLine("<title>Turbosquid Trends</title>"); 
+        htmlBuilder.AppendLine("<title>CGTrends</title>"); 
         htmlBuilder.AppendLine("<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.js'></script>");
         htmlBuilder.AppendLine("<script src ='graphics.js'></script>");
 
         htmlBuilder.AppendLine("</head><body>");
-
+        htmlBuilder.AppendLine($"<div class='header-banner'>Welcome to TurboSquid Trends!<br> Last Parse[{Program.TS.LastParse}][Parsed{Program.TS.TotalDays} Days]<br>Products Total(Exclusive) {Program.TS.products.Count}({Program.TS.products.Count(x=>x.Certificate>0)})</div>");
         htmlBuilder.AppendLine("<div class=\"grid-container\">");
 
         foreach (var product in filteredSortedProducts)
         {
             string posData = Newtonsoft.Json.JsonConvert.SerializeObject(product.Pos);
-            
+            string dateData = JsonConvert.SerializeObject(product.ProductDate.Select(d => d.ToString("MM-dd")));
 
-        htmlBuilder.AppendLine("<div class='product'>");
 
-            htmlBuilder.AppendLine("<div class='imgagegraph'>");
-            htmlBuilder.AppendLine($"<img src='{product.ProductMainPreviewUrl}' alt='{product.ProductName + "  "}' onclick='window.open(this.src, \"_blank\")asd;' onmouseover='showChart(this, {posData})' onmouseout='hideChart(this)' style='width: 100%;'/>");
+
+            htmlBuilder.AppendLine("<div class='product'>");
+
+            htmlBuilder.AppendLine($"<div class='imagegraph' onmouseover='showChart(this, {posData},{dateData})' onmouseout='hideChart(this)'>");
+            htmlBuilder.AppendLine($"<a href='{product.url}' target='_blank'><img src='{product.ProductMainPreviewUrl}' alt='{product.ProductName + "  "}'/></a>");
+
             // Добавляем canvas для графика с исходным размером
             //htmlBuilder.AppendLine("<div style=\"position: absolute; bottom: -5px; left: -5px; width: calc(100% + 10px); height: 30px; background-color: rgba(0,0,0,0.6); color: white; padding: 0px; box-sizing: border-box;\"></div>");
 
             htmlBuilder.AppendLine("<canvas class='chart-canvas'></canvas>");
             htmlBuilder.AppendLine("</div>");
-
-
-            htmlBuilder.AppendLine("<div class='badges'>");
+    
+                htmlBuilder.AppendLine("<div class='badges'>");
                 htmlBuilder.AppendLine(Title(product, filteredSortedProducts.Min(p => p.Pos.Last()), filteredSortedProducts.Max(p => p.Pos.Last())));
                 htmlBuilder.AppendLine($"<div class='price-badge'>{product.Price.LastOrDefault()}$</div>");
-                htmlBuilder.AppendLine($@"<div class='pos-badge'>{product.Pos.Last()}</div>");
-                htmlBuilder.AppendLine($@"<div class='posLast-badge'>{product.Pos.First()}</div>");
-                //htmlBuilder.AppendLine(GenerateDay(product));
+               if(product.Certificate>0) htmlBuilder.AppendLine($"<div class='cert'></div>");
+            htmlBuilder.AppendLine($@"<div class='pos-badge'>{product.Pos.Last().ToString("#,0", System.Globalization.CultureInfo.InvariantCulture).Replace(",", " ")}</div>");
+            htmlBuilder.AppendLine($@"<div class='posLast-badge'>{product.Pos.First().ToString("#,0", System.Globalization.CultureInfo.InvariantCulture).Replace(",", " ")}</div>");
+            htmlBuilder.AppendLine(GenerateDay(product));
 
                 htmlBuilder.AppendLine("</div>");
 
@@ -70,6 +80,7 @@ internal class CGtrends
         htmlBuilder.AppendLine("</body></html>");
 
         File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "cgtrends.html"), htmlBuilder.ToString());
+        Console.WriteLine("Html Builded");
     }
 
      
@@ -106,7 +117,7 @@ internal class CGtrends
             int red = 0; // Keeping blue at 0 to blend towards brown
             backgroundColor = $"rgba({red},{green},{blue},0.5)"; // Interpolated color with transparency
         }
-        return $@"<div class='days'>{text}</div>"");";
+        return $@"<div class='days'>{text}</div>";
     }
     public static string Title(Product p, int min, int max)
     {
@@ -117,12 +128,22 @@ internal class CGtrends
         string endColor = "#00ff0d"; // Красный в HEX
 
         // Рассчитываем доли для начального и конечного цветов
-        double fractionLast = (p.Pos.Last() - min) / (double)(max - min); // Для p.Pos.Last()
-        double fractionFirst = (p.Pos.First() - min) / (double)(max - min); // Для p.Pos.First()
-        string colorA = InterpolateColorSimple(startColor, endColor, fractionFirst);
-        string colorB = InterpolateColorSimple(startColor, endColor, fractionLast);
+        //double fractionLast = (p.Pos.Last() - min) / (double)(max - min); // Для p.Pos.Last()
+        //double fractionFirst = (p.Pos.First() - min) / (double)(max - min); // Для p.Pos.First()
+        string colorA="rgb(255,0,0)";
+        string colorB = "rgb(0,255,0)";
+        if (p.Pos.Last() <= p.Pos.First())
+        {
+            colorA = "rgb(0,255,0)";
+            colorB = "rgb(255,0,0)";
+        }
+        //double fractionFirst = (p.Pos.First() - min) / (double)(max - min); // Для p.Pos.First()
+        //double fractionLast = (p.Pos.Last() - min) / (double)(max - min); // Для p.Pos.Last()
 
-        string Link = $"<div class='title' style='background: linear-gradient(to right, {colorA}, {colorB}); color: white; text-decoration: none;'><p><a href='{p.url}' style='color: white; text-decoration: none;'>{Title}</a></p></div>";
+        //string colorA = InterpolateColorSimple(startColor, endColor, fractionFirst);
+        //string colorB = InterpolateColorSimple(startColor, endColor, fractionLast);
+
+        string Link = $"<div class='title' style='background: linear-gradient(to right, {colorB}, {colorA}); color: white; text-decoration: none;'><p><a href='{p.url}' style='color: white; text-decoration: none;'>{Title}</a></p></div>";
 
 
         // Возвращаем сформированную строку с HTML

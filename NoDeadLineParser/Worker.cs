@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
  
     internal class Worker
@@ -40,6 +41,7 @@ using System.Threading.Tasks;
     public static List<Page> pagesToParse = new List<Page>();
     static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(10000,10000);
     static Stopwatch byTen = new Stopwatch();static int currentPagesDownload = 0;
+    private CancellationTokenSource _cancellationTokenSource;
     public async Task DownloadPages()
     {
         while (true) // Infinite loop to continuously check for messages
@@ -51,17 +53,21 @@ using System.Threading.Tasks;
             while (pagesToParse.Count > 0)
             {
                 await Proxys.GetFreeProxy();
-                
+                if (Total.Elapsed.Hours > 1) { pagesToParse.Clear(); if (_cancellationTokenSource != null) _cancellationTokenSource.Cancel(); }
                 Console.WriteLine($"\nProxys: {Proxys.proxies.Count} Pages: {pagesToParse.Count}");
 
                 Stopwatch sw = Stopwatch.StartNew();int cur = pagesToParse.Count;
+                _cancellationTokenSource = new CancellationTokenSource();
                 Task[] tasks = new Task[Proxys.proxies.Count]; 
                 for (int i = 0; i < tasks.Length; i++)
                 {
                     if (pagesToParse.Count <= 0) break;
                     await Task.Delay(new Random().Next(2, 10));
                     Page page = pagesToParse[i % pagesToParse.Count];
-                    
+                    if(page==null)
+                    {
+                        pagesToParse.Remove(page);continue;
+                    }
                     int taskNumber = i;
                     //if(i==tasks.Length-1) 
                     //{
@@ -83,7 +89,7 @@ using System.Threading.Tasks;
                             semaphoreSlim.Release();
                             
                         }
-                    });
+                    }, _cancellationTokenSource.Token);
                     //Console.WriteLine("Tasks Run!");
                 }
                 await Task.WhenAll(tasks);
@@ -93,10 +99,10 @@ using System.Threading.Tasks;
             if(Total.Elapsed.TotalSeconds>5) Console.WriteLine($"Total Time to Parse : {Total.Elapsed}");
 
 
-            //await Task.Delay(1000 * 60 * 60);
+            await Task.Delay(1000 * 60 * 60);
         }
     }
-
+  
     static private async Task<bool> DownloadPage(int id,Page p, Proxys proxy, int repeat = 0)
     {
         var handler = new HttpClientHandler

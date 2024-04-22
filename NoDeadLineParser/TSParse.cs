@@ -16,7 +16,7 @@ internal static class TSParse
 {
             private static List<string> pages= new List<string>();
             
-      public static async void ParseTopPages(string[] dirs)
+      public static async Task <bool> ParseTopPages(string[] dirs)
       {
         Stopwatch stopwatch = new Stopwatch();
         foreach (var item in dirs)
@@ -29,12 +29,13 @@ internal static class TSParse
         for (int i = 0; i < pages.Count; i++)
         {
             // Add a slight delay before starting each task to avoid overloading.
-            await Task.Delay(50);
+            
 
             // Using a local variable to avoid captured variable issue in loops.
             var page = pages[i];
             if (!File.Exists(page.Replace(".html", ".json")))
             {
+                await Task.Delay(50);
                 var task = Task.Run(async () => await ParseTopPagByID(page));
                 
                 tasks.Add(task);
@@ -44,7 +45,7 @@ internal static class TSParse
         // Wait for all tasks to complete.
         await Task.WhenAll(tasks);
         //File.WriteAllText(Path.Combine(Paths.ParseFolder, Program.TS.RawFolder, System.Text.RegularExpressions.Regex.Replace(DateTime.Now.Date.ToString("dd/MM/yyyy"), "[\\/:*?\"<>|]", "_"), "Completed.log"),"");
-        
+        return true;
     }
     public static async Task ParseTopPagByID(string page)
     {
@@ -84,10 +85,26 @@ internal static class TSParse
                     }
                     
 
-                    if (product.SubmitDate == new DateTime(1,1,1)) Worker.pagesToParse.Add(new Worker.Page(product.url, Program.TS, Path.Combine(Program.TS.ProductPagesFolder, product.ProductID + ".html"),Page.pageType.Product));
                     
                     DateTime newdate = File.GetCreationTime(page);
-                    if (product.ProductDate.Count!=0 && (newdate - product.ProductDate.Last()).TotalHours <= 12) continue;
+
+
+                    if(product.ProductID== 2213721)
+                    {
+                        ;
+                    }
+                    var cert = node.SelectSingleNode(".//div[contains(@class, 'certifications')]");
+                    
+                    if (cert != null)
+                    {
+                        if (cert.InnerHtml.ToLower().Contains("pro")) product.Certificate = Product.cert.Pro;
+                        else if (cert.InnerHtml.ToLower().Contains("lite")) product.Certificate = Product.cert.Lite;
+                        else if (cert.InnerHtml.ToLower().Contains("stemcell ")) product.Certificate = Product.cert.steamCell;
+                         
+                        else product.Certificate = 0; 
+                    }
+
+                    //if (product.ProductDate.Count!=0 && (newdate - product.ProductDate.Last()).TotalHours <= 12) continue;
                     product.ProductDate.Add(newdate);
                     product.Pos.Add(PageID * 100 + i);
                     pages = pages + (PageID * 100 + i).ToString() + "\n";
@@ -103,6 +120,8 @@ internal static class TSParse
                     {
                         product.url = urlNode.GetAttributeValue("href", "");
                     }
+                    // Extracting product URL, adjust XPath based on actual HTML
+                    
 
                     // Extracting main preview URL, adjust XPath based on actual HTML
                     var previewUrlNode = node.SelectSingleNode(".//img[contains(@class, '')]"); // Use a more specific class if possible
@@ -125,6 +144,8 @@ internal static class TSParse
                     }
                     // Add more extraction logic as needed for other properties
                     //Console.WriteLine($"{product.ProductName} {product.ProductPrice} {product.ProductUrl} {product.ProductID}");
+                    if (product.SubmitDate == new DateTime(1, 1, 1)) Worker.pagesToParse.Add(new Worker.Page(product.url, Program.TS, Path.Combine(Program.TS.ProductPagesFolder, product.ProductID + ".html"), Page.pageType.Product));
+
                     product.Save(filePage);
                     
                 }
@@ -251,12 +272,12 @@ internal static class TSParse
         var textNodes = htmlDoc.DocumentNode.SelectNodes("//text()");
 
         // Фильтруем узлы, содержащие "CheckMate"
-        var checkMateNodes = textNodes.Where(node => node.InnerText.Contains("CheckMate"));
+        //var checkMateNodes = textNodes.Where(node => node.InnerText.Contains("CheckMate"));
 
-        foreach (var node in checkMateNodes)
-        {
-            product.Certificate=node.InnerText.Trim();
-        }
+        //foreach (var node in checkMateNodes)
+        //{
+        //    product.Certificate=node.InnerText.Trim();
+        //}
         if(product.SubmitDate!= new DateTime(1,1,1))
         product.Save(productJson);
         }

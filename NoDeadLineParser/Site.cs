@@ -10,10 +10,33 @@ using static Worker.Page;
  
     public class Site
     {
+        public DateTime LastParse
+    {
+        get
+        {
+            foreach (var item in products)
+            {
+                if (item.Pos.Last() < 100000) return item.ProductDate.Last();
+
+            }
+            return new DateTime(0, 0, 0);
+        }
+    }    
+        public int TotalDays
+    {
+        get {
+            foreach (var item in products)
+            {
+                if (item.Pos.Last() < 10000) return item.Pos.Count;
+                
+            }
+            return 0;
+        }
+    }
         public List<Product> products = new List<Product>();
         public string SiteName ="TurboSquid";
         public string Url = "https://www.turbosquid.com/Search/Index.cfm?page_num=1&size=200";
-
+        
         public int PagesToParse = 500;
         public string RawFolder => Path.Combine(AppContext.BaseDirectory, "Parse", SiteName, "RawData");
         public string ProductsFolder => Path.Combine(AppContext.BaseDirectory, "Parse", SiteName, "Products");
@@ -93,7 +116,7 @@ using static Worker.Page;
         {
             // Launching each file processing as a separate task
             tasks.Add(Task.Run(async () =>
-            {
+            { 
                 Product p = Product.Load(file); // Assuming Load is synchronous and quick, otherwise make it async
                 if(p!=null) 
                 if (p.ProductID == 0)
@@ -117,9 +140,12 @@ using static Worker.Page;
             {
                 //Console.WriteLine($"Products: [{products.Count(x => x.Tags.Count > 0)}/{products.Count}]");
                 Console.WriteLine($"Products with more than 1 day parse: {products.Count(x => x.Pos.Count > 1)}");
+                Console.WriteLine($"Products with Certs:[ {products.Count(x => x.Certificate== Product.cert.No)}:{products.Count(x => x.Certificate >0)}]");
                 Console.WriteLine($"Products with Id: {products.Count(x => x.ProductID>0)}");
                 Console.WriteLine($"Products with Correct Submit Date: {products.Count(x => x.SubmitDate>new DateTime(1,1,1))}");
+                Console.WriteLine($"Products with inCorrect Submit Date: {products.Count(x => x.ProductDate.Any(x=>x.Year==new DateTime(1,1,1).Year))}");
             }
-        } 
+        }
+    
 } 
     
