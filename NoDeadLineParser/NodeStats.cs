@@ -138,7 +138,7 @@ public class NodeInfo
         // Конвертация словаря обратно в список
         return nodesDictionary.Values.ToList();
     }
-    public static void GenerateHTML()
+    public static void GenerateHTML(int type)
     {
         List<NodeStats> nods = DistinctNodes(Nodes).ToList();
         var htmlBuilder = new StringBuilder();
@@ -160,7 +160,12 @@ public class NodeInfo
        
             foreach (var nod in nods)
         {
-            string chartData = GenerateChartData(nod);
+
+            string chartData = "";
+            if(type==0) chartData =GenerateChartData(nod);
+            if(type==1) chartData =GenerateAveragedByHourChartData(nod);
+            if(type==2) chartData =GenerateAveragedAllTimeChartData(nod);
+
             string canvasId = $"chart{nod.Info.NodeName.Replace(" ", "_")}";
 
             htmlBuilder.AppendLine("<div class='product'>");
@@ -169,11 +174,16 @@ public class NodeInfo
             htmlBuilder.AppendLine($"document.addEventListener('DOMContentLoaded', function() {{");
             htmlBuilder.AppendLine($"var chartData = {chartData};");
             htmlBuilder.AppendLine($"var container = document.getElementById('{canvasId}');");
-            htmlBuilder.AppendLine($"showChart(container, chartData.data, chartData.labels);");
+            htmlBuilder.AppendLine("showChart(container, chartData.cpuData, chartData.gpuData, chartData.labels);");
             htmlBuilder.AppendLine("});");
             htmlBuilder.AppendLine("</script>");
             htmlBuilder.AppendLine(Title(nod, 0, 1));
+            htmlBuilder.AppendLine("<div class='status'>");
+            htmlBuilder.AppendLine($"<span class='status-circle {(Status(nod) ? "status-true" : "status-false")}'></span>"); 
+            htmlBuilder.AppendLine("</div>");
+
             htmlBuilder.AppendLine("</div>"); // close product
+            
 
         }
         htmlBuilder.AppendLine("</div>");
@@ -181,11 +191,144 @@ public class NodeInfo
         htmlBuilder.AppendLine("</body></html>");
 
 
+        if (type == 0) File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Nodes.html"), htmlBuilder.ToString());
+        if (type == 1) File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "NodesByHour.html"), htmlBuilder.ToString());
+        if (type == 2) File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "NodesAllTime.html"), htmlBuilder.ToString());
 
-        File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Nodes.html"), htmlBuilder.ToString());
     }
-    
-    
+    public static string GenerateChartData(NodeStats node)
+    {
+        // Сортировка ключей для обеспечения правильной последовательности времени на графике
+        var sortedPartials = node.Partial.OrderBy(p => p.Key);
+
+        // Взять последние 30 записей
+        var lastPartials = sortedPartials.TakeLast(30);
+
+        List<string> labels = new List<string>();
+        List<double> cpuData = new List<double>();
+        List<double> gpuData = new List<double>(); // Добавить список для GPU использования
+
+        foreach (var partial in lastPartials)
+        {
+            DateTime time = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(partial.Key)).LocalDateTime;
+            labels.Add(time.ToString("yyyy-MM-dd HH:mm:ss"));
+            cpuData.Add(100 * partial.Value.CpuLoad);
+            gpuData.Add(100 * partial.Value.GpuLoad); // Предполагается, что у вас есть доступ к GpuUsage
+        }
+
+        var jsonData = JsonConvert.SerializeObject(new { labels, cpuData, gpuData });
+        
+        return jsonData;
+    }
+    public static string GenerateAveragedByHourChartData(NodeStats node)
+    {
+        var sortedPartials = node.Partial.OrderBy(p => p.Key).ToList();
+
+        // Если данных меньше 2 точек, вернуть пустые данные
+        if (sortedPartials.Count < 2)
+            return JsonConvert.SerializeObject(new { labels = new string[0], cpuData = new double[0], gpuData = new double[0] });
+
+        // Определение временных границ (последние 65 минут)
+        var endTime = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(sortedPartials.Last().Key)).LocalDateTime;
+        var startTime = endTime.AddMinutes(-65);
+
+        // Выбор соответствующих данных в временном диапазоне
+        var relevantPartials = sortedPartials.Where(p =>
+        {
+            var time = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(p.Key)).LocalDateTime;
+            return time >= startTime && time <= endTime;
+        }).ToList();
+
+        // Группировка данных по временным интервалам (по 65/30 минут)
+        var groupedPartials = relevantPartials.GroupBy(p =>
+        {
+            var time = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(p.Key)).LocalDateTime;
+            return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute / 2 * 2, 0); // Группировка по 2-минутным интервалам
+        }).ToList();
+
+        // Усреднение данных в каждом интервале
+        var averagedPartials = groupedPartials.Select(g =>
+        {
+            var time = g.Key.ToString("yyyy-MM-dd HH:mm:ss");
+            var cpuLoadAverage = g.Average(p => p.Value.CpuLoad) * 100;
+            var gpuLoadAverage = g.Average(p => p.Value.GpuLoad) * 100;
+            return new { time, cpuLoadAverage, gpuLoadAverage };
+        }).ToList();
+
+        // Формирование JSON-объекта
+        var jsonData = JsonConvert.SerializeObject(new
+        {
+            labels = averagedPartials.Select(p => p.time),
+            cpuData = averagedPartials.Select(p => p.cpuLoadAverage),
+            gpuData = averagedPartials.Select(p => p.gpuLoadAverage)
+        });
+
+        return jsonData;
+    }
+    public static string GenerateAveragedAllTimeChartData(NodeStats node)
+    {
+        var sortedPartials = node.Partial.OrderBy(p => p.Key).ToList();
+
+        // Если данных меньше 2 точек, вернуть пустые данные
+        if (sortedPartials.Count < 2)
+            return JsonConvert.SerializeObject(new { labels = new string[0], cpuData = new double[0], gpuData = new double[0] });
+
+        // Группировка данных по временным интервалам (по всем имеющимся данным)
+        var groupedPartials = sortedPartials.GroupBy(p =>
+        {
+            var time = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(p.Key)).LocalDateTime;
+            return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute / 2 * 2, 0); // Группировка по 2-минутным интервалам
+        }).ToList();
+
+        // Усреднение данных в каждом интервале
+        var averagedPartials = groupedPartials.Select(g =>
+        {
+            var time = g.Key.ToString("yyyy-MM-dd HH:mm:ss");
+            var cpuLoadAverage = g.Average(p => p.Value.CpuLoad) * 100;
+            var gpuLoadAverage = g.Average(p => p.Value.GpuLoad) * 100;
+            return new { time, cpuLoadAverage, gpuLoadAverage };
+        }).ToList();
+
+        // Если у нас меньше 30 точек, дублируем последнюю точку для заполнения
+        while (averagedPartials.Count < 30)
+        {
+            averagedPartials.Add(averagedPartials.Last());
+        }
+
+        // Формирование JSON-объекта
+        var jsonData = JsonConvert.SerializeObject(new
+        {
+            labels = averagedPartials.Select(p => p.time).TakeLast(30),
+            cpuData = averagedPartials.Select(p => p.cpuLoadAverage).TakeLast(30),
+            gpuData = averagedPartials.Select(p => p.gpuLoadAverage).TakeLast(30)
+        });
+
+        return jsonData;
+    }
+    public static bool Status(NodeStats node)
+    {
+        var sortedPartials = node.Partial.OrderBy(p => p.Key).ToList();
+
+        // Если данных меньше двух, невозможно определить разрыв
+        if (sortedPartials.Count < 2)
+            return true;
+
+        // Перебор отсортированных данных для проверки промежутков
+        for (int i = 1; i < sortedPartials.Count; i++)
+        {
+            long previousTimestamp = long.Parse(sortedPartials[i - 1].Key);
+            long currentTimestamp = long.Parse(sortedPartials[i].Key);
+
+            // Проверка разрыва более чем на один час (3600000 миллисекунд)
+            if (currentTimestamp - previousTimestamp > 20*60000)
+            {
+                return false;
+            }
+        }
+
+        // Если разрывов более одного часа не найдено
+        return true;
+    }
     public static string Title(NodeStats p, int min, int max)
     {
         string Title = p.Info.NodeName+$"  {p.Info.MachineName}";
@@ -210,31 +353,47 @@ public class NodeInfo
         //string colorA = InterpolateColorSimple(startColor, endColor, fractionFirst);
         //string colorB = InterpolateColorSimple(startColor, endColor, fractionLast);
 
-        string Link = $"<div class='title' style='background: linear-gradient(to right, {colorB}, {colorA}); color: white; text-decoration: none;'><p><a href='{"href"}' style='color: white; text-decoration: none;'>{Title}</a></p></div>";
-
+       
+        string Link = $"<div class='title' style='background: linear-gradient(to right, {colorB}, {colorA}); color: white; text-decoration: none;'><p><a href='hh' style='color: white; text-decoration: none;'>{Title}</a></p></div>";
 
         // Возвращаем сформированную строку с HTML
         return Link;
     }
-    public static string GenerateChartData(NodeStats node)
+   
+    public static string GenerateChartData2(NodeStats node)
     {
-        // Сортировка ключей для обеспечения правильной последовательности времени на графике
-        var sortedPartials = node.Partial.OrderBy(p => p.Key);
+        // Предполагается, что данные уже отсортированы по времени
+        var allData = node.Partial.OrderBy(p => p.Key).ToList();
 
-        // Взять последние 20 записей
-        var lastPartials = sortedPartials.TakeLast(30);
+        if (!allData.Any())
+            return JsonConvert.SerializeObject(new { labels = new string[0], cpuData = new double[0], gpuData = new double[0] });
+
+        // Определяем начальное и конечное время
+        var startTime = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(allData.First().Key)).LocalDateTime;
+        var endTime = startTime.AddDays(1); // Заканчиваем на следующие сутки от начала
+
+        // Генерация 24 точек на оси времени
+        var timeIntervals = Enumerable.Range(0, 24).Select(i => startTime.AddHours(i)).ToList();
 
         List<string> labels = new List<string>();
-        List<double> data = new List<double>();
+        List<double> cpuData = new List<double>();
+        List<double> gpuData = new List<double>();
 
-        foreach (var partial in lastPartials)
+        foreach (var time in timeIntervals)
         {
-            DateTime time = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(partial.Key)).LocalDateTime;
             labels.Add(time.ToString("yyyy-MM-dd HH:mm:ss"));
-            data.Add(partial.Value.CpuLoad);
+
+            // Находим все записи, которые попадают в текущий интервал времени
+            var relevantPartials = allData.Where(p =>
+                DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(p.Key)).LocalDateTime >= time &&
+                DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(p.Key)).LocalDateTime < time.AddHours(1)).ToList();
+
+            // Вычисляем среднее значение для CPU и GPU
+            cpuData.Add(relevantPartials.Any() ? relevantPartials.Average(p => 100 * p.Value.CpuLoad) : 0);
+            gpuData.Add(relevantPartials.Any() ? relevantPartials.Average(p => 100 * p.Value.GpuLoad) : 0);
         }
 
-        var jsonData = JsonConvert.SerializeObject(new { labels, data });
+        var jsonData = JsonConvert.SerializeObject(new { labels, cpuData, gpuData });
         return jsonData;
     }
 }
