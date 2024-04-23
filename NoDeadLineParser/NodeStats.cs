@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Microsoft.Extensions.FileSystemGlobbing.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -24,8 +26,30 @@ public class NodeStats
     public NodeInfo Info { get; set; }
 
     [JsonProperty("Partial")]
-    public Dictionary<string, HardwareLoadPartial> Partial { get; set; } 
-public class NodeInfo
+    public Dictionary<string, HardwareLoadPartial> Partial { get; set; }
+    
+    public List<CompletedTasks> completedTasks = new List<CompletedTasks> ();
+
+    public class CompletedTasks
+    {
+        public DateTime Time { get; set; }
+        public string taskType { get; set; }
+    }
+
+    public class Validation
+    {
+        [JsonProperty("Id")]
+        public string Id { get; set; }
+
+        [JsonProperty("State")]
+        public string State { get; set; }
+
+        [JsonProperty("Type")]
+        public string Type { get; set; }
+         
+        
+    }
+    public class NodeInfo
     {
         [JsonProperty("NodeName")]
         public string NodeName { get; set; }
@@ -65,6 +89,22 @@ public class NodeInfo
         [JsonProperty("idown")]
         public long InternetDown { get; set; }
     }
+  
+    public class HardwareLoad
+    {
+        [JsonProperty("Load")]
+        public HardwareLoadPartial Load { get; set; }
+
+        [JsonProperty("Drives")]
+        public Dictionary<string, DriveDetails> Drives { get; set; }
+    }
+
+    public class DriveDetails
+    {
+        [JsonProperty("FreeSpace")]
+        public long FreeSpace { get; set; }
+    }
+
     public static void WriteJson(string json)
     {
         try
@@ -80,7 +120,9 @@ public class NodeInfo
                 string fileName = Path.Combine( Paths.NodeStatsDirectory,$"{nodeName}${time}.json");
                 File.WriteAllText(fileName, json);
                 Console.WriteLine($"Data for {nodeName} written to {fileName}");
-                GenerateHTML();
+                GenerateHTML(0);
+                GenerateHTML(1);
+                GenerateHTML(2);
             }
         }
         catch (Exception ex)
@@ -97,11 +139,43 @@ public class NodeInfo
 
         foreach (var file in jsonFiles)
         {
-            string jsonContent = File.ReadAllText(file);
-            var nodeStat = JsonConvert.DeserializeObject<NodeStats>(jsonContent);
+            string js = File.ReadAllText(file);
+            var nodeStat = JsonConvert.DeserializeObject<NodeStats>(js);
             if (nodeStat != null)
             {
                 nodes.Add(nodeStat);
+
+                int k = -1;
+                k=js.IndexOf("Validation\":[");
+                if (k > -1)
+                {
+                    js=js.Substring( k + 12);
+                    int l = js.IndexOf("]");
+                    js=js.Substring(0,l+1);
+                    JArray items = JArray.Parse(js);
+
+                    foreach (var item in items)
+                    {
+                        CompletedTasks ct = new CompletedTasks();
+                        ct .taskType= item["Type"].ToString();
+
+                        // Получение значения Validation из вложенного объекта Times
+                        var times = item["Times"];
+                        var validationValue = times["Validation"];
+
+                        string validationDate = "Validation time is not set";
+                        if (validationValue.Type != JTokenType.Null)
+                        {
+                            long unixTimeMilliseconds = (long)validationValue;
+                            ct.Time = DateTimeOffset.FromUnixTimeMilliseconds(unixTimeMilliseconds).DateTime.ToLocalTime();
+                            
+                        }
+                        nodeStat.completedTasks.Add(ct);
+ 
+                    }
+                   
+                }
+               
             }
         }
        
@@ -109,9 +183,9 @@ public class NodeInfo
         nodes = nodes.OrderBy(node => node.Time).ToList();
         return nodes;
     }
-    public static List<NodeStats> DistinctNodes(List<NodeStats> allNodes)
+    public static List<NodeStats> DistinctNodesOLD(List<NodeStats> allNodes)
     {
-         
+
         var nodesDictionary = new Dictionary<string, NodeStats>();
 
         foreach (var node in allNodes)
@@ -138,22 +212,73 @@ public class NodeInfo
         // Конвертация словаря обратно в список
         return nodesDictionary.Values.ToList();
     }
+    public static List<NodeStats> DistinctNodes(List<NodeStats> allNodes)
+    {
+        var nodesDictionary = new Dictionary<string, NodeStats>();
+
+        foreach (var node in allNodes)
+        {
+            if (!nodesDictionary.ContainsKey(node.Info.NodeName))
+            {
+                nodesDictionary[node.Info.NodeName] = node;
+            }
+            else
+            {
+                var existingNode = nodesDictionary[node.Info.NodeName];
+
+                // Агрегация данных загрузки оборудования
+                foreach (var partial in node.Partial)
+                {
+                    if (!existingNode.Partial.ContainsKey(partial.Key))
+                    {
+                        existingNode.Partial.Add(partial.Key, partial.Value);
+                    }
+                    // Можно добавить логику для объединения или обновления данных, если ключи совпадают
+                }
+
+                // Агрегация данных о завершённых задачах
+                if (node.completedTasks != null)
+                {
+                    existingNode.completedTasks.AddRange(node.completedTasks);
+                    // Удаление дубликатов может потребоваться, если одна и та же задача может быть повторена
+                    existingNode.completedTasks = existingNode.completedTasks
+                        .GroupBy(task => task.taskType)
+                        .Select(group => new CompletedTasks
+                        {
+                            Time = group.Max(task => task.Time),
+                            taskType = group.Key
+                        }).ToList();
+                }
+            }
+        }
+
+        // Конвертация словаря обратно в список
+        return nodesDictionary.Values.ToList();
+    }
     public static void GenerateHTML(int type)
     {
         List<NodeStats> nods = DistinctNodes(Nodes).ToList();
         var htmlBuilder = new StringBuilder();
 
         htmlBuilder.AppendLine("<!DOCTYPE html><html><head>");
-        htmlBuilder.AppendLine("<meta http-equiv='refresh' content='10'>");
+        htmlBuilder.AppendLine($"<meta http-equiv='refresh' content='{10+(type*30)}'>");
         htmlBuilder.AppendLine("<link rel=\"stylesheet\" href=\"stylesNodes.css\">");
 
 
         htmlBuilder.AppendLine("<title>RenderFin Nodes Stats</title>");
-        htmlBuilder.AppendLine("<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.js'></script>");
+        htmlBuilder.AppendLine("<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js'></script>");
         htmlBuilder.AppendLine("<script src ='graphicsNodes.js'></script>");
 
         htmlBuilder.AppendLine("</head><body>");
-        htmlBuilder.AppendLine($"<div class='header-banner'>Welcome to RenderFin Node Stats!<br> Last Update: {DateTime.Now}][Ticks: {NodeStats.Nodes.Count}] <br> Nodes Online: {nods.Count}</div>");
+
+        htmlBuilder.AppendLine($"<div class='header-banner'>Welcome to RenderFin Node Stats!<br> Last Update: {DateTime.Now}][Ticks: {NodeStats.Nodes.Count}] <br> Nodes Online: {nods.Count}            [Total Tasks Completed: {nods.SelectMany(nod => nod.completedTasks).Count()}]");
+        htmlBuilder.AppendLine("<div class='button-container'>");
+        htmlBuilder.AppendLine($"<a href='https://renderfin.com/nodes.html' class='button{(type == 0 ? " active" : "")}'>Realtime</a>");
+        htmlBuilder.AppendLine($"<a href='https://renderfin.com/nodesByHour.html' class='button{(type == 1 ? " active" : "")}'>Last Hour</a>");
+        htmlBuilder.AppendLine($"<a href='https://renderfin.com/NodesAllTime.html' class='button{(type == 2 ? " active" : "")}'>AllTime</a>");
+        htmlBuilder.AppendLine("</div>");
+        htmlBuilder.AppendLine("</div>");
+
         htmlBuilder.AppendLine("<div class=\"grid-container\">");
 
 
@@ -174,7 +299,7 @@ public class NodeInfo
             htmlBuilder.AppendLine($"document.addEventListener('DOMContentLoaded', function() {{");
             htmlBuilder.AppendLine($"var chartData = {chartData};");
             htmlBuilder.AppendLine($"var container = document.getElementById('{canvasId}');");
-            htmlBuilder.AppendLine("showChart(container, chartData.cpuData, chartData.gpuData, chartData.labels);");
+            htmlBuilder.AppendLine("showChart(container, chartData.cpuData, chartData.gpuData,chartData.taskData, chartData.labels);");
             htmlBuilder.AppendLine("});");
             htmlBuilder.AppendLine("</script>");
             htmlBuilder.AppendLine(Title(nod, 0, 1));
@@ -206,20 +331,50 @@ public class NodeInfo
 
         List<string> labels = new List<string>();
         List<double> cpuData = new List<double>();
-        List<double> gpuData = new List<double>(); // Добавить список для GPU использования
+        List<double> gpuData = new List<double>();
+        List<int> taskData = new List<int>();
 
         foreach (var partial in lastPartials)
         {
             DateTime time = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(partial.Key)).LocalDateTime;
             labels.Add(time.ToString("yyyy-MM-dd HH:mm:ss"));
-            cpuData.Add(100 * partial.Value.CpuLoad);
-            gpuData.Add(100 * partial.Value.GpuLoad); // Предполагается, что у вас есть доступ к GpuUsage
+            cpuData.Add(Math.Round(100 * partial.Value.CpuLoad));
+            gpuData.Add(Math.Round(100 * partial.Value.GpuLoad));
         }
 
-        var jsonData = JsonConvert.SerializeObject(new { labels, cpuData, gpuData });
-        
+        // Подготовка словаря для суммирования задач
+        var tasksPerLabel = labels.ToDictionary(label => label, label => 0);
+
+        // Агрегация данных о задачах
+        if (node.completedTasks != null)
+        {
+            foreach (var task in node.completedTasks)
+            {
+                // Нахождение ближайшей метки времени
+                string closestLabel = FindClosestLabel(labels, task.Time);
+                if (closestLabel != null)
+                {
+                    tasksPerLabel[closestLabel] += 10;
+                }
+            }
+        }
+
+        // Перенос сумм задач в список для графика
+        taskData.AddRange(tasksPerLabel.Values);
+
+        var jsonData = JsonConvert.SerializeObject(new { labels, cpuData, gpuData, taskData });
+
         return jsonData;
     }
+    private static string FindClosestLabel(List<string> labels, DateTime target)
+    {
+        // Преобразование строковых меток обратно в DateTime для сравнения
+        var labelDates = labels.Select(DateTime.Parse).ToList();
+        DateTime closest = labelDates.Aggregate((x, y) => Math.Abs((x - target).Ticks) < Math.Abs((y - target).Ticks) ? x : y);
+
+        return closest.ToString("yyyy-MM-dd HH:mm:ss");
+    }
+    
     public static string GenerateAveragedByHourChartData(NodeStats node)
     {
         var sortedPartials = node.Partial.OrderBy(p => p.Key).ToList();
@@ -269,38 +424,59 @@ public class NodeInfo
     {
         var sortedPartials = node.Partial.OrderBy(p => p.Key).ToList();
 
-        // Если данных меньше 2 точек, вернуть пустые данные
+        // Return empty data if less than 2 data points are available
         if (sortedPartials.Count < 2)
             return JsonConvert.SerializeObject(new { labels = new string[0], cpuData = new double[0], gpuData = new double[0] });
 
-        // Группировка данных по временным интервалам (по всем имеющимся данным)
-        var groupedPartials = sortedPartials.GroupBy(p =>
-        {
-            var time = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(p.Key)).LocalDateTime;
-            return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute / 2 * 2, 0); // Группировка по 2-минутным интервалам
-        }).ToList();
+        // Determine the time span of the data
+        var firstDate = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(sortedPartials.First().Key)).DateTime;
+        var lastDate = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(sortedPartials.Last().Key)).DateTime;
+        var totalDuration = lastDate - firstDate;
 
-        // Усреднение данных в каждом интервале
-        var averagedPartials = groupedPartials.Select(g =>
-        {
-            var time = g.Key.ToString("yyyy-MM-dd HH:mm:ss");
-            var cpuLoadAverage = g.Average(p => p.Value.CpuLoad) * 100;
-            var gpuLoadAverage = g.Average(p => p.Value.GpuLoad) * 100;
-            return new { time, cpuLoadAverage, gpuLoadAverage };
-        }).ToList();
+        // Calculate intervals for 30 points
+        var interval = totalDuration.TotalSeconds / 29;
 
-        // Если у нас меньше 30 точек, дублируем последнюю точку для заполнения
-        while (averagedPartials.Count < 30)
+        // Create arrays for interpolated results
+        List<string> labels = new List<string>();
+        List<double> cpuData = new List<double>();
+        List<double> gpuData = new List<double>();
+
+        // Generate 30 interpolated data points
+        for (int i = 0; i < 30; i++)
         {
-            averagedPartials.Add(averagedPartials.Last());
+            var currentTime = firstDate.AddSeconds(interval * i);
+            labels.Add(currentTime.ToString("yyyy-MM-dd HH:mm:ss"));
+
+            // Find the two nearest data points for interpolation
+            var before = sortedPartials.LastOrDefault(p => DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(p.Key)).DateTime <= currentTime);
+            var after = sortedPartials.FirstOrDefault(p => DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(p.Key)).DateTime >= currentTime);
+
+            if (before.Key == after.Key) // Only one point or exact match
+            {
+                cpuData.Add(before.Value.CpuLoad * 100);
+                gpuData.Add(before.Value.GpuLoad * 100);
+            }
+            else
+            {
+                var beforeTime = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(before.Key)).DateTime;
+                var afterTime = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(after.Key)).DateTime;
+                var timeFactor = (currentTime - beforeTime).TotalSeconds / (afterTime - beforeTime).TotalSeconds;
+
+                // Linear interpolation for CPU and GPU load
+                var interpolatedCpu = before.Value.CpuLoad + (after.Value.CpuLoad - before.Value.CpuLoad) * timeFactor;
+                var interpolatedGpu = before.Value.GpuLoad + (after.Value.GpuLoad - before.Value.GpuLoad) * timeFactor;
+
+                cpuData.Add(interpolatedCpu * 100);
+                gpuData.Add(interpolatedGpu * 100);
+            }
         }
 
-        // Формирование JSON-объекта
+        // Create JSON object
         var jsonData = JsonConvert.SerializeObject(new
         {
-            labels = averagedPartials.Select(p => p.time).TakeLast(30),
-            cpuData = averagedPartials.Select(p => p.cpuLoadAverage).TakeLast(30),
-            gpuData = averagedPartials.Select(p => p.gpuLoadAverage).TakeLast(30)
+            labels = labels,
+            cpuData = cpuData,
+            gpuData = gpuData
         });
 
         return jsonData;

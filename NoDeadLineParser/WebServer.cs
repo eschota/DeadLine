@@ -29,14 +29,45 @@ public static class WebServer
                 listenOptions.UseHttps(@"c:\DeadLine\DeadLine\NoDeadLineParser\bin\Debug\net8.0\renderfin.com.pfx", "3dhelpmustdie");
             });
         });
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowSpecificOrigin", policy =>
+            {
+                policy.WithOrigins("https://www.turbosquid.com") // Specify the origin of your Chrome extension if it's hosted
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+            });
+        });
+
         // Настройка сервисов
         builder.Services.AddControllersWithViews();
 
         var app = builder.Build();
+
+        app.UseCors("AllowSpecificOrigin");
+
         app.MapGet("/", () => "Hello Nodes!");
         app.MapGet("/nodes", () => "Hello Я рендерфин!");
         app.MapGet("/api", () => "Hello Я suka!");
+        
+        app.MapPost("/CGTrends", async (HttpRequest request) =>
+        {
+            Console.WriteLine("Tunnel Works!");
+            using var reader = new StreamReader(request.Body);
+            var body = await reader.ReadToEndAsync();
 
+            var splitIndex = body.IndexOf("<!--URL-->");
+            var pageUrl = body.Substring(0, splitIndex);
+            var htmlContent = body.Substring(splitIndex + "<!--URL-->".Length);
+
+            string newbody = TSExtension.TSProductSearch(htmlContent);
+
+            if (newbody == null)
+                return Results.Content("No content", "text/plain");
+
+            return Results.Content(newbody, "text/html; charset=utf-8");
+        });
         app.MapPost("/", async (HttpRequest request) =>
         {
             using var reader = new StreamReader(request.Body);
@@ -47,6 +78,12 @@ public static class WebServer
             
             return "Node Stats Received "; // Возвращаем результат функции обработчика в формате JSON
         });
+       
+
+
+
+
+
         var provider = new FileExtensionContentTypeProvider();
         provider.Mappings[".crx"] = "application/x-chrome-extension";
         app.UseStaticFiles(new StaticFileOptions
@@ -57,7 +94,9 @@ public static class WebServer
         app.Urls.Add($"https://nodes.renderfin.com:{port}");
         app.Urls.Add($"https://cgtrends.renderfin.com:{port}");
 
-        NodeStats.GenerateHTML();
+        NodeStats.GenerateHTML(0);
+        NodeStats.GenerateHTML(1);
+        NodeStats.GenerateHTML(2);
         await app.RunAsync();
     }
 
