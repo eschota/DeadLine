@@ -69,6 +69,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _borders_mask_tex:
+        m_Texture: {fileID: 2800000, guid: 9c19ac7207f08c14bac60114cd537de8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _borders_mask_texture:
+        m_Texture: {fileID: 2800000, guid: 9f076bbb33791a14480752eddd41a330, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _BUILTIN_QueueControl: 0
@@ -89,9 +97,14 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
+    - _borders_mask_clamp_hi: 0.652
+    - _borders_mask_clamp_low: 0.486
+    - _borders_mask_mult: 1
     - _fresnel_power: 4
-    - _vc_clamp_hi: 1
-    - _vc_clamp_low: 0.98
+    - _use_borders_mask_tex_instead_of_vc: 1
+    - _use_texture_instead_of_vc: 1
+    - _vc_clamp_hi: 0.63
+    - _vc_clamp_low: 0.537
     - _vertex_colors_mult: 0.87
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
