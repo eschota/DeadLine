@@ -1,0 +1,189 @@
+body {
+    /* Ð¡Ð²Ð¾Ð¹ÑÑ‚Ð²Ð¾: Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ; */
+    background-color: rgb(225, 225, 225); /* Ð—Ð°Ð´Ð°ÐµÑ‚ Ñ†Ð²ÐµÑ‚ Ñ„Ð¾Ð½Ð° Ð´Ð»Ñ Ð²ÑÐµÐ³Ð¾ Ñ‚ÐµÐ»Ð° Ð´Ð¾ÐºÑƒÐ¼ÐµÐ½Ñ‚Ð° */
+    color: #333; /* Ð—Ð°Ð´Ð°ÐµÑ‚ Ñ†Ð²ÐµÑ‚ Ñ‚ÐµÐºÑÑ‚Ð° */
+    font-family: Arial, sans-serif; /* Ð—Ð°Ð´Ð°ÐµÑ‚ ÑÐµÐ¼ÐµÐ¹ÑÑ‚Ð²Ð¾ ÑˆÑ€Ð¸Ñ„Ñ‚Ð¾Ð² Ð´Ð»Ñ Ñ‚ÐµÐºÑÑ‚Ð° Ð² Ñ‚ÐµÐ»Ðµ */
+}
+.grid-container {
+    margin-top: 200px;
+    bottom: 200px;
+    display: flex;
+    flex-wrap: wrap; /* Позволяет элементам переноситься на новую строку */
+    gap: 15px; /* Определяет пространство между элементами */
+    justify-content: center; /* Горизонтальное выравнивание содержимого по центру */
+    align-content: center; /* Вертикальное выравнивание строк внутри контейнера по центру */
+    width: 100%; /* Устанавливает ширину контейнера на 100% */
+}
+
+.product {
+    width: 200px;
+    height:230px;
+    position: relative;
+    display: inline-block;
+    border-radius: 15px; /* Убираем предыдущее скругление */
+    //--border-top-left-radius: 10px; /* Скругляем нижний левый угол */
+    //--border-top-right-radius: 10px; /* Скругляем нижний правый угол */
+    margin-bottom: 5px;
+    margin-top: 5px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2); 
+}
+
+.title {
+    color: rgb(255 0 0); /* Ð£Ð±ÐµÐ´Ð¸Ñ‚ÐµÑÑŒ, Ñ‡Ñ‚Ð¾ Ñ†Ð²ÐµÑ‚ Ñ‚ÐµÐºÑÑ‚Ð° Ð±ÐµÐ»Ñ‹Ð¹ */
+    text-decoration:auto; /* Ð£Ð±Ð¸Ñ€Ð°ÐµÐ¼ Ð¿Ð¾Ð´Ñ‡ÐµÑ€ÐºÐ¸Ð²Ð°Ð½Ð¸Ðµ Ñƒ ÑÑÑ‹Ð»Ð¾Ðº */
+    font-weight:inherit; /* Ð”ÐµÐ»Ð°ÐµÐ¼ Ñ‚ÐµÐºÑÑ‚ Ð¶Ð¸Ñ€Ð½Ñ‹Ð¼, ÐµÑÐ»Ð¸ Ð½ÑƒÐ¶Ð½Ð¾ */
+    font-size:10px;
+    background-color: #2b2b2b;
+    position: absolute;
+    width: 100%;
+    left: 0px;
+    bottom: -0px;
+    
+    height: 30px; 
+    display: flex;    
+    border-radius: 0px; /* Убираем предыдущее скругление */
+    border-bottom-left-radius: 10px; /* Скругляем нижний левый угол */
+    border-bottom-right-radius: 10px; /* Скругляем нижний правый угол */
+    margin: 0 auto;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box; 
+    z-index: 10;
+}
+.title p {
+    margin: 0; 
+}
+.title a {
+    color: rgb(255 0 0); /* Ð£Ð±ÐµÐ´Ð¸Ñ‚ÐµÑÑŒ, Ñ‡Ñ‚Ð¾ Ñ†Ð²ÐµÑ‚ Ñ‚ÐµÐºÑÑ‚Ð° Ð±ÐµÐ»Ñ‹Ð¹ */
+    text-decoration:none; /* Ð£Ð±Ð¸Ñ€Ð°ÐµÐ¼ Ð¿Ð¾Ð´Ñ‡ÐµÑ€ÐºÐ¸Ð²Ð°Ð½Ð¸Ðµ Ñƒ ÑÑÑ‹Ð»Ð¾Ðº */
+    font-weight: bold; /* Ð”ÐµÐ»Ð°ÐµÐ¼ Ñ‚ÐµÐºÑÑ‚ Ð¶Ð¸Ñ€Ð½Ñ‹Ð¼, ÐµÑÐ»Ð¸ Ð½ÑƒÐ¶Ð½Ð¾ */
+}
+
+
+.badges 
+{
+    
+}
+.days-badge p {
+    margin: 0; /* Ð£Ð±Ð¸Ñ€Ð°ÐµÐ¼ ÑÑ‚Ð°Ð½Ð´Ð°Ñ€Ñ‚Ð½Ñ‹Ðµ Ð¾Ñ‚ÑÑ‚ÑƒÐ¿Ñ‹ Ñƒ Ð¿Ð°Ñ€Ð°Ð³Ñ€Ð°Ñ„Ð¾Ð² */
+}
+
+/* Ð¡Ñ‚Ð¸Ð»ÑŒ Ð´Ð»Ñ Ð¿Ð»Ð°ÑˆÐºÐ¸ Submit */
+.submit-badge {
+    position: absolute;
+    top: 0; /* Ð Ð°ÑÐ¿Ð¾Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ Ð²Ð²ÐµÑ€Ñ…Ñƒ ÐºÐ¾Ð½Ñ‚ÐµÐ¹Ð½ÐµÑ€Ð° */
+    left: 0; /* Ð’Ñ‹Ñ€Ð°Ð²Ð½Ð¸Ð²Ð°Ð½Ð¸Ðµ Ð¿Ð¾ Ð»ÐµÐ²Ð¾Ð¼Ñƒ ÐºÑ€Ð°ÑŽ */
+    width: 30px; /* Ð¨Ð¸Ñ€Ð¸Ð½Ð° Ð² 30 Ð¿Ð¸ÐºÑÐµÐ»ÐµÐ¹ */
+    height: 20px; /* Ð’Ñ‹ÑÐ¾Ñ‚Ð° Ð² 20 Ð¿Ð¸ÐºÑÐµÐ»ÐµÐ¹ */
+    background-color: #00ff0d; /* Ð¦Ð²ÐµÑ‚ Ñ„Ð¾Ð½Ð° */
+    color: white; /* Ð¦Ð²ÐµÑ‚ Ñ‚ÐµÐºÑÑ‚Ð° */
+    text-align: center; /* Ð¢ÐµÐºÑÑ‚ Ð²Ñ‹Ñ€Ð°Ð²Ð½Ð¸Ð²Ð°ÐµÑ‚ÑÑ Ð¿Ð¾ Ñ†ÐµÐ½Ñ‚Ñ€Ñƒ */
+    box-sizing: border-box; /* Ð’ÐºÐ»ÑŽÑ‡Ð°ÐµÑ‚ padding Ð¸ border Ð² Ð¾Ð±Ñ‰ÑƒÑŽ ÑˆÐ¸Ñ€Ð¸Ð½Ñƒ Ð¸ Ð²Ñ‹ÑÐ¾Ñ‚Ñƒ */
+}
+
+
+/* Ð¡Ñ‚Ð¸Ð»ÑŒ Ð´Ð»Ñ Ð¿Ð»Ð°ÑˆÐºÐ¸ Price */
+.price-badge {
+    box-shadow: 0px -4px 5px rgb(0 0 0 / 36%); 
+    z-index: 11;
+    position: absolute;
+    top: -20px; /* Ð Ð°ÑÐ¿Ð¾Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ Ð²Ð²ÐµÑ€Ñ…Ñƒ ÐºÐ¾Ð½Ñ‚ÐµÐ¹Ð½ÐµÑ€Ð° */
+    right: 0px; 
+    width: auto;
+    height: 20px;
+    padding: 4px 4px; /* Ð’Ð½ÑƒÑ‚Ñ€ÐµÐ½Ð½Ð¸Ðµ Ð¾Ñ‚ÑÑ‚ÑƒÐ¿Ñ‹ */
+    background-color: #ffffff; /* Ð—ÐµÐ»ÐµÐ½Ñ‹Ð¹ Ñ†Ð²ÐµÑ‚ Ñ„Ð¾Ð½Ð° */
+    color: #523600; /* Ð¦Ð²ÐµÑ‚ Ñ‚ÐµÐºÑÑ‚Ð° */
+     border-top-left-radius: 5px; /* Скругляем нижний левый угол */
+    border-top-right-radius: 5px; /* Скругляем нижний правый угол */
+    box-sizing: border-box;
+    display: flex; /* Ð’ÐºÐ»ÑŽÑ‡Ð°ÐµÐ¼ Flexbox */
+    align-items: center; /* Ð¦ÐµÐ½Ñ‚Ñ€Ð¸Ñ€ÑƒÐµÐ¼ ÑÐ¾Ð´ÐµÑ€Ð¶Ð¸Ð¼Ð¾Ðµ Ð¿Ð¾ Ð²ÐµÑ€Ñ‚Ð¸ÐºÐ°Ð»Ð¸ */
+    justify-content: center;} 
+.pos-badge {font-size: 11px; /* Уменьшение размера текста */
+     z-index: 11;
+    position: absolute;
+    bottom: 3px; /* Ð Ð°ÑÐ¿Ð¾Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ Ð²Ð²ÐµÑ€Ñ…Ñƒ ÐºÐ¾Ð½Ñ‚ÐµÐ¹Ð½ÐµÑ€Ð° */
+    right: 0px; 
+    width: auto;
+    height: 24px;
+    padding: 2px 4px; /* Ð’Ð½ÑƒÑ‚Ñ€ÐµÐ½Ð½Ð¸Ðµ Ð¾Ñ‚ÑÑ‚ÑƒÐ¿Ñ‹ */
+    //--background-color: #000000cf; /* Ð—ÐµÐ»ÐµÐ½Ñ‹Ð¹ Ñ†Ð²ÐµÑ‚ Ñ„Ð¾Ð½Ð° */
+    color: black; /* Ð¦Ð²ÐµÑ‚ Ñ‚ÐµÐºÑÑ‚Ð° */
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: flex; /* Ð’ÐºÐ»ÑŽÑ‡Ð°ÐµÐ¼ Flexbox */
+    align-items: center; /* Ð¦ÐµÐ½Ñ‚Ñ€Ð¸Ñ€ÑƒÐµÐ¼ ÑÐ¾Ð´ÐµÑ€Ð¶Ð¸Ð¼Ð¾Ðµ Ð¿Ð¾ Ð²ÐµÑ€Ñ‚Ð¸ÐºÐ°Ð»Ð¸ */
+    justify-content: center; 
+} .posLast-badge {
+    font-size: 11px;
+    //--box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2); 
+     z-index: 11;
+    position: absolute;
+    bottom: 3px; /* Ð Ð°ÑÐ¿Ð¾Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ Ð²Ð²ÐµÑ€Ñ…Ñƒ ÐºÐ¾Ð½Ñ‚ÐµÐ¹Ð½ÐµÑ€Ð° */
+    left: 0px; 
+    width: auto;
+    height: 24px;
+    padding: 2px 4px; /* Ð’Ð½ÑƒÑ‚Ñ€ÐµÐ½Ð½Ð¸Ðµ Ð¾Ñ‚ÑÑ‚ÑƒÐ¿Ñ‹ */
+    //--background-color: #000000cf; /* Ð—ÐµÐ»ÐµÐ½Ñ‹Ð¹ Ñ†Ð²ÐµÑ‚ Ñ„Ð¾Ð½Ð° */
+    color: black; /* Ð¦Ð²ÐµÑ‚ Ñ‚ÐµÐºÑÑ‚Ð° */
+    border-radius: 4px;
+    box-sizing: border-box;
+    display: flex; /* Ð’ÐºÐ»ÑŽÑ‡Ð°ÐµÐ¼ Flexbox */
+    align-items: center; /* Ð¦ÐµÐ½Ñ‚Ñ€Ð¸Ñ€ÑƒÐµÐ¼ ÑÐ¾Ð´ÐµÑ€Ð¶Ð¸Ð¼Ð¾Ðµ Ð¿Ð¾ Ð²ÐµÑ€Ñ‚Ð¸ÐºÐ°Ð»Ð¸ */
+    justify-content: center; /* Ð’ÐºÐ»ÑŽÑ‡Ð°ÐµÑ‚ padding Ð¸ border Ð² Ð¾Ð±Ñ‰ÑƒÑŽ ÑˆÐ¸Ñ€Ð¸Ð½Ñƒ Ð¸ Ð²Ñ‹ÑÐ¾Ñ‚Ñƒ */
+    //--box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2); 
+    
+}  .days {
+    z-index: 10;
+    box-shadow: 0px -5px 4px rgb(0 0 0 / 27%); 
+    position: absolute;
+    top: 10px; /* Ð Ð°ÑÐ¿Ð¾Ð»Ð¾Ð¶ÐµÐ½Ð¸Ðµ Ð²Ð²ÐµÑ€Ñ…Ñƒ ÐºÐ¾Ð½Ñ‚ÐµÐ¹Ð½ÐµÑ€Ð° */
+    left: 0px; 
+    width: auto;
+    height: 20px;
+    padding: 2px 4px; /* Ð’Ð½ÑƒÑ‚Ñ€ÐµÐ½Ð½Ð¸Ðµ Ð¾Ñ‚ÑÑ‚ÑƒÐ¿Ñ‹ */
+    background-color: #ffffff; /* Ð—ÐµÐ»ÐµÐ½Ñ‹Ð¹ Ñ†Ð²ÐµÑ‚ Ñ„Ð¾Ð½Ð° */
+    color: black; /* Ð¦Ð²ÐµÑ‚ Ñ‚ÐµÐºÑÑ‚Ð° */
+     border-top-left-radius: 5px; /* Скругляем нижний левый угол */
+    border-top-right-radius: 5px;
+    box-sizing: border-box;
+    display: flex; /* Ð’ÐºÐ»ÑŽÑ‡Ð°ÐµÐ¼ Flexbox */
+    align-items: center; /* Ð¦ÐµÐ½Ñ‚Ñ€Ð¸Ñ€ÑƒÐµÐ¼ ÑÐ¾Ð´ÐµÑ€Ð¶Ð¸Ð¼Ð¾Ðµ Ð¿Ð¾ Ð²ÐµÑ€Ñ‚Ð¸ÐºÐ°Ð»Ð¸ */
+    justify-content: center;} 
+} 
+.imagegraph {
+    height: 200px; /* Явно заданная высота контейнера */
+    width: 100%; /* Предполагаем, что контейнер должен занимать 100% ширины родительского элемента */
+    overflow: hidden; /* Скрыть всё, что выходит за границы */
+}
+.imagegraph img {
+    object-fit: scale-down; /* Изображение подстраивается по размеру контейнера, сохраняя пропорции */
+    width: 100%; /* Ширина изображения занимает 100% ширины контейнера */
+    
+    
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.2); 
+}
+.chart-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none; /* Изначально скрыт */
+    width: 100%; /* Покрывает всю ширину родительского элемента */
+    height: 100%; /* Покрывает всю высоту родительского элемента */
+    box-sizing: border-box;
+    z-index: 12; /* Убедитесь, что это значение выше, чем у других элементов в том же контексте наложения */
+}
+.header-banner {
+   height:60px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #2b2b2b; /* Темный фон */
+    color: white; /* Белый текст */
+    text-align: center;
+    padding: 10px 0;
+    z-index: 1000; /* Высокий z-index для наложения поверх всех элементов */
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3); /* Небольшая тень для лучшей видимости */
+}

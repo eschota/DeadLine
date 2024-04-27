@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scrolling Presentation Site</title>
+<link rel="stylesheet" href="index.css">
+<link rel="stylesheet" href="unitystyle.css">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js'></script>
+</head>
+
+<body>
+    
+    <div class="section active" id="page1">
+        <div class="container">
+            
+                <a href="http://qwertystock.com" target="_blank">
+                <img src="qwerty_logo.svg" alt="Qwerty Logo" class="logo">
+                </a>
+
+
+                <div class="top-right-menu">
+                    <a href="become-an-author.html" target="_blank">Стать Автором</a>
+                    <a href="become-a-co-owner.html" target="_blank">Стать Совладельцем</a>
+                    <a href="current-page.ru.html" target="_blank" class="language-link">To English</a> <!-- Видима на английской версии -->
+
+                </div>
+
+
+
+                <div id="unity-container" class="unity-desktop">
+                  <canvas id="unity-canvas" width="1280" height="720" style="width: 1280px; height: 720px; cursor: default;"></canvas>
+                  <div id="unity-loading-bar" style="display: none;">
+                    <div id="unity-logo"></div>
+                    <div id="unity-progress-bar-empty">
+                      <div id="unity-progress-bar-full" style="width: 100%;"></div>
+                    </div>
+                  </div>
+                  <div id="unity-warning"> </div>
+                  <div id="unity-footer">
+                    <div id="unity-webgl-logo"></div>
+                    <div id="unity-fullscreen-button"></div>
+                    <div id="unity-build-title">QSP</div>
+                  </div>
+                </div>
+               
+<script>var container = document.querySelector("#unity-container");
+  var canvas = document.querySelector("#unity-canvas");
+  var loadingBar = document.querySelector("#unity-loading-bar");
+  var progressBarFull = document.querySelector("#unity-progress-bar-full");
+  var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+  var warningBanner = document.querySelector("#unity-warning");
+  
+  // Начальная прозрачность для канваса
+  canvas.style.opacity = 0;
+  
+  function unityShowBanner(msg, type) {
+      function updateBannerVisibility() {
+        warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+      }
+      var div = document.createElement('div');
+      div.innerHTML = msg;
+      warningBanner.appendChild(div);
+      if (type == 'error') div.style = 'background: red; padding: 10px;';
+      else {
+        if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+        setTimeout(function() {
+          warningBanner.removeChild(div);
+          updateBannerVisibility();
+        }, 100);
+      }
+      updateBannerVisibility();
+  }
+  
+  var buildUrl = "Build";
+  var loaderUrl = buildUrl + "/QSPresentation.loader.js";
+  var config = {
+      dataUrl: buildUrl + "/QSPresentation.data.br",
+      frameworkUrl: buildUrl + "/QSPresentation.framework.js.br",
+      codeUrl: buildUrl + "/QSPresentation.wasm.br",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "DefaultCompany",
+      productName: "QSP",
+      productVersion: "0.1.0",
+      showBanner: unityShowBanner,
+  };
+  
+  loadingBar.style.display = "block";
+  
+  var script = document.createElement("script");
+  script.src = loaderUrl;
+  script.onload = () => {
+      createUnityInstance(canvas, config, (progress) => {
+        progressBarFull.style.width = 100 * progress + "%";
+      }).then((unityInstance) => {
+        loadingBar.style.display = "none";
+        fullscreenButton.onclick = () => {
+          unityInstance.SetFullscreen(1);
+        };
+        // Анимация изменения прозрачности после загрузки
+        canvas.style.transition = "opacity 5s";
+        canvas.style.opacity = 1;
+      }).catch((message) => {
+        alert(message);
+      });
+  };
+  document.body.appendChild(script);
+    </script>
+          
+          <div class="bot-container">
+            <div class="text-column">
+                <div class="text-item">ПЕРВЫЙ</div>
+                <div class="text-item">РАСПРЕДЕЛЕННЫЙ</div>
+                <div class="text-item last">МИКРОСТОК
+                    <div class="subtext-item">
+                        Сток нацеленный на авторов,<br>
+                        призванный решить основные проблемы,<br>
+                        увеличить доход, упростить доступ на рынок.
+                    </div>
+                </div>
+                
+            </div>
+            
+           </div>
+
+           <div class="ScrollDown"><span>Прокрутите вниз</span><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAQlBMVEUAAAD///////////////////////////////////////////////////////////////////////////////////8IX9KGAAAAFXRSTlMAkd/PIJ4/DjgEgCUwCfPw79vKfz5AbFefAAAAjUlEQVQoz6WRWQoEIQwFY6K29jJ73f+qg9C4gNAMUx+JpDAfL3JJdAoWvIwsjhN3DHPjsaYsewBbOuHQc4dXXJt78PV9I1YRCKWplbp2X4y9NCg1olVA1zLMhfwgnjYRjX9FngsltXnCugxXGfM5idy3PtBZ7JvixkMRkuTPG17Sc7TTLjKyBQN1Ua74AoGzCOwtfedNAAAAAElFTkSuQmCC"></div>
+        
+        </div>
+       
+    </div>
+  <div class="section" id="page2">
+    <div class="container page2-container">
+        <div class="text-container">
+            <p>
+                <span class="highlight">QWERTYSTOCK</span> пользуется популярностью еще до старта продаж<br>
+                <span class="highlight">970 000</span> файлов
+                <br><span class="highlight">1570</span> Авторов
+            </p>
+        </div>
+        <div class="chart-container">
+            <canvas id="fileCountChart"></canvas>
+        </div>
+    </div>
+</div>
+<div class="section" id="page3">Features</div>
+<div class="section" id="page4">
+     <div class="container page4-container">
+    <div class="text-container">
+        <p>
+            <span class="highlight">КОМАНДА</span> мы вместе уже более...
+            <span class="highlight">15</span> лет 
+        </p>
+        <div class="image-container">
+            <!-- Добавляем изображения с номерами от 1 до 11 -->
+            <div class="image-row">
+            <div class="image-item"><img src="\QSPresentation\Team\1.jpg" alt="Image 1"></div>
+            <div class="image-item"><img src="\QSPresentation\Team\2.jpg" alt="Image 2"></div>
+            <div class="image-item"><img src="\QSPresentation\Team\3.jpg" alt="Image 3"></div>
+            <div class="image-item"><img src="\QSPresentation\Team\4.jpg" alt="Image 4"></div>
+            <div class="image-item"><img src="\QSPresentation\Team\5.jpg" alt="Image 5"></div>
+            </div>
+            <div class="image-row">
+            <div class="image-item"><img src="\QSPresentation\Team\6.jpg" alt="Image 6"></div>
+            <div class="image-item"><img src="\QSPresentation\Team\7.jpg" alt="Image 7"></div>
+            <div class="image-item"><img src="\QSPresentation\Team\8.jpg" alt="Image 8"></div>
+            <div class="image-item"><img src="\QSPresentation\Team\9.jpg" alt="Image 9"></div>
+            </div>
+            <div class="image-row">
+            <div class="image-item"><img src="\QSPresentation\Team\10.jpg" alt="Image 10"></div>
+            <div class="image-item"><img src="\QSPresentation\Team\11.jpg" alt="Image 11"></div>
+            </div>
+        </div>
+    </div>
+    
+</div></div>
+<div class="section" id="page5">Page 5 Content</div>
+
+<div class="animated-blocks">
+    <div class="animated-block red-block"></div>
+    <div class="animated-block green-block"></div>
+    <div class="animated-block blue-block"></div>
+</div>
+
+<script src="scroll.js"></script>
+<script src="animations.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        var scrollDown = document.querySelector('.ScrollDown');
+        if (scrollDown) {
+            scrollDown.style.animation = 'fadeInOut 4s ease-in-out infinite';
+        }
+    }, 5000); // Задержка в 5000 миллисекунд (5 секунд)
+});
+    </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        document.querySelectorAll('.section .container').forEach(container => {
+            container.style.opacity = 1; // Устанавливаем прозрачность для всех контейнеров
+        });
+    }, 500);
+});
+    </script>
+<script src ='filesChart.js'></script>
+
+ 
+</body>
+</html>
