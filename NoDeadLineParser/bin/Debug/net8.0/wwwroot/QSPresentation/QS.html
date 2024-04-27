@@ -54,7 +54,12 @@
   
   // Начальная прозрачность для канваса
   canvas.style.opacity = 0;
-  
+  function delayedAnimation() {
+    var unityCanvas = document.getElementById('unity-canvas');
+    if (unityCanvas) {
+        unityCanvas.style.opacity = 1;  // изменение прозрачности на 1
+    }
+}
   function unityShowBanner(msg, type) {
       function updateBannerVisibility() {
         warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
@@ -99,8 +104,7 @@
           unityInstance.SetFullscreen(1);
         };
         // Анимация изменения прозрачности после загрузки
-        canvas.style.transition = "opacity 5s";
-        canvas.style.opacity = 1;
+        delayedAnimation();
       }).catch((message) => {
         alert(message);
       });

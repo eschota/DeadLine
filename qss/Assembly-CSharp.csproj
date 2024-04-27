@@ -83,6 +83,7 @@
     <Compile Include="Assets\Earth Planet\Scripts\SpeedManager.cs" />
     <Compile Include="Assets\Earth Planet\Scripts\MagneticFieldEffect.cs" />
     <Compile Include="Assets\Earth Planet\Scripts\CityManagerEditorButtons.cs" />
+    <Compile Include="Assets\Awaker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Earth Planet\Shaders\CloudsShader.shader" />
