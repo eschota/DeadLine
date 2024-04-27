@@ -97,8 +97,8 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
-    - _borders_mask_clamp_hi: 0.652
-    - _borders_mask_clamp_low: 0.486
+    - _borders_mask_clamp_hi: 0.629
+    - _borders_mask_clamp_low: 0.516
     - _borders_mask_mult: 1
     - _fresnel_power: 4
     - _use_borders_mask_tex_instead_of_vc: 1
