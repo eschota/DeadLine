@@ -88,6 +88,8 @@ public class CameraControllerInSpace : MonoBehaviour
     void Update()
     {
 
+
+        if (Input.GetKeyDown(KeyCode.Space)) locked = !locked;
         TurnCameraRotate();
 
 
