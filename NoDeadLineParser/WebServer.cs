@@ -86,10 +86,34 @@ public static class WebServer
 
         var provider = new FileExtensionContentTypeProvider();
         provider.Mappings[".crx"] = "application/x-chrome-extension";
+        provider.Mappings[".br"] = "application/javascript";
+
         app.UseStaticFiles(new StaticFileOptions
         {
-            ContentTypeProvider = provider
+            ServeUnknownFileTypes = true, // Allow unknown file types
+            DefaultContentType = "application/octet-stream", // Default MIME type for unrecognized files
+            OnPrepareResponse = ctx =>
+            {
+                var path = ctx.File.PhysicalPath;
+                if (path.EndsWith(".wasm.br"))
+                {
+                    ctx.Context.Response.Headers["Content-Encoding"] = "br"; // Specify Brotli encoding
+                    ctx.Context.Response.ContentType = "application/wasm"; // Correct MIME type for WebAssembly files
+                }
+                else if (path.EndsWith(".br"))
+                {
+                    ctx.Context.Response.Headers["Content-Encoding"] = "br"; // Specify Brotli encoding
+                                                                             // Use application/javascript or appropriate type based on the file being served
+                    ctx.Context.Response.ContentType = "application/javascript";
+                }
+            }
         });
+
+
+        //app.UseStaticFiles(new StaticFileOptions
+        //{
+        //    ContentTypeProvider = provider
+        //});
 
         app.Urls.Add($"https://nodes.renderfin.com:{port}");
         app.Urls.Add($"https://cgtrends.renderfin.com:{port}");

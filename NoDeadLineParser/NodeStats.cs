@@ -130,9 +130,10 @@ public class NodeStats
             Console.WriteLine($"Error processing JSON: {ex.Message}");
         }
     }
-
+    static int countTasks= 0;
     private static List<NodeStats> LoadAndSortNodes()
     {
+        countTasks = 0;
         List<NodeStats> nodes = new List<NodeStats>();
         
         var jsonFiles = Directory.GetFiles(Paths.NodeStatsDirectory, $"*.json");
@@ -143,7 +144,7 @@ public class NodeStats
             var nodeStat = JsonConvert.DeserializeObject<NodeStats>(js);
             if (nodeStat != null)
             {
-                nodes.Add(nodeStat);
+                
 
                 int k = -1;
                 k=js.IndexOf("Validation\":[");
@@ -171,40 +172,48 @@ public class NodeStats
                             
                         }
                         nodeStat.completedTasks.Add(ct);
- 
+                        countTasks++;
                     }
                    
                 }
-               
+                nodes.Add(nodeStat);
             }
         }
        
         // Сортировка по времени
         nodes = nodes.OrderBy(node => node.Time).ToList();
+        Console.WriteLine("CountTasks: " + countTasks);
         return nodes;
     }
-    public static List<NodeStats> DistinctNodesOLD(List<NodeStats> allNodes)
+    public static List<NodeStats> DistinctNodes(List<NodeStats> allNodes)
     {
-
         var nodesDictionary = new Dictionary<string, NodeStats>();
 
         foreach (var node in allNodes)
         {
             if (!nodesDictionary.ContainsKey(node.Info.NodeName))
             {
+                // Если узел с таким именем не существует в словаре, добавляем его
                 nodesDictionary[node.Info.NodeName] = node;
             }
             else
             {
-                // Агрегация данных загрузки оборудования
+                // Если узел уже существует, объединяем данные
                 var existingNode = nodesDictionary[node.Info.NodeName];
+
+                // Агрегация данных загрузки оборудования
                 foreach (var partial in node.Partial)
                 {
                     if (!existingNode.Partial.ContainsKey(partial.Key))
                     {
                         existingNode.Partial.Add(partial.Key, partial.Value);
                     }
-                    // Здесь можно добавить логику для объединения или обновления данных, если ключи совпадают
+                }
+
+                // Объединение списка задач
+                if (node.completedTasks != null)
+                {
+                    existingNode.completedTasks.AddRange(node.completedTasks);
                 }
             }
         }
@@ -212,7 +221,7 @@ public class NodeStats
         // Конвертация словаря обратно в список
         return nodesDictionary.Values.ToList();
     }
-    public static List<NodeStats> DistinctNodes(List<NodeStats> allNodes)
+    public static List<NodeStats> DistinctNodesOLD(List<NodeStats> allNodes)
     {
         var nodesDictionary = new Dictionary<string, NodeStats>();
 
@@ -299,7 +308,7 @@ public class NodeStats
             htmlBuilder.AppendLine($"document.addEventListener('DOMContentLoaded', function() {{");
             htmlBuilder.AppendLine($"var chartData = {chartData};");
             htmlBuilder.AppendLine($"var container = document.getElementById('{canvasId}');");
-            htmlBuilder.AppendLine("showChart(container, chartData.cpuData, chartData.gpuData,chartData.taskData, chartData.labels);");
+            htmlBuilder.AppendLine("showChart(container,chartData.upData,chartData.downData, chartData.cpuData, chartData.gpuData,chartData.taskData, chartData.labels);");
             htmlBuilder.AppendLine("});");
             htmlBuilder.AppendLine("</script>");
             htmlBuilder.AppendLine(Title(nod, 0, 1));
@@ -331,6 +340,8 @@ public class NodeStats
 
         List<string> labels = new List<string>();
         List<double> cpuData = new List<double>();
+        List<double> upData = new List<double>();
+        List<double> downData = new List<double>();
         List<double> gpuData = new List<double>();
         List<int> taskData = new List<int>();
 
@@ -340,6 +351,8 @@ public class NodeStats
             labels.Add(time.ToString("yyyy-MM-dd HH:mm:ss"));
             cpuData.Add(Math.Round(100 * partial.Value.CpuLoad));
             gpuData.Add(Math.Round(100 * partial.Value.GpuLoad));
+            upData.Add( partial.Value.InternetUp*0.0001f);
+            downData.Add( partial.Value.InternetDown*0.0001f);
         }
 
         // Подготовка словаря для суммирования задач
@@ -354,7 +367,7 @@ public class NodeStats
                 string closestLabel = FindClosestLabel(labels, task.Time);
                 if (closestLabel != null)
                 {
-                    tasksPerLabel[closestLabel] += 10;
+                    tasksPerLabel[closestLabel] += 1;
                 }
             }
         }
@@ -362,7 +375,7 @@ public class NodeStats
         // Перенос сумм задач в список для графика
         taskData.AddRange(tasksPerLabel.Values);
 
-        var jsonData = JsonConvert.SerializeObject(new { labels, cpuData, gpuData, taskData });
+        var jsonData = JsonConvert.SerializeObject(new { labels, cpuData, gpuData, taskData,upData,downData });
 
         return jsonData;
     }
@@ -374,8 +387,79 @@ public class NodeStats
 
         return closest.ToString("yyyy-MM-dd HH:mm:ss");
     }
-    
     public static string GenerateAveragedByHourChartData(NodeStats node)
+    {
+        var sortedPartials = node.Partial.OrderBy(p => p.Key).ToList();
+
+        // Если данных меньше 2 точек, вернуть пустые данные
+        if (sortedPartials.Count < 2)
+            return JsonConvert.SerializeObject(new { labels = new string[0], cpuData = new double[0], gpuData = new double[0], taskData = new int[0] });
+
+        // Определение временных границ (последние 65 минут)
+        var endTime = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(sortedPartials.Last().Key)).LocalDateTime;
+        var startTime = endTime.AddMinutes(-65);
+
+        // Выбор соответствующих данных в временном диапазоне
+        var relevantPartials = sortedPartials.Where(p =>
+        {
+            var time = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(p.Key)).LocalDateTime;
+            return time >= startTime && time <= endTime;
+        }).ToList();
+
+        // Группировка данных по временным интервалам (по 2-минутным интервалам)
+        var groupedPartials = relevantPartials.GroupBy(p =>
+        {
+            var time = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(p.Key)).LocalDateTime;
+            return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute / 2 * 2, 0); // Группировка по 2-минутным интервалам
+        }).ToList();
+
+        // Подготовка словаря для суммирования задач
+        var tasksPerInterval = groupedPartials.ToDictionary(
+            g => g.Key,
+            g => 0 // Инициализация количества задач в этом интервале
+        );
+
+        // Агрегация данных о задачах
+        if (node.completedTasks != null)
+        {
+            foreach (var task in node.completedTasks)
+            {
+                var taskTime = task.Time;
+                // Нахождение ближайшего интервала для каждой задачи
+                var closestInterval = groupedPartials
+                    .Where(g => g.Key <= taskTime && g.Key.AddMinutes(2) > taskTime)
+                    .Select(g => g.Key)
+                    .FirstOrDefault();
+
+                if (closestInterval != default)
+                {
+                    tasksPerInterval[closestInterval] += 1; // Инкремент количества задач
+                }
+            }
+        }
+
+        // Усреднение данных в каждом интервале
+        var averagedPartials = groupedPartials.Select(g =>
+        {
+            var time = g.Key.ToString("yyyy-MM-dd HH:mm:ss");
+            var cpuLoadAverage = g.Average(p => p.Value.CpuLoad) * 100;
+            var gpuLoadAverage = g.Average(p => p.Value.GpuLoad) * 100;
+            var taskCount = tasksPerInterval[g.Key]; // Получение суммы задач для этого интервала
+            return new { time, cpuLoadAverage, gpuLoadAverage, taskCount };
+        }).ToList();
+
+        // Формирование JSON-объекта
+        var jsonData = JsonConvert.SerializeObject(new
+        {
+            labels = averagedPartials.Select(p => p.time),
+            cpuData = averagedPartials.Select(p => p.cpuLoadAverage),
+            gpuData = averagedPartials.Select(p => p.gpuLoadAverage),
+            taskData = averagedPartials.Select(p => p.taskCount) // Добавляем данные о задачах
+        });
+
+        return jsonData;
+    }
+    public static string GenerateAveragedByHourChartDataOld(NodeStats node)
     {
         var sortedPartials = node.Partial.OrderBy(p => p.Key).ToList();
 
@@ -421,6 +505,80 @@ public class NodeStats
         return jsonData;
     }
     public static string GenerateAveragedAllTimeChartData(NodeStats node)
+    {
+        var sortedPartials = node.Partial.OrderBy(p => p.Key).ToList();
+
+        // Return empty data if less than 2 data points are available
+        if (sortedPartials.Count < 2)
+            return JsonConvert.SerializeObject(new { labels = new string[0], cpuData = new double[0], gpuData = new double[0], taskData = new int[0] });
+
+        // Determine the time span of the data
+        var firstDate = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(sortedPartials.First().Key)).DateTime;
+        var lastDate = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(sortedPartials.Last().Key)).DateTime;
+        var totalDuration = lastDate - firstDate;
+
+        // Calculate intervals for 30 points
+        var interval = totalDuration.TotalSeconds / 29;
+
+        // Create arrays for interpolated results
+        List<string> labels = new List<string>();
+        List<double> cpuData = new List<double>();
+        List<double> gpuData = new List<double>();
+        List<int> taskData = new List<int>();  // Add task data array
+
+        // Assuming node.completedTasks is a list of tasks with Time and other properties
+        if (node.completedTasks != null)
+        {
+            // Aggregate tasks by intervals similarly to cpuData and gpuData
+            var groupedTasks = node.completedTasks.GroupBy(t =>
+                firstDate.AddSeconds((int)((t.Time - firstDate).TotalSeconds / interval) * interval))
+                .ToDictionary(g => g.Key, g => g.Count());
+
+            // Fill taskData for each interval
+            for (int i = 0; i <= 29; i++)
+            {
+                var currentTime = firstDate.AddSeconds(interval * i);
+                taskData.Add(groupedTasks.ContainsKey(currentTime) ? groupedTasks[currentTime] : 0);
+            }
+        }
+
+        // Generate 30 interpolated data points
+        for (int i = 0; i < 30; i++)
+        {
+            var currentTime = firstDate.AddSeconds(interval * i);
+            labels.Add(currentTime.ToString("yyyy-MM-dd HH:mm:ss"));
+
+            // Find the two nearest data points for interpolation
+            var before = sortedPartials.LastOrDefault(p => DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(p.Key)).DateTime <= currentTime);
+            var after = sortedPartials.FirstOrDefault(p => DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(p.Key)).DateTime >= currentTime);
+
+           
+                var beforeTime = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(before.Key)).DateTime;
+                var afterTime = DateTimeOffset.FromUnixTimeMilliseconds(long.Parse(after.Key)).DateTime;
+                var timeFactor = (currentTime - beforeTime).TotalSeconds / (afterTime - beforeTime).TotalSeconds;
+
+                // Linear interpolation for CPU and GPU load
+                var interpolatedCpu = before.Value.CpuLoad + (after.Value.CpuLoad - before.Value.CpuLoad) * timeFactor;
+                var interpolatedGpu = before.Value.GpuLoad + (after.Value.GpuLoad - before.Value.GpuLoad) * timeFactor;
+
+                cpuData.Add(interpolatedCpu * 100);
+                gpuData.Add(interpolatedGpu * 100);
+             
+        }
+
+        // Create JSON object
+        var jsonData = JsonConvert.SerializeObject(new
+        {
+            labels = labels,
+            cpuData = cpuData,
+            gpuData = gpuData,
+            taskData = taskData // Add taskData to the output JSON
+        });
+
+        return jsonData;
+    }
+
+    public static string GenerateAveragedAllTimeChartDataOld(NodeStats node)
     {
         var sortedPartials = node.Partial.OrderBy(p => p.Key).ToList();
 
