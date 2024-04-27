@@ -430,4 +430,4 @@ FodyWeavers.xsd
 /NoDeadLineTelegramBot/whisper
 
 
-!/NoDeadLineParser/bin/Debug/net8.0/wwwroot/
+!NoDeadLineParser/bin/Debug/net8.0/wwwroot/
