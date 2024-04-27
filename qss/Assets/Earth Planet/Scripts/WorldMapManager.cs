@@ -68,79 +68,79 @@ public class WorldMapManager : MonoBehaviour
         get => _currentState;
         set
         {
-            Ocean.SetActive(true);
-            ChangeAllCountriesMaterials(EarthMaterialsByTypeOnCountries[(int)value]);
+           // Ocean.SetActive(true);
+            //ChangeAllCountriesMaterials(EarthMaterialsByTypeOnCountries[(int)value]);
              
-            switch (value)
-            {
-                case State.Earth:
-                    EarthRenderer.sharedMaterial = Earth;
+            //switch (value)
+            //{
+            //    case State.Earth:
+            //        EarthRenderer.sharedMaterial = Earth;
 
                     
-                    Clouds.SetActive(true);
-                    Glow.SetActive(true);
-                    HideMap();
+            //        Clouds.SetActive(true);
+            //        Glow.SetActive(true);
+            //        HideMap();
                     
-                    break;
-                case State.Politic:
-                    EarthRenderer.sharedMaterial = EarthMaterialsByTypeOnCountries[1];
-                    ShowMap();
-                    Clouds.SetActive(false);
-                    Glow.SetActive(false);
+            //        break;
+            //    case State.Politic:
+            //        EarthRenderer.sharedMaterial = EarthMaterialsByTypeOnCountries[1];
+            //        ShowMap();
+            //        Clouds.SetActive(false);
+            //        Glow.SetActive(false);
 
-                    break;
-                case State.Population:
-                    EarthRenderer.sharedMaterial = Population;
+            //        break;
+            //    case State.Population:
+            //        EarthRenderer.sharedMaterial = Population;
 
-                    ShowMap();
-                    Clouds.SetActive(false);
-                    Glow.SetActive(false);
-                    break;
-                case State.Science:
-                    EarthRenderer.sharedMaterial = Science;
-                    Glow.SetActive(false);
-                    ShowMap();
-                    Clouds.SetActive(false);
-                    break;
-                case State.Transport:
-                    EarthRenderer.sharedMaterial = Transport;
-                    Glow.SetActive(false);
-                    ShowMap();
-                    Clouds.SetActive(false);
-                    break;
-                case State.Disaster:
-                    EarthRenderer.sharedMaterial = Disaster;
-                    Glow.SetActive(false);
-                    Clouds.SetActive(false);
-                    ShowMap();
-                    break;
-                case State.Climat:
-                    EarthRenderer.sharedMaterial = Climat;
-                    Glow.SetActive(false);
-                    Clouds.SetActive(false);
-                    ShowMap();
-                    break; 
-                case State.Religion:
-                    EarthRenderer.sharedMaterial = Religion;
-                    Glow.SetActive(false);
-                    Clouds.SetActive(false);
-                    ShowMap();
-                    break; 
-                case State.Wealth:
-                    foreach (var country in countries)
-                    { 
-                        country.meshRenderer.sharedMaterial = Wealth;
-                    }
-                    EarthRenderer.sharedMaterial = Wealth;
-                    Glow.SetActive(false);
-                    Clouds.SetActive(false);
-                    Ocean.SetActive(true);
-                    ShowMap();
+            //        ShowMap();
+            //        Clouds.SetActive(false);
+            //        Glow.SetActive(false);
+            //        break;
+            //    case State.Science:
+            //        EarthRenderer.sharedMaterial = Science;
+            //        Glow.SetActive(false);
+            //        ShowMap();
+            //        Clouds.SetActive(false);
+            //        break;
+            //    case State.Transport:
+            //        EarthRenderer.sharedMaterial = Transport;
+            //        Glow.SetActive(false);
+            //        ShowMap();
+            //        Clouds.SetActive(false);
+            //        break;
+            //    case State.Disaster:
+            //        EarthRenderer.sharedMaterial = Disaster;
+            //        Glow.SetActive(false);
+            //        Clouds.SetActive(false);
+            //        ShowMap();
+            //        break;
+            //    case State.Climat:
+            //        EarthRenderer.sharedMaterial = Climat;
+            //        Glow.SetActive(false);
+            //        Clouds.SetActive(false);
+            //        ShowMap();
+            //        break; 
+            //    case State.Religion:
+            //        EarthRenderer.sharedMaterial = Religion;
+            //        Glow.SetActive(false);
+            //        Clouds.SetActive(false);
+            //        ShowMap();
+            //        break; 
+            //    case State.Wealth:
+            //        foreach (var country in countries)
+            //        { 
+            //            country.meshRenderer.sharedMaterial = Wealth;
+            //        }
+            //        EarthRenderer.sharedMaterial = Wealth;
+            //        Glow.SetActive(false);
+            //        Clouds.SetActive(false);
+            //        Ocean.SetActive(true);
+            //        ShowMap();
                     
-                    break;
-                default:
-                    break;
-            }
+            //        break;
+            //    default:
+            //        break;
+            //}
 
 
             _currentState = value;
@@ -184,7 +184,7 @@ public class WorldMapManager : MonoBehaviour
     }
     void HideMap()
     {
-        Camera.main.cullingMask = ~LayerMask.GetMask("Water");
+       // Camera.main.cullingMask = ~LayerMask.GetMask("Water");
 
     }
     void Update()

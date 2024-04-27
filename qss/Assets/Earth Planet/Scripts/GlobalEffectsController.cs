@@ -32,12 +32,9 @@ public class GlobalEffectsController : MonoBehaviour
         instance= this;
         drop.onValueChanged.AddListener(OnChange);
         CityConnectionsTransform.SetParent(FindObjectOfType<UnitEarth>().transform);
-        MagneticField.transform.SetParent(CityConnectionsTransform.parent);
-        if (PlayerPrefs.HasKey("Effect"))
-        {
-            OnChange(PlayerPrefs.GetInt("Effect"));
-        }else 
-        OnChange(0);
+        
+      
+        OnChange(2);
     }
     private void OnChange(int id)
     {
@@ -45,23 +42,23 @@ public class GlobalEffectsController : MonoBehaviour
         if (id == 0)         
         {
             CurrentState = 0;
-            Starlink.gameObject.SetActive(false);
+        
             CityConnection.gameObject.SetActive(false);
-            MagneticField.gameObject.SetActive(false);
+        
         }
         if (id == 1)
         {
             CurrentState = 1;
-            Starlink.gameObject.SetActive(true);
+        
             CityConnection.gameObject.SetActive(false);
-            MagneticField.gameObject.SetActive(false);
+        
         }
         if (id == 2)
         {
             CurrentState = 2;
-            Starlink.gameObject.SetActive(false);
+        
             CityConnection.gameObject.SetActive(true);
-            MagneticField.gameObject.SetActive(false);
+        
             Generate();
         }
          if (id == 3)
