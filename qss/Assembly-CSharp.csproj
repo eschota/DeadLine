@@ -57,32 +57,32 @@
     <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Earth Planet\Scripts\BSPTreeCameraOcclusionObjectControl.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\GlobalEffectsController.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\WorldMapManager.cs" />
     <Compile Include="Assets\Earth Planet\Scripts\BSPTree.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\CityManagerEditorButtons.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\LayersController.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\CityLabel.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\CountryEditorButtons.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\BSPTreeSegment.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\BSPTreeInspectorButton.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\Logger.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\CameraControllerInSpace.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\UnitEarth.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\MagneticFieldEffect.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\CityManager.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\StarLinkOrbit.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\WorldMapManagerEditorButtons.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\CityManagerScriptableObject.cs" />
     <Compile Include="Assets\Earth Planet\Scripts\CityConnectionEffect.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\City.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\CityManagerScriptableObject.cs" />
     <Compile Include="Assets\Earth Planet\Scripts\StarlinkEffect.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\Country.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\SpeedManager.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\WindowLayerInfo.cs" />
-    <Compile Include="Assets\Earth Planet\Scripts\CityLinkPointEffect.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\BSPTreeCameraOcclusionObjectControl.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\WorldMapManager.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\LayersController.cs" />
     <Compile Include="Assets\Earth Planet\Scripts\TimeManager.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\BSPTreeInspectorButton.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\WorldMapManagerEditorButtons.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\BSPTreeSegment.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\Logger.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\Country.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\GlobalEffectsController.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\CityManager.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\CityLinkPointEffect.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\City.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\StarLinkOrbit.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\WindowLayerInfo.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\CameraControllerInSpace.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\CountryEditorButtons.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\CityLabel.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\UnitEarth.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\SpeedManager.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\MagneticFieldEffect.cs" />
+    <Compile Include="Assets\Earth Planet\Scripts\CityManagerEditorButtons.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Earth Planet\Shaders\CloudsShader.shader" />
@@ -715,9 +715,6 @@
     <Reference Include="Unity.VSCode.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VSCode.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.Shared.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Shared.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
@@ -729,9 +726,6 @@
     </Reference>
     <Reference Include="Unity.TestTools.CodeCoverage.Editor.OpenCover.Model">
       <HintPath>Library\ScriptAssemblies\Unity.TestTools.CodeCoverage.Editor.OpenCover.Model.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Timeline.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
       <HintPath>Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
@@ -745,8 +739,14 @@
     <Reference Include="Unity.VisualScripting.State.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.State.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Searcher.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.Searcher.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.VisualScripting.SettingsProvider.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.SettingsProvider.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.Core.Runtime">
+      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TestTools.CodeCoverage.Editor.OpenCover.Mono.Reflection">
       <HintPath>Library\ScriptAssemblies\Unity.TestTools.CodeCoverage.Editor.OpenCover.Mono.Reflection.dll</HintPath>
@@ -763,14 +763,11 @@
     <Reference Include="Unity.Rider.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.TestTools.CodeCoverage.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.TestTools.CodeCoverage.Editor.dll</HintPath>
+    <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">
+      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.State">
-      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.State.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Core">
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Core.dll</HintPath>
@@ -778,23 +775,26 @@
     <Reference Include="Unity.EditorCoroutines.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.EditorCoroutines.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.RenderPipelines.Core.Runtime">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+    <Reference Include="Unity.ShaderGraph.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.ShaderGraph.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Searcher.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Searcher.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.Core.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
+    <Reference Include="Unity.VisualScripting.Shared.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Shared.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
       <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.ShaderGraph.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.ShaderGraph.Editor.dll</HintPath>
+    <Reference Include="Unity.Timeline.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TestTools.CodeCoverage.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.TestTools.CodeCoverage.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.Core.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.State">
+      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.State.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
