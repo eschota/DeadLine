@@ -106,7 +106,7 @@ public class CameraControllerInSpace : MonoBehaviour
         }
         
         
-        Zoom();
+        //Zoom();
 
         if (isrotate == true)
         {

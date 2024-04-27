@@ -24,7 +24,7 @@ Temp/
 Logs/
 OCSaves/
 _gsdata_
-
+*.br
 # erroneous meta files 
 library.meta
 temp.meta
