@@ -428,3 +428,6 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /NoDeadLineTelegramBot/whisper
+
+
+!/NoDeadLineParser/bin/Debug/net8.0/wwwroot/
