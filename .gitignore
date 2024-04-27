@@ -12,7 +12,7 @@
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
-!DeadLine/DeadLine/NoDeadLineParser/bin/Debug/net8.0/wwwroot/
+!c:\DeadLine\DeadLine\NoDeadLineParser\bin\Debug\net8.0\wwwroot\
 !DeadLine/NoDeadLineParser/bin/Debug/net8.0/wwwroot/
 # Mono auto generated files
 mono_crash.*
