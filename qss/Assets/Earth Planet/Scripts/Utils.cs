@@ -12,15 +12,19 @@ public static class Utils
     {
 #if !UNITY_WEBGL
         EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.WebGL, BuildTarget.WebGL);
-        PlayerSettings.WebGL.template = "PROJECT:Default";
+#endif
+        PlayerSettings.WebGL.template = "APPLICATION:Default";
         PlayerSettings.WebGL.threadsSupport = true;
         PlayerSettings.WebGL.emscriptenArgs = "-s USE_SDL=2";
-#endif
     }
 
     [MenuItem("Tools/Build WEBGL")]
     public static void BuildWebGL()
     {
+        SetWebGLBuildSettings();
+
+        Camera.main.clearFlags = CameraClearFlags.Depth;
+
         ChangeColorSpaceToLinear();
         TurnOffAutoGraphicsAPI();
         SetGraphicsAPIToWebGL2();
