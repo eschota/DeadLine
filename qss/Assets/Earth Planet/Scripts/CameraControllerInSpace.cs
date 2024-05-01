@@ -147,7 +147,7 @@ public class CameraControllerInSpace : MonoBehaviour
 
     private float CalculateSize(Vector3 position)
     {
-        return (Pivot.localScale.x + position.magnitude * 2) * _particlesSizeCurve.Evaluate(Pivot.localScale.x / 4);
+        return ((Camera.main.transform.position - position).magnitude + position.magnitude * 2) * _particlesSizeCurve.Evaluate(Pivot.localScale.x / 4);
     }
 
     private void FlyBack()
