@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Scrolling Presentation Site</title>
 <link rel="stylesheet" href="index.css">
+<link rel="stylesheet" href="invest.css">
 <link rel="stylesheet" href="unitystyle.css">
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <link rel="stylesheet" href="roadmap_style.css">
@@ -210,7 +211,7 @@
                     <div class="image-item">     
                       <img src="\QSPresentation\Team\4.jpg" alt="Николаж">
                       <div class="text-overlay">
-                          <span class="Nick">Nikolaj</span><span class="Job">QS Lead</span>
+                          <span class="Nick">Nick</span><span class="Job">QS Lead</span>
                       </div>
                       <div class="icons">
                       </div> </div> 
@@ -281,32 +282,43 @@
     </div>
     
 </div></div></div>
-<div class="section" id="page5">    <div class="text-container">
-  <p>
-    <div class="roadmap-highlight">Стать совладельцем QWERTYSTOCK</div>
-  </p>
-  <div>
-    <p>
-      <span class="highlight">Только для АВТОРОВ</span> - Мы даем возможность купить Акции всем участникам проекта М+ и StockSubmitter, зарегистрированным не позднее 1 февраля 2024 года.
+<div class="section" id="page5">    
+  <div class="invest-container">
+  
+    <div class="invest-highlight">Стать совладельцем QWERTYSTOCK</div>
+ 
+  
+    
+      <span class="invest-highlight2">Только для АВТОРОВ</span> Мы даем возможность купить Акции всем участникам проекта М+ и StockSubmitter, зарегистрированным не позднее 1 февраля 2024 года.
       <br>Наша задача оставить контроль над стоком непосредственно Авторам контента.
-      <br>Все последующие размещения акций будут проходить по цене рынка и существенно выше этого предложения.
+      <span class="invest-highlight2">ВЫГОДНО</span>
+      <br>Все последующие размещения акций будут проходить по цене рынка и существенно выше этого предложения. На следующих этапах вы сможете заработать на продаже акций.
+      <span class="invest-highlight2">БЕЗОПАСНО</span>
       <br>Все средства будут зачислены на ваш баланс на аккаунт М+/SS и вы сможете ими пользоватья до начала следующей фазы продаж.
       <br>Все средства оставшиеся на балансе на этот момент будут сконвертированы в акции по условиям этого предложения.
-    </p>
-    <label for="investmentAmount">Выберите сумму инвестиций:</label>
-    <select id="investmentAmount">
-        <option value="10">10$</option>
-        <option value="100">100$</option>
-        <option value="500">500$</option>
-        <option value="1000">1000$</option>
-        <option value="2000">2000$</option>
-        <option value="2000plus">2000$ и больше</option>
-    </select>
-    <div id="stockInfo"></div>
-    <div id="contactInfo" style="display: none;"> 
-        <p>Пожалуйста, свяжитесь с нами для обсуждения инвестиций свыше 2000$. Email: contact@qwerty.com</p>
-    </div>
-
+    
+      <span class="invest-highlight2">ДОХОД</span>
+      <br> Вы будете получать ежемесячные дивиденды от дохода QWERTYSTOCK автоматически.
+      
+      <span class="invest-highlight2">Предложение ограничено</span>
+      <br>На текущий момент осталось доступно 6.73% акций.
+      
+    
+      <span class="invest-highlight2">Выберите сумму инвестиций:</span>
+    <div class="investment-buttons">
+     
+      <button class="investment-option selected" data-amount="100">$100</button>
+      <button class="investment-option" data-amount="500">$500</button>
+      <button class="investment-option" data-amount="1000">$1000</button>
+      <button class="investment-option" data-amount="2000">$2000</button>
+      <button class="investment-option" data-amount="2001">$2000+</button>
+  </div>
+  <button id="buyStocksButton">Перейти к Купить X акций</button>
+  <div id="stockInfo" style="display: none;"></div>
+  <div id="contactInfo" style="display: none;">
+      <p>Пожалуйста, свяжитесь с нами для обсуждения инвестиций свыше $2000 через <a href="https://t.me/YesDeadLine" target="_blank">NoDeadLine</a> или <a href="https://t.me/NetherSpite" target="_blank">NetherSpite</a>.</p>
+  </div>
+  <div>
   </div>
 </div>
 </div>
@@ -341,6 +353,7 @@
 <script src ='filesChart.js'></script>
 <script src ='unityhtml.js'></script>
 <script src ='invest.js'></script>
+<script src ='team.js'></script>
 <script src='roadmap_script.js'></script>
  <script>
  document.querySelectorAll('.element').forEach(element => {
