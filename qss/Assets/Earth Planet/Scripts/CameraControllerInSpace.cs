@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using UnityEngine;
+using static SpeedManager;
 using static UnityEngine.ParticleSystem;
 
 [RequireComponent (typeof (Camera))]
@@ -136,19 +137,22 @@ public class CameraControllerInSpace : MonoBehaviour
         }
 
         int particleCount = _particleSystem.GetParticles(_particles);
+        var sheet = _particleSystem.textureSheetAnimation;
+        var size = 0f;
 
         for (int i = 0; i < particleCount; i++)
         {
-            _particles[i].size = CalculateSize(_particles[i].position);
+            _particles[i].size = CalculateSize(_particles[i].position, out size);
+            sheet.frameOverTime = size / 3;
         }
 
         _particleSystem.SetParticles(_particles, particleCount);
     }
 
-    private float CalculateSize(Vector3 position)
+    private float CalculateSize(Vector3 position, out float size)
     {
-        var size = Mathf.Abs((position - Camera.main.transform.position).magnitude);
-        return (position.magnitude * 2) * _particlesSizeCurve.Evaluate(size / 51);
+        size = Mathf.Abs((position - Camera.main.transform.position).magnitude) / 51;
+        return (position.magnitude * 2) * _particlesSizeCurve.Evaluate(size);
     }
 
     private void FlyBack()
