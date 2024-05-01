@@ -1,10 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 using UnityEngine;
+using static UnityEngine.ParticleSystem;
 
 [RequireComponent (typeof (Camera))]
 public class CameraControllerInSpace : MonoBehaviour
 {
+    [SerializeField] private ParticleSystem _particleSystem;
+    private Particle[] _particles;
+
     [HideInInspector][SerializeField] public Camera thisCamera;
     [Range(0.1f,2)] [SerializeField] private float Speed = 1;
 
@@ -115,6 +121,32 @@ public class CameraControllerInSpace : MonoBehaviour
 
         NearEarth();
     }
+
+    [System.Obsolete]
+    private void LateUpdate()
+    {
+        int maxParticles = _particleSystem.main.maxParticles;
+
+        if (_particles == null || _particles.Length < maxParticles)
+        {
+            _particles = new Particle[maxParticles];
+        }
+
+        int particleCount = _particleSystem.GetParticles(_particles);
+
+        for (int i = 0; i < particleCount; i++)
+        {
+            _particles[i].size = CalculateSize(_particles[i].position);
+        }
+
+        _particleSystem.SetParticles(_particles, particleCount);
+    }
+
+    private float CalculateSize(Vector3 position)
+    {
+        return (Pivot.localScale.x + position.z * 2) * 0.031f;
+    }
+
     private void FlyBack()
     {
         FlyToTimer += Time.unscaledDeltaTime / FlyToTime;
@@ -224,6 +256,8 @@ public class CameraControllerInSpace : MonoBehaviour
         Pivot.localScale = Vector3.one * (Mathf.Clamp(Pivot.localScale.x, 0.45f, 4));
         zoom = Mathf.Lerp(zoom, 0, Time.unscaledDeltaTime*5  );
         if (Input.GetMouseButtonDown(2)) zoom = 0;
+
+        Debug.Log(Pivot.localScale);
     }
     private void Reset()
     {
