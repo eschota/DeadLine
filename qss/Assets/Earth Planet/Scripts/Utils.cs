@@ -33,7 +33,7 @@ public static class Utils
 
         var activeScene = SceneManager.GetActiveScene();
         var buildPlayerOptions = new BuildPlayerOptions();
-        var buildPath = Path.Combine(Application.persistentDataPath, activeScene.name, "WebGL build");
+        var buildPath = Path.Combine(Application.dataPath, "..", "..", activeScene.name, "WebGL build");
 
         if (!Directory.Exists(buildPath))
             Directory.CreateDirectory(buildPath);
@@ -41,7 +41,7 @@ public static class Utils
         buildPlayerOptions.scenes = new[] { activeScene.path };
         buildPlayerOptions.locationPathName = buildPath;
         buildPlayerOptions.target = BuildTarget.WebGL;
-        buildPlayerOptions.options = BuildOptions.None;
+        buildPlayerOptions.options = BuildOptions.CleanBuildCache;
 
         BuildPipeline.BuildPlayer(buildPlayerOptions);
 
