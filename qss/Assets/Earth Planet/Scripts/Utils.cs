@@ -12,10 +12,10 @@ public static class Utils
     {
 #if !UNITY_WEBGL
         EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.WebGL, BuildTarget.WebGL);
-#endif
         PlayerSettings.WebGL.template = "PROJECT:Default";
         PlayerSettings.WebGL.threadsSupport = true;
         PlayerSettings.WebGL.emscriptenArgs = "-s USE_SDL=2";
+#endif
     }
 
     [MenuItem("Tools/Build WEBGL")]
