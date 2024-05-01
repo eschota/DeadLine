@@ -8,10 +8,13 @@ using static UnityEngine.ParticleSystem;
 [RequireComponent (typeof (Camera))]
 public class CameraControllerInSpace : MonoBehaviour
 {
+    [Header("Particles")]
+    [SerializeField] public AnimationCurve _particlesSizeCurve;
     [SerializeField] private ParticleSystem _particleSystem;
     private Particle[] _particles;
 
     [HideInInspector][SerializeField] public Camera thisCamera;
+    [Space(10)]
     [Range(0.1f,2)] [SerializeField] private float Speed = 1;
 
     [Range (0.0f,1)][SerializeField] float distanceToEarthFly = 0.8f;
@@ -144,7 +147,7 @@ public class CameraControllerInSpace : MonoBehaviour
 
     private float CalculateSize(Vector3 position)
     {
-        return (Pivot.localScale.x + position.z * 2) * 0.031f;
+        return (Pivot.localScale.x + position.z * 2) * _particlesSizeCurve.Evaluate(Pivot.localScale.x / 4);
     }
 
     private void FlyBack()
