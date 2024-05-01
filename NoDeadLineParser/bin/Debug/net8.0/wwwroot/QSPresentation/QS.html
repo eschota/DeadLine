@@ -6,8 +6,13 @@
 <title>Scrolling Presentation Site</title>
 <link rel="stylesheet" href="index.css">
 <link rel="stylesheet" href="unitystyle.css">
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<link rel="stylesheet" href="roadmap_style.css">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js'></script>
+<script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+
+
 </head>
 
 <body>
@@ -82,7 +87,88 @@
         </div>
     </div>
 </div>
-<div class="section" id="page3">Features</div>
+<div class="section" id="page3">
+  <div class="container page3-container">
+
+    <div class="RoadMap-textContainer">
+      <p>
+          <div class="roadmap-highlight">ROADMAP</div>
+        </p> 
+     
+  </div>
+    <div class="roadmap-container">
+
+
+            <div class="element a" data-tooltip="QwertyStock.com - |Официальный запуск Микростока. Обеспечение лицезирования контента и старт продаж.">
+            <span>QwertyStock.com</span>
+            <div class="tooltip-content"></div>
+            </div>
+    
+            <div class="element b" data-tooltip="Renderfin - |Кросплатформенное приложение, обеспечивающее распределенность QwertyStock, позволяет любому устройству в мире распределять работоспособность стока. ">
+            <span>RenderFin</span>
+            <div class="tooltip-content"></div>
+            </div>
+             
+    
+            <div class="element c" data-tooltip="Акции - | Управление проектом происходит посредством Кораорации в Сингапуре, влдельцы акций получают дивиденды и участвуют в принятии решений. ">
+            <span>Акции</span>
+            <div class="tooltip-content"></div>
+            </div>
+             
+    
+            <div class="element d" data-tooltip="Лицензии - | Royalty Free лицензирование всего контента на стоке. ">
+            <span>Лицензирование</span>
+            <div class="tooltip-content"></div>
+            </div>
+             
+    
+            <div class="element e" data-tooltip="Удобная оплата - | Подключение популярных и удобных систем платежей для покупателей контента, Visa/MasterCard/PayPal и другие.">
+            <span>Платежная система</span>
+            <div class="tooltip-content"></div>
+            </div>
+             
+    
+            <div class="element f" data-tooltip="Масштабирование нагрузок - |Все вычисления для стока выполняются децентрализовано на любом компьютере в интернете, кодирование видео, фото, ИИ генерации, редактирование и т п. ">
+            <span>Распределенные вычисления</span>
+            <div class="tooltip-content"></div>
+            </div>
+             
+    
+            <div class="element g" data-tooltip="Надежное и дешевое хранилище - | База данных стока будет расположена на компьютерах авторов и других людей установивших RenderFin.">
+            <span>Децентрализованное хранение</span>
+            <div class="tooltip-content"></div>
+            </div>
+             
+    
+            <div class="element h" data-tooltip="Свой сток каждому Автору - | Любой клиент приложения может запустить свой собственный сток на своем компьютере автоматически, просто указав папку, где лежит контент. ">
+            <span>Самораспаковывающийся магазин</span>
+            <div class="tooltip-content"></div>
+            </div>
+             
+    
+            <div class="element i" data-tooltip="Почти как майнинг - | Клиенты приложения получают вознаграждения от сети за проделанную работу. ">
+            <span>Система вознаграждений</span>
+            <div class="tooltip-content"></div>
+            </div> 
+
+
+          <div class="arrow a"></div>
+          <div class="arrow b"></div>
+          <div class="arrow c"></div>
+          <div class="arrow d"></div>
+          <div class="arrow e"></div>
+          <div class="arrow f"></div>
+          <div class="arrow g"></div>
+          <div class="arrow h"></div>
+          <div class="arrow i"></div>
+          <div class="arrow j"></div>
+          <div class="dashed-line" data-text="Вторая Фаза"></div>
+          <div class="stage"> Третья Фаза</div>
+        </div>
+        </div> 
+      </div>
+    </div>
+</div>
 <div class="section" id="page4">
      <div class="container page4-container">
     <div class="text-container">
@@ -144,7 +230,27 @@
     </script>
 <script src ='filesChart.js'></script>
 <script src ='unityhtml.js'></script>
+<script src='roadmap_script.js'></script>
+ <script>
+ document.querySelectorAll('.element').forEach(element => {
+  const tooltipText = element.getAttribute('data-tooltip');
+  const parts = tooltipText.split('|');
+  const tooltipHTML = `<strong style="color: #E91E63;">${parts[0]}</strong>${parts[1]}`;
 
- 
+  const tooltipContainer = element.querySelector('.tooltip-content');
+  tooltipContainer.innerHTML = tooltipHTML; // Убедитесь, что этот код не выполняется повторно в другом месте
+
+  element.addEventListener('mouseover', function() {
+      tooltipContainer.style.visibility = 'visible';
+      tooltipContainer.style.opacity = '1';
+  });
+
+  element.addEventListener('mouseout', function() {
+      tooltipContainer.style.visibility = 'hidden';
+      tooltipContainer.style.opacity = '0';
+  });
+});
+</script>
+ >
 </body>
 </html>
