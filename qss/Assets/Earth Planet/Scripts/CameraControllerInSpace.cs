@@ -143,7 +143,7 @@ public class CameraControllerInSpace : MonoBehaviour
         for (int i = 0; i < particleCount; i++)
         {
             _particles[i].size = CalculateSize(_particles[i].position, out size);
-            sheet.frameOverTime = size / 3;
+            sheet.frameOverTime = size;
         }
 
         _particleSystem.SetParticles(_particles, particleCount);
@@ -151,8 +151,8 @@ public class CameraControllerInSpace : MonoBehaviour
 
     private float CalculateSize(Vector3 position, out float size)
     {
-        size = Mathf.Abs((position - Camera.main.transform.position).magnitude) / 51;
-        return (position.magnitude * 2) * _particlesSizeCurve.Evaluate(size);
+        size = _particlesSizeCurve.Evaluate(Mathf.Abs((position - Camera.main.transform.position).magnitude) / 51);
+        return (position.magnitude * 2) * size;
     }
 
     private void FlyBack()
