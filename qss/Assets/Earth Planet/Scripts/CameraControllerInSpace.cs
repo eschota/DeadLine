@@ -259,8 +259,6 @@ public class CameraControllerInSpace : MonoBehaviour
         Pivot.localScale = Vector3.one * (Mathf.Clamp(Pivot.localScale.x, 0.45f, 4));
         zoom = Mathf.Lerp(zoom, 0, Time.unscaledDeltaTime*5  );
         if (Input.GetMouseButtonDown(2)) zoom = 0;
-
-        Debug.Log(Pivot.localScale);
     }
     private void Reset()
     {
