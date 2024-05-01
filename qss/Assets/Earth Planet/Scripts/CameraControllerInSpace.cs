@@ -143,9 +143,9 @@ public class CameraControllerInSpace : MonoBehaviour
         for (int i = 0; i < particleCount; i++)
         {
             _particles[i].size = CalculateSize(_particles[i].position, out size);
-            sheet.frameOverTime = size;
         }
 
+        sheet.frameOverTime = size;
         _particleSystem.SetParticles(_particles, particleCount);
     }
 
