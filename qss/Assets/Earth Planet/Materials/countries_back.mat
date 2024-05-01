@@ -111,8 +111,8 @@ Material:
     - _alpha: 1
     - _borders_alpha: 1
     - _borders_alpha_mult: 1
-    - _borders_clamp_hi: 0.784
-    - _borders_clamp_low: 0.337
+    - _borders_clamp_hi: 0.9
+    - _borders_clamp_low: 0.3
     - _borders_mask_clamp_hi: 0.533
     - _borders_mask_clamp_low: 0.512
     - _borders_mask_mult: 1
