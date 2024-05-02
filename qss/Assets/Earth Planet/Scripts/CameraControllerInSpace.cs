@@ -10,6 +10,7 @@ using static UnityEngine.ParticleSystem;
 [RequireComponent (typeof (Camera))]
 public class CameraControllerInSpace : MonoBehaviour
 {
+   
 
     [Header("Particles")] 
     [SerializeField] float SizeMult = 1.0f;
@@ -35,15 +36,16 @@ public class CameraControllerInSpace : MonoBehaviour
     private float zoom;
     private Vector3 startPos, currentPos;
     public static CameraControllerInSpace instance;
-    private Vector3 TargetObjectRotation;
+    public Vector3 TargetObjectRotation;
     private Transform TargetObjectTransform;
-    private Transform Pivot;
+    public Transform Pivot;
 
     private Vector3 targetPositionOverUnit;
     private Vector3 StartPositionOverUnit;
     private Quaternion targetRotationOverUnit;
     private Quaternion StartRotationOverUnit;
 
+    public int animation = 0;
     private Transform _flyToUnit;
     public  Transform FlyToUnit
     {
@@ -103,6 +105,7 @@ public class CameraControllerInSpace : MonoBehaviour
 
     private void Awake()
     {
+        
         if (instance == null)
         {
             instance = this;
@@ -125,12 +128,15 @@ public class CameraControllerInSpace : MonoBehaviour
         TargetObjectTransform = new GameObject().transform;
         TargetObjectTransform.name = "TargetLockedObjectForCamera";
         TargetObjectTransform.SetParent(FindObjectOfType<UnitEarth>().transform);
-
+      
 
     }
     void Update()
     {
-
+        if (animation == 0) 
+        {  
+            return;
+        }
         TurnCameraRotate();
 
 

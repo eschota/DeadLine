@@ -85,6 +85,8 @@
     <Compile Include="Assets\Earth Planet\Scripts\SpeedManager.cs" />
     <Compile Include="Assets\Earth Planet\Scripts\MagneticFieldEffect.cs" />
     <Compile Include="Assets\Earth Planet\Scripts\CityManagerEditorButtons.cs" />
+    <Compile Include="Assets\SingapureAnimation.cs" />
+    <Compile Include="Assets\CityPos.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
