@@ -9,7 +9,7 @@ Shader "Custom/ParticleSpriteSheetUnlitTransparent"
         Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
         LOD 100
 
-        Blend SrcAlpha OneMinusSrcAlpha
+        Blend SrcAlpha One // Additive blending mode
         ZWrite Off
         Cull Off
         Fog { Mode Off }
@@ -52,7 +52,7 @@ Shader "Custom/ParticleSpriteSheetUnlitTransparent"
 
                 o.uv.x = v.uv.x * frameWidth + frameIndex * frameWidth;
                 o.uv.y = v.uv.y;
-
+                v.color.a=1;
                 o.color = v.color;
                 return o;
             }
