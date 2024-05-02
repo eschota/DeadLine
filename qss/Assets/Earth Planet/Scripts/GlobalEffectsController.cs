@@ -85,13 +85,13 @@ public class GlobalEffectsController : MonoBehaviour
 
     void Generate()
     {
-        for (int i = 0; i < links.Count; i++)
+        for (int i = 0; i < links.Count; ++i)
         {
             Destroy(links[i].gameObject);
         }
         links.Clear();
 
-        for (int i = 0; i < CityArrayToTravelManually.Count; i++)
+        for (int i = 0; i < CityArrayToTravelManually.Count; ++i)
         {
             MakeNew(CityArrayToTravelManually[i].transform);
         }
@@ -144,7 +144,7 @@ public class GlobalEffectsController : MonoBehaviour
     {
         int rnd=Random.Range(1, ProbabilitySpawnCount);
 
-        for (int i = 0; i < rnd; i++)
+        for (int i = 0; i < rnd; ++i)
        
         if (MaximumConnectionsCount > links.Count)
         {

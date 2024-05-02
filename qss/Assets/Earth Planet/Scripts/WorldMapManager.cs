@@ -325,7 +325,7 @@ public class WorldMapManager : MonoBehaviour
         float max = 1000000;
 
         int result = -1;
-        for (int i = 0; i < ClimatZonesColors.Count; i++)
+        for (int i = 0; i < ClimatZonesColors.Count; ++i)
         {
             float temp = Vector3.Distance(new Vector3(col.r, col.g, col.b), new Vector3(ClimatZonesColors[i].r, ClimatZonesColors[i].g, ClimatZonesColors[i].b));
             if (max > temp)
@@ -341,7 +341,7 @@ public class WorldMapManager : MonoBehaviour
         float max = 1000000;
 
         int result = -1;
-        for (int i = 0; i < ReligionColors.Count; i++)
+        for (int i = 0; i < ReligionColors.Count; ++i)
         {
             float temp = Vector3.Distance(new Vector3(col.r, col.g, col.b), new Vector3(ReligionColors[i].r, ReligionColors[i].g, ReligionColors[i].b));
             if (max > temp)
@@ -372,7 +372,7 @@ public class WorldMapManager : MonoBehaviour
         float max = 0;
         float min = 1000000000;
         Country country=null;
-        for (int i = 0; i < countries.Count; i++)
+        for (int i = 0; i < countries.Count; ++i)
         {
             if (max < countries[i].Wealth)
             {
@@ -384,7 +384,7 @@ public class WorldMapManager : MonoBehaviour
 
         Debug.Log("Max Wealth is = " + max + " " + country.Name);
         max = 100;
-        for (int i = 0; i < countries.Count; i++)
+        for (int i = 0; i < countries.Count; ++i)
         {
             countries[i].WealthColor = Color.Lerp(WealthColors[1], WealthColors[0], countries[i].Wealth / max);
         }

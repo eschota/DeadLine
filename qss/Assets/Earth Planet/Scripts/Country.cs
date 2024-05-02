@@ -44,7 +44,7 @@ public class Country : MonoBehaviour
 
    
 
-        for (int i = 0; i < meshFilter.sharedMesh.vertices.Length; i++)
+        for (int i = 0; i < meshFilter.sharedMesh.vertices.Length; ++i)
             colors[i] = new Color(ColorCountry.r,ColorCountry.g,ColorCountry.b,WealthColor.r);
  
         meshFilter.sharedMesh.colors = colors;

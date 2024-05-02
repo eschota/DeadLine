@@ -51,7 +51,7 @@ public static class Utils
             string projectSettingsPath = Application.dataPath.Replace("Assets", "") + "ProjectSettings/ProjectSettings.asset";
             string[] lines = File.ReadAllLines(projectSettingsPath);
 
-            for (int i = 0; i < lines.Length; i++)
+            for (int i = 0; i < lines.Length; ++i)
             {
                 if (lines[i].Contains("m_ColorSpace:"))
                 {

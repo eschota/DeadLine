@@ -11,7 +11,7 @@ public class StarlinkEffect : MonoBehaviour
     private void Awake()
     {
 
-        for (int i = 0; i < orbits.Count; i++)
+        for (int i = 0; i < orbits.Count; ++i)
         {
             Instantiate(StarLinkPS, orbits[i].transform);
         }

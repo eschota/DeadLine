@@ -17,7 +17,7 @@ public class WindowLayerInfo : MonoBehaviour
 
         List<Country> countries = WorldMapManager.instance.countries;
         float maxWealth = 0;
-        for (int i = 0; i < countries.Count; i++)
+        for (int i = 0; i < countries.Count; ++i)
         {
             Country country = countries[i];
             if (country.Wealth > maxWealth) maxWealth = country.Wealth;

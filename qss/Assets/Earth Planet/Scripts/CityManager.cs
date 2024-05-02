@@ -46,7 +46,7 @@ public class CityManager : MonoBehaviour
     void CalculateCityDistance()
     {
 
-        for (int i = 0; i < Citys.Count; i++)
+        for (int i = 0; i < Citys.Count; ++i)
         {
             Citys[i].distanceToCam = Vector3.Distance(Citys[i].transform.position, TargetDistanceTransform.position);
         }
@@ -54,7 +54,7 @@ public class CityManager : MonoBehaviour
         List<City> CurrentTopCity = new List<City>();
 
         CurrentTopCity.Clear();
-        for (int i = 0; i < Citys.Count; i++)
+        for (int i = 0; i < Citys.Count; ++i)
             if (CurrentTopCity.Count < settings.CityLabelsMax)
 
                 if (!Citys[i].ToHide)
@@ -65,7 +65,7 @@ public class CityManager : MonoBehaviour
 
 
         List<CityLabel> ToRemove = new List<CityLabel>();
-        for (int i = 0; i < Labels.Count; i++)
+        for (int i = 0; i < Labels.Count; ++i)
         {
             if (!CurrentTopCity.Contains(Labels[i].city))
             {
@@ -74,11 +74,11 @@ public class CityManager : MonoBehaviour
                 ToRemove.Add(Labels[i]);
             }
         }
-        for (int i = 0; i < ToRemove.Count; i++)
+        for (int i = 0; i < ToRemove.Count; ++i)
         {
             Labels.Remove(ToRemove[i]);
         }
-        for (int i = Labels.Count; i < CurrentTopCity.Count; i++)
+        for (int i = Labels.Count; i < CurrentTopCity.Count; ++i)
             if (i < settings.CityLabelsMax)
             {
                 Labels.Add(Instantiate(cityLabel));
@@ -90,7 +90,7 @@ public class CityManager : MonoBehaviour
                 Labels.Last().HideTimer = 0;
                 Labels.Last().transform.SetParent(CanvasCityLabelsRoot);
             }
-        for (int i = 0; i < Labels.Count; i++)
+        for (int i = 0; i < Labels.Count; ++i)
         {
             Labels[i].DistanceFadeMult = Mathf.Clamp((Labels[i].city.distanceToCam - CurrentTopCity.First().distanceToCam) / (0.001f + (CurrentTopCity.Last().distanceToCam - CurrentTopCity.First().distanceToCam)), 0.01f, 1);
         }

@@ -70,7 +70,7 @@ public class CameraControllerInSpace : MonoBehaviour
 
         int particleCount = _particleSystem.GetParticles(_particles);
 
-        for (int i = 0; i < particleCount; i++)
+        for (int i = 0; i < particleCount; ++i)
         {
             float newSize = _particlesSheetCurve.Evaluate(Mathf.Abs((_particles[i].position - Camera.main.transform.position).magnitude) / 51);
 

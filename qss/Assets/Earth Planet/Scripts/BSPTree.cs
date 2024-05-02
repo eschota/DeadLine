@@ -46,9 +46,9 @@ public class BSPTree : MonoBehaviour
 
             Gizmos.color = new Color(0, 1, 0, 0.3f);
 
-            for (int i = 0; i < count; i++)
-                for (int j = 0; j < count; j++)
-                    for (int k = 0; k < count; k++)
+            for (int i = 0; i < count; ++i)
+                for (int j = 0; j < count; ++j)
+                    for (int k = 0; k < count; ++k)
                     {
 
                         Gizmos.DrawCube((transform.position) + transform.right * Size.x * i + transform.up * Size.y * j + transform.forward * Size.z * k, Size);
@@ -61,7 +61,7 @@ public class BSPTree : MonoBehaviour
 
             Gizmos.color = new Color(0, 1, 0, 0.3f);
 
-            for (int i = 0; i < Segments.Count; i++)
+            for (int i = 0; i < Segments.Count; ++i)
             {
                 if (!Segments[i].gameObject.activeSelf) continue;
                 Gizmos.DrawWireCube(Segments[i].transform.position, Segments[i].transform.lossyScale);
@@ -91,9 +91,9 @@ public class BSPTree : MonoBehaviour
 
 
         int sum = 0;
-        for (int i = 0; i < count; i++)
-            for (int j = 0; j < count; j++)
-                for (int k = 0; k < count; k++)
+        for (int i = 0; i < count; ++i)
+            for (int j = 0; j < count; ++j)
+                for (int k = 0; k < count; ++k)
                 {
 
                     Vector3 bbox = (transform.position) + transform.right * Size.x * i + transform.up * Size.y * j + transform.forward * Size.z * k;
@@ -102,7 +102,7 @@ public class BSPTree : MonoBehaviour
                     segment.transform.SetParent(transform);
                     segment.transform.position = bbox;
 
-                    for (int z = 0; z < TargetObjects.Count; z++)
+                    for (int z = 0; z < TargetObjects.Count; ++z)
                     {
 
                         //float xx = Mathf.Abs(-TargetObjects[z].transform.position.x + bbox.x );

@@ -19,7 +19,7 @@ public class SpeedManager : MonoBehaviour
         set
         {
             if (LastSpeed != value && value != Speed.Stop) LastSpeed= value;
-            for (int i = 0; i < transform.childCount; i++)
+            for (int i = 0; i < transform.childCount; ++i)
             {
                 if ((int)value == i) transform.GetChild(i).localScale = Vector3.one;
                 else transform.GetChild(i).localScale = ScaleDown;
@@ -49,7 +49,7 @@ public class SpeedManager : MonoBehaviour
     private void Start()
     {
         instance = this;
-        for (int i = 1; i < transform.childCount; i++)
+        for (int i = 1; i < transform.childCount; ++i)
         {
             transform.GetChild(i).localScale = ScaleDown;
         }
