@@ -57,6 +57,8 @@ public class CameraControllerInSpace : MonoBehaviour
             _flyToUnit= value;
         }
     }
+
+    [System.Obsolete]
     private void LateUpdate()
     {
         int maxParticles = _particleSystem.main.maxParticles;
@@ -67,15 +69,12 @@ public class CameraControllerInSpace : MonoBehaviour
         }
 
         int particleCount = _particleSystem.GetParticles(_particles);
-        var sheet = _particleSystem.textureSheetAnimation;
-        var size = 0f;
 
         for (int i = 0; i < particleCount; i++)
         {
-
             float newSize = _particlesSheetCurve.Evaluate(Mathf.Abs((_particles[i].position - Camera.main.transform.position).magnitude) / 51);
+
             _particles[i].startColor = new UnityEngine.Color(_particles[i].color.r, _particles[i].color.g, _particles[i].color.b, Mathf.Floor(64.0f * newSize) / 64.0f);
-            
             _particles[i].size = SizeMult * CalculateSize(_particles[i].position);
         }
 
@@ -84,7 +83,7 @@ public class CameraControllerInSpace : MonoBehaviour
 
     private float CalculateSize(Vector3 position)
     {
-       float size = _particlesSizeCurve.Evaluate(Mathf.Abs((position - Camera.main.transform.position).magnitude) / 51);
+        float size = _particlesSizeCurve.Evaluate(Mathf.Abs((position - Camera.main.transform.position).magnitude) / 51);
         return (position.magnitude * 2) * size;
     }
 
@@ -160,7 +159,6 @@ public class CameraControllerInSpace : MonoBehaviour
         NearEarth();
     }
 
-    [System.Obsolete]
    
 
     private void FlyBack()
