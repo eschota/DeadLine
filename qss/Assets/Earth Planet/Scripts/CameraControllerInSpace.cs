@@ -142,10 +142,12 @@ public class CameraControllerInSpace : MonoBehaviour
 
         for (int i = 0; i < particleCount; i++)
         {
-            _particles[i].size = CalculateSize(_particles[i].position, out size);
+
+            float newSize = CalculateSize(_particles[i].position, out size);
+            _particles[i].color = new UnityEngine.Color(_particles[i].color.r, _particles[i].color.g, _particles[i].color.b, Mathf.Floor(63.9f * newSize) / 64.0f);
+            // _particles[i].size = SizeMult * _particles[i].size;
         }
 
-        sheet.frameOverTime = size;
         _particleSystem.SetParticles(_particles, particleCount);
     }
 
