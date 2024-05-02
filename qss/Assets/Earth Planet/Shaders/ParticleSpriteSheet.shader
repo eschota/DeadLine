@@ -47,7 +47,7 @@ Shader "Custom/ParticleSpriteSheetUnlitTransparent"
                 o.vertex = UnityObjectToClipPos(v.vertex);
 
                 // Calculate UV offsets
-                float frameIndex = v.color.a * 64; // Assume frame index is passed in the alpha channel and normalized [0, 1]
+                int frameIndex = v.color.a * 64; // Assume frame index is passed in the alpha channel and normalized [0, 1]
                 float frameWidth = 1.0 / NUM_FRAMES;
 
                 o.uv.x = v.uv.x * frameWidth + frameIndex * frameWidth;
