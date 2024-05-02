@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static SpeedManager;
 using static UnityEngine.ParticleSystem;
 
 [RequireComponent (typeof (Camera))]
 public class CameraControllerInSpace : MonoBehaviour
 {
+
     [Header("Particles")]
+    [SerializeField] float SizeMult = 1.0f;
     [SerializeField] public AnimationCurve _particlesSizeCurve;
+    [SerializeField] public AnimationCurve _particlesSheetCurve;
     [SerializeField] private ParticleSystem _particleSystem;
     private Particle[] _particles;
 
@@ -52,6 +56,35 @@ public class CameraControllerInSpace : MonoBehaviour
             FlyToTimer = 0;
             _flyToUnit= value;
         }
+    }
+    private void LateUpdate()
+    {
+        int maxParticles = _particleSystem.main.maxParticles;
+
+        if (_particles == null || _particles.Length < maxParticles)
+        {
+            _particles = new Particle[maxParticles];
+        }
+
+        int particleCount = _particleSystem.GetParticles(_particles);
+        var sheet = _particleSystem.textureSheetAnimation;
+        var size = 0f;
+
+        for (int i = 0; i < particleCount; i++)
+        {
+
+            float newSize = _particlesSheetCurve.Evaluate(Mathf.Abs((_particles[i].position - Camera.main.transform.position).magnitude) / 51);
+            _particles[i].color = new UnityEngine.Color(_particles[i].color.r, _particles[i].color.g, _particles[i].color.b, Mathf.Floor(63.9f * newSize) / 64.0f);
+            _particles[i].size = SizeMult * CalculateSize(_particles[i].position);
+        }
+
+        _particleSystem.SetParticles(_particles, particleCount);
+    }
+
+    private float CalculateSize(Vector3 position)
+    {
+       float size = _particlesSizeCurve.Evaluate(Mathf.Abs((position - Camera.main.transform.position).magnitude) / 51);
+        return (position.magnitude * 2) * size;
     }
 
     public void SetTargets(Transform thisValue)
@@ -127,35 +160,7 @@ public class CameraControllerInSpace : MonoBehaviour
     }
 
     [System.Obsolete]
-    private void LateUpdate()
-    {
-        int maxParticles = _particleSystem.main.maxParticles;
-
-        if (_particles == null || _particles.Length < maxParticles)
-        {
-            _particles = new Particle[maxParticles];
-        }
-
-        int particleCount = _particleSystem.GetParticles(_particles);
-        var sheet = _particleSystem.textureSheetAnimation;
-        var size = 0f;
-
-        for (int i = 0; i < particleCount; i++)
-        {
-
-            float newSize = CalculateSize(_particles[i].position, out size);
-            _particles[i].color = new UnityEngine.Color(_particles[i].color.r, _particles[i].color.g, _particles[i].color.b, Mathf.Floor(63.9f * newSize) / 64.0f);
-            // _particles[i].size = SizeMult * _particles[i].size;
-        }
-
-        _particleSystem.SetParticles(_particles, particleCount);
-    }
-
-    private float CalculateSize(Vector3 position, out float size)
-    {
-        size = _particlesSizeCurve.Evaluate(Mathf.Abs((position - Camera.main.transform.position).magnitude) / 51);
-        return (position.magnitude * 2) * size;
-    }
+   
 
     private void FlyBack()
     {
