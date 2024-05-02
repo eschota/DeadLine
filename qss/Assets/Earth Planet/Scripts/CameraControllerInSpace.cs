@@ -11,7 +11,7 @@ using static UnityEngine.ParticleSystem;
 public class CameraControllerInSpace : MonoBehaviour
 {
 
-    [Header("Particles")]
+    [Header("Particles")] 
     [SerializeField] float SizeMult = 1.0f;
     [SerializeField] public AnimationCurve _particlesSizeCurve;
     [SerializeField] public AnimationCurve _particlesSheetCurve;
@@ -74,7 +74,7 @@ public class CameraControllerInSpace : MonoBehaviour
         {
 
             float newSize = _particlesSheetCurve.Evaluate(Mathf.Abs((_particles[i].position - Camera.main.transform.position).magnitude) / 51);
-            _particles[i].color = new UnityEngine.Color(_particles[i].color.r, _particles[i].color.g, _particles[i].color.b, Mathf.Floor(63.9f * newSize) / 64.0f);
+            _particles[i].color = new UnityEngine.Color(_particles[i].color.r, _particles[i].color.g, _particles[i].color.b, Mathf.Floor(64.0f * newSize) / 64.0f);
             _particles[i].size = SizeMult * CalculateSize(_particles[i].position);
         }
 
