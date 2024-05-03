@@ -25,6 +25,7 @@ Logs/
 OCSaves/
 _gsdata_
 *.br
+NoDeadLineParser\bin\Debug\net8.0\wwwroot\QSPresentation\Build\
 # erroneous meta files 
 library.meta
 temp.meta
