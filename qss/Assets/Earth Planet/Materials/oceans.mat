@@ -130,9 +130,9 @@ Material:
     - _round_mask_borders_out: 0
     - _round_mask_in: 1
     - _round_mask_out: 0
-    - _roundmask_borders_in: 1
-    - _roundmask_borders_out: 1
-    - _roundmask_in: 1
+    - _roundmask_borders_in: 0.001
+    - _roundmask_borders_out: 0
+    - _roundmask_in: 0.001
     - _roundmask_out: 0
     - _use_borders_mask_tex_instead_of_vc: 1
     - _use_texture_instead_of_vc: 1
