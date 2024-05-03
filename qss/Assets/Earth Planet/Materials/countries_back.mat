@@ -97,6 +97,8 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _Float: 0
+    - _Float1: 0
+    - _Float2: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -113,7 +115,7 @@ Material:
     - _borders_alpha: 1
     - _borders_alpha_mult: 1
     - _borders_clamp_hi: 0.9
-    - _borders_clamp_low: 0.3
+    - _borders_clamp_low: 0.45
     - _borders_mask_clamp_hi: 0.533
     - _borders_mask_clamp_low: 0.512
     - _borders_mask_mult: 1
@@ -124,6 +126,7 @@ Material:
     - _global_fade: 1
     - _mask1: 0
     - _mask2: 1
+    - _mesh_density: 50
     - _round_mask_borders_in: 0.001
     - _round_mask_borders_out: 0
     - _round_mask_in: 1
@@ -143,4 +146,5 @@ Material:
     - _borders_color_tint: {r: 0.72961265, g: 0.56700003, b: 1, a: 0}
     - _fresnel1_color: {r: 0, g: 0, b: 0, a: 0}
     - _fresnel2_color: {r: 0.7764706, g: 0.7294118, b: 1, a: 1}
+    - _mesh_color: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
