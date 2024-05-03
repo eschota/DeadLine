@@ -96,6 +96,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _Float: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -120,6 +121,17 @@ Material:
     - _fresnel_alpha_mult: 1
     - _fresnel_mult: 0.3
     - _fresnel_power: 2.5
+    - _global_fade: 1
+    - _mask1: 0
+    - _mask2: 1
+    - _round_mask_borders_in: 0.001
+    - _round_mask_borders_out: 0
+    - _round_mask_in: 1
+    - _round_mask_out: 0
+    - _roundmask_borders_in: 0.001
+    - _roundmask_borders_out: 0
+    - _roundmask_in: 0.001
+    - _roundmask_out: 0
     - _use_borders_mask_tex_instead_of_vc: 1
     - _use_texture_instead_of_vc: 1
     - _vc_clamp_hi: 0.63
@@ -130,5 +142,5 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _borders_color_tint: {r: 0.72961265, g: 0.56700003, b: 1, a: 0}
     - _fresnel1_color: {r: 0, g: 0, b: 0, a: 0}
-    - _fresnel2_color: {r: 0.54901963, g: 0.4627451, b: 1, a: 1}
+    - _fresnel2_color: {r: 0.7764706, g: 0.7294118, b: 1, a: 1}
   m_BuildTextureStacks: []
