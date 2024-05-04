@@ -143,11 +143,14 @@ Material:
     - _vc_clamp_hi: 0.63
     - _vc_clamp_low: 0.537
     - _vertex_colors_mult: 0.87
+    - _wave_scale: 30
+    - _wave_speed: 0.04
+    - _wave_visibility: 0.15
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _borders_color_tint: {r: 0.72961265, g: 0.56700003, b: 1, a: 0}
     - _fresnel1_color: {r: 0.04180646, g: 0.023225801, b: 0.144, a: 0}
     - _fresnel2_color: {r: 0.46060786, g: 0.4142745, b: 0.695, a: 1}
-    - _mesh_color: {r: 0.059591416, g: 0.039435484, b: 0.16299999, a: 0}
+    - _mesh_color: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

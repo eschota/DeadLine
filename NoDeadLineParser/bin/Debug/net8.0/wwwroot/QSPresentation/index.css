@@ -30,21 +30,22 @@ body, html {
 .section::before {
     pointer-events: none;
     top: 0;
+    z-index: 1000;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
 }
 
 .section::after {
     pointer-events: none;
     bottom: 0;
+    z-index: 1000;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
 }
   
   #page1 {
     background-color: #161616;
     background-image: url('bg1.jpg'); /* Путь к изображению для первой страницы */
-    background-repeat: repeat-x;
-    background-position: center; /* Центрирование изображения */
-    background-size: cover;
+    background-repeat: no-repeat; 
+    background-position:  center 50%; 
   }
   
   #page2 {

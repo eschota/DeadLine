@@ -143,6 +143,9 @@ Material:
     - _vc_clamp_hi: 0.63
     - _vc_clamp_low: 0.537
     - _vertex_colors_mult: 0.87
+    - _wave_scale: 20
+    - _wave_speed: 0.1
+    - _wave_visibility: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
