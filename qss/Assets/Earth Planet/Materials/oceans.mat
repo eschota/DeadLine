@@ -112,6 +112,7 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     - _alpha: 1
+    - _back_mult: 0.02
     - _borders_alpha: 1
     - _borders_alpha_mult: 1
     - _borders_clamp_hi: 1
