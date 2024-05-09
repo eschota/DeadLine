@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Scrolling Presentation Site</title>
+
+
 <link rel="stylesheet" href="index.css">
 <link rel="stylesheet" href="invest.css">
 <link rel="stylesheet" href="unitystyle.css">
@@ -11,16 +13,18 @@
 <link rel="stylesheet" href="roadmap_style.css">
 <link rel="stylesheet" href="Team.css">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"> 
 
-<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js'></script>
-<script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
-
-
+<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js'></script> 
+ 
 </head>
 
 <body>
-    
+    <div id="spinner"></div>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+    <script src="spinner.js"></script>
+
+
     <div class="section active" id="page1">
         <div class="container">
             
@@ -38,26 +42,26 @@
 
 
 
-                <div id="unity-container" class="unity-desktop">
-                  <canvas id="unity-canvas" width="1280" height="720" style="width: 1280px; height: 720px; cursor: default;"></canvas>
+                <div class="unity-desktop">
+                  <canvas id="unity-canvas" width="1280" height="1280" style="width: 1280px; height: 1280px; cursor: default;"></canvas>
                   <div id="unity-loading-bar" style="display: none;">
                     <div id="unity-logo"></div>
                     <div id="unity-progress-bar-empty">
                       <div id="unity-progress-bar-full" style="width: 100%;"></div>
                     </div>
                   </div>
-                  <div id="unity-warning"> </div>
+                  <div id="unity-warning"></div>
                   <div id="unity-footer">
                     <div id="unity-webgl-logo"></div>
                     <div id="unity-fullscreen-button"></div>
-                    <div id="unity-build-title">QSP</div>
+                    <div id="unity-build-title"></div>
                   </div>
                 </div>
                
 
           
           <div class="bot-container">
-            <div class="text-column">
+            <div class="text-column" id="textBlock" >
                 <div class="text-item">ПЕРВЫЙ</div>
                 <div class="text-item">РАСПРЕДЕЛЕННЫЙ</div>
                 <div class="text-item last">МИКРОСТОК
@@ -72,7 +76,7 @@
             
            </div>
 
-           <div class="ScrollDown"><span>Прокрутите вниз</span><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAQlBMVEUAAAD///////////////////////////////////////////////////////////////////////////////////8IX9KGAAAAFXRSTlMAkd/PIJ4/DjgEgCUwCfPw79vKfz5AbFefAAAAjUlEQVQoz6WRWQoEIQwFY6K29jJ73f+qg9C4gNAMUx+JpDAfL3JJdAoWvIwsjhN3DHPjsaYsewBbOuHQc4dXXJt78PV9I1YRCKWplbp2X4y9NCg1olVA1zLMhfwgnjYRjX9FngsltXnCugxXGfM5idy3PtBZ7JvixkMRkuTPG17Sc7TTLjKyBQN1Ua74AoGzCOwtfedNAAAAAElFTkSuQmCC"></div>
+           <div class="ScrollDown" id="scrollBlock"><span>Прокрутите вниз</span><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAQlBMVEUAAAD///////////////////////////////////////////////////////////////////////////////////8IX9KGAAAAFXRSTlMAkd/PIJ4/DjgEgCUwCfPw79vKfz5AbFefAAAAjUlEQVQoz6WRWQoEIQwFY6K29jJ73f+qg9C4gNAMUx+JpDAfL3JJdAoWvIwsjhN3DHPjsaYsewBbOuHQc4dXXJt78PV9I1YRCKWplbp2X4y9NCg1olVA1zLMhfwgnjYRjX9FngsltXnCugxXGfM5idy3PtBZ7JvixkMRkuTPG17Sc7TTLjKyBQN1Ua74AoGzCOwtfedNAAAAAElFTkSuQmCC"></div>
         
         </div>
        
@@ -355,6 +359,7 @@
 <script src ='invest.js'></script>
 <script src ='team.js'></script>
 <script src='roadmap_script.js'></script>
+<script src='SendMessageToUnityFromConsole.js'></script>
  <script>
  document.querySelectorAll('.element').forEach(element => {
   const tooltipText = element.getAttribute('data-tooltip');

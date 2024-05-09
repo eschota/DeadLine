@@ -1,8 +1,8 @@
 function animateBlocks(direction) {
     const blocks = document.querySelectorAll('.animated-block');
     blocks.forEach(block => {
-        console.log(direction);
-        console.log("direction");
+        console.log("direction"+direction);
+        
         block.style.transition = 'none'; // Отключаем анимацию для мгновенного перемещения
         block.style.transform = `translateY(${direction * 200}%)`; // Мгновенное начальное положение
 

@@ -39,14 +39,19 @@ body, html {
     bottom: 0;
     z-index: 1000;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-}
+} 
   
-  #page1 {
-    background-color: #161616;
-    background-image: url('bg1.jpg'); /* Путь к изображению для первой страницы */
-    background-repeat: no-repeat; 
-    background-position:  center 50%; 
-  }
+ #page1 {
+     background-color: #161616;
+    background-image: url('bg1.jpg'); /* Убедитесь, что путь к изображению правильный */
+    background-repeat: repeat; /* Предотвращает повторение изображения */
+    background-position: left bottom;
+    background-position-x: 50%;
+    background-position-y: 50%;      
+    background-size: 2048px 1024px; /* Фиксированный размер изображения */
+    background-repeat: repeat-x;
+  
+}
   
   #page2 {
     background-color: #32353b;
@@ -115,7 +120,15 @@ body, html {
 .vignette-left {
     left: 25px;
 }
-
+#textBlock {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 2.5s, visibility 2.5s;
+}#scrollBlock {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 2.5s, visibility 2.5s;
+}
 .vignette-right {
     right: 25px;
     transform: scaleX(-1); /* Зеркальное отображение вигнетты */
@@ -183,7 +196,7 @@ body, html {
    
     text-decoration: none;
     color: #d2d2d2; /* Темно-серый цвет текста */
-    padding: 8px;
+    padding: 0px;
     display: inline-block;
     font-size: 16px;
     transition: color 0.3s; /* Плавное изменение цвета */

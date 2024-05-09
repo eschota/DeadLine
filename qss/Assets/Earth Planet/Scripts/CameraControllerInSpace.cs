@@ -153,7 +153,7 @@ public class CameraControllerInSpace : MonoBehaviour
         }
         
         
-        Zoom();
+       // Zoom();
 
         if (isrotate == true)
         {
@@ -220,13 +220,13 @@ public class CameraControllerInSpace : MonoBehaviour
     {
         
         
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(0))
             {
                 locked = false;
                 startPos = Input.mousePosition;
                 currentPos = Pivot.rotation.eulerAngles;
             } else
-        if (Input.GetMouseButton(1))
+        if (Input.GetMouseButton(0))
             {
                 Vector3 temp = ((Input.mousePosition - startPos) / Screen.width) * 100;
 

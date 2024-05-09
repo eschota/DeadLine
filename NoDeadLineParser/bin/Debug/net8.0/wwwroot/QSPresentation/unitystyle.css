@@ -1,15 +1,24 @@
 body { padding: 0; margin: 0 }
 #unity-container { position: absolute }
-#unity-container.unity-desktop { left: 50%; top: 50%; transform: translate(-50%, -50%) }
-#unity-container.unity-mobile { width: 100%; height: 100% }
+#unity-container.unity-desktop { left: 50%; top: 50%; transform: translate(-50%, -50%); }
+#unity-container.unity-mobile {
+    position: absolute; /* Убедитесь, что позиционирование установлено как абсолютное */
+    left: 50%; /* Смещение от левого края до середины экрана */
+    top: 50%; /* Смещение от верхнего края до середины экрана */
+    width: 100%; /* Ширина элемента как 50% от ширины экрана */
+    height: 100%; /* Высота элемента как 50% от высоты экрана */
+    transform: translate(-75%, -40%); /* Смещение обратно на половину ширины и высоты элемента */
+}
+ 
+
 #unity-canvas {
     background: #231F20;
     opacity: 0; 
-    transition: opacity 2s;  
-    transition-delay: 2s;  /* Добавление задержки в 2 секунды */
+    transition: opacity 3s;  
+    transition-delay: 3.5s;  /* Добавление задержки в 2 секунды */
 }
-.unity-mobile #unity-canvas { width: 100%; height: 100% }
+.unity-mobile #unity-canvas { width: 30%; height: 30% }
 #unity-loading-bar { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: none }
-
+/*#unity-fullscreen-button { float: right; width: 38px; height: 38px; background: url('fullscreen-button.png') no-repeat center }*/
 #unity-build-title { float: right; margin-right: 10px; line-height: 38px; font-family: arial; font-size: 18px }
 #unity-warning { position: absolute; left: 50%; top: 5%; transform: translate(-50%); background: white; padding: 10px; display: none }
