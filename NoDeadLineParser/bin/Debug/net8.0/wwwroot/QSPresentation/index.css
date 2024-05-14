@@ -7,7 +7,29 @@ body, html {
       color: white;
      
 }
-
+.state_1{
+transition: opacity 0.33s ease-in-out; /* Плавное изменение opacity за 0.8 секунд */
+}
+.state_2{
+    position: absolute;
+    opacity: 0;
+transition: opacity 0.8s ease-in-out; /* Плавное изменение opacity за 0.8 секунд */
+}
+.state_3{
+    position: absolute;    
+    opacity: 0;
+transition: opacity 0.8s ease-in-out; /* Плавное изменение opacity за 0.8 секунд */
+}
+.state_4{
+    position: absolute;    
+    opacity: 0;
+transition: opacity 0.8s ease-in-out; /* Плавное изменение opacity за 0.8 секунд */
+}
+.state_5{
+    position: absolute;    
+    opacity: 0;
+transition: opacity 0.8s ease-in-out; /* Плавное изменение opacity за 0.8 секунд */
+}
 .section {
     min-height: 100vh; /* Минимальная высота вместо фиксированной, чтобы разрешить контенту быть больше, если нужно */
     width: 100%;
@@ -54,36 +76,47 @@ body, html {
 }
   
   #page2 {
-    background-color: #32353b;
-    background-image: url('bg2.jpg'); /* Путь к изображению для первой страницы */
+    background-color: #161616;
+    background-image: url('bg1.jpg'); /* Убедитесь, что путь к изображению правильный */
+    background-repeat: repeat; /* Предотвращает повторение изображения */
+    background-position: left bottom;
+    background-position-x: 50%;
+    background-position-y: 50%;      
+    background-size: 2048px 1024px; /* Фиксированный размер изображения */
     background-repeat: repeat-x;
-    background-position: center; /* Центрирование изображения */
-    background-size: cover;
   }
   
   #page3 {
     background-color: #161616;
-    background-image: url('bg1.jpg'); /* Путь к изображению для первой страницы */
+    background-image: url('bg1.jpg'); /* Убедитесь, что путь к изображению правильный */
+    background-repeat: repeat; /* Предотвращает повторение изображения */
+    background-position: left bottom;
+    background-position-x: 50%;
+    background-position-y: 50%;      
+    background-size: 2048px 1024px; /* Фиксированный размер изображения */
     background-repeat: repeat-x;
-    background-position: center; /* Центрирование изображения */
-    background-size: cover;
   }
   
   #page4 {
     background-color: #161616;
-    background-image: url('bg3.jpg'); /* Путь к изображению для первой страницы */
+    background-image: url('bg1.jpg'); /* Убедитесь, что путь к изображению правильный */
+    background-repeat: repeat; /* Предотвращает повторение изображения */
+    background-position: left bottom;
+    background-position-x: 50%;
+    background-position-y: 50%;      
+    background-size: 2048px 1024px; /* Фиксированный размер изображения */
     background-repeat: repeat-x;
-    background-position: center; /* Центрирование изображения */
-    background-size: cover;
   }
   
   #page5 {
-      background-color: #161616;
-    background-image: url('bg1.jpg'); /* Путь к изображению для первой страницы */
+    background-color: #161616;
+    background-image: url('bg1.jpg'); /* Убедитесь, что путь к изображению правильный */
+    background-repeat: repeat; /* Предотвращает повторение изображения */
+    background-position: left bottom;
+    background-position-x: 50%;
+    background-position-y: 50%;      
+    background-size: 2048px 1024px; /* Фиксированный размер изображения */
     background-repeat: repeat-x;
-    background-position: center; /* Центрирование изображения */
-    background-size: cover;
-    background-color: #130f16;
   }
   .container {
     opacity: 0; 
@@ -257,16 +290,16 @@ p {
     font-size: 16px; /* Размер шрифта */
     text-align: center; /* Центрирование текста */
 }
-#page2 .page2-container span {
+.page2-container span {
     display:inline; /* Блочный элемент, чтобы занимать всю ширину и быть на отдельной строке */
     color: rgb(227 63 123); /* Цвет первой строки, синий */
-    font-size: 18px; /* Размер шрифта первой строки */
+    font-size: 24px; /* Размер шрифта первой строки */
     font-weight: bold; /* Жирное начертание */
     margin: 0 5px;
 } 
 
-#page2 .page2-container {
-    width: 80%;
+.page2-container {
+    width: 100%;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -274,19 +307,20 @@ p {
     max-width: 960px; /* или другое значение, подходящее для вашего дизайна */
 }
 
-#page2 .text-container {
+.text-container {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 15%;
 }
 
 
-#page2 .chart-container {
-    width: 80%;
-    max-height: 500px;            
+.chart-container {
+    transform: translateY(10%);
+    width: 100%;
+    max-height: 800px;            
     height: auto !important;
 }
 
-#page2 #fileCountChart {
+#fileCountChart {
     width: 100% !important;
 }
 #page3 .page3-container {

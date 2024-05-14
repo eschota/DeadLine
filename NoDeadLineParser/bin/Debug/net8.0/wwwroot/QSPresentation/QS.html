@@ -23,24 +23,12 @@
     <div id="spinner"></div>    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
     <script src="spinner.js"></script>
-
+   
 
     <div class="section active" id="page1">
         <div class="container">
             
-                <a href="http://qwertystock.com" target="_blank">
-                <img src="qwerty_logo.svg" alt="Qwerty Logo" class="logo">
-                </a>
-
-
-                <div class="top-right-menu">
-                    <a href="become-an-author.html" target="_blank">Стать Автором</a>
-                    <a href="become-a-co-owner.html" target="_blank">Стать Совладельцем</a>
-                    <a href="current-page.ru.html" target="_blank" class="language-link">To English</a> <!-- Видима на английской версии -->
-
-                </div>
-
-
+                
 
                 <div class="unity-desktop">
                   <canvas id="unity-canvas" width="1280" height="1280" style="width: 1280px; height: 1280px; cursor: default;"></canvas>
@@ -57,6 +45,19 @@
                     <div id="unity-build-title"></div>
                   </div>
                 </div>
+
+       <div class="state_1">
+       <a href="http://qwertystock.com" target="_blank">
+                  <img src="qwerty_logo.svg" alt="Qwerty Logo" class="logo">
+                  </a>
+  
+  
+                  <div class="top-right-menu">
+                      <a href="become-an-author.html" target="_blank">Стать Автором</a>
+                      <a href="become-a-co-owner.html" target="_blank">Стать Совладельцем</a>
+                      <a href="current-page.ru.html" target="_blank" class="language-link">To English</a> <!-- Видима на английской версии -->
+  
+        </div>    
                
 
           
@@ -79,26 +80,196 @@
            <div class="ScrollDown" id="scrollBlock"><span>Прокрутите вниз</span><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAQlBMVEUAAAD///////////////////////////////////////////////////////////////////////////////////8IX9KGAAAAFXRSTlMAkd/PIJ4/DjgEgCUwCfPw79vKfz5AbFefAAAAjUlEQVQoz6WRWQoEIQwFY6K29jJ73f+qg9C4gNAMUx+JpDAfL3JJdAoWvIwsjhN3DHPjsaYsewBbOuHQc4dXXJt78PV9I1YRCKWplbp2X4y9NCg1olVA1zLMhfwgnjYRjX9FngsltXnCugxXGfM5idy3PtBZ7JvixkMRkuTPG17Sc7TTLjKyBQN1Ua74AoGzCOwtfedNAAAAAElFTkSuQmCC"></div>
         
         </div>
-       
-    </div>
-  <div class="section" id="page2">
-    <div class="container page2-container">
-        <div class="text-container">
-            <p>
-                <span class="highlight">QWERTYSTOCK</span> пользуется популярностью еще до старта продаж<br>
-                <span class="highlight">970 000</span> файлов
-                <br><span class="highlight">1570</span> Авторов
-            </p>
+        <div class="state_2">
+        <div class="page2-container">
+          <div class="text-container">
+              <p>
+                  <span class="highlight">QWERTYSTOCK</span> пользуется популярностью еще до старта продаж<br>
+                  <span class="highlight">970 000</span> файлов
+                  <br><span class="highlight">1570</span> Авторов
+              </p>
+              <div class="chart-container">
+                <canvas id="fileCountChart"></canvas>
+            </div>
+          </div>
+          
+      </div>
+      </div>
+        <div class="state_3">
+        <div class="page2-container">
+          <div class="text-container">
+              <p>
+                  <span class="highlight">RoadMap</span> <br>
+                  <span class="highlight"></span> 
+                  <br><span class="highlight"></span>
+              </p>
+              <!-- <div class="chart-container">
+                <canvas id="fileCountChart"></canvas>
+            </div> -->
+          </div>
+          
+      </div>
+      </div>
+       <div class="state_4">  
+        <div class="FadeBGR"></div>
+        <div class="page4-container">
+          <div class="text-container">
+              <p>
+                <div class="team-highlight">КОМАНДА</div>
+              </p>
+              <div class="image-container">
+                  <!-- Добавляем изображения с номерами от 1 до 11 -->
+                  <div class="image-row">
+                    <div class="image-item">     
+                      <img src="\QSPresentation\Team\1.jpg" alt="Чума">
+                      <div class="text-overlay">
+                          <span class="Nick">Plague</span><span class="Job">Designer</span>
+                      </div>
+                      <div class="icons">
+                          
+                       
+                      </div> </div> 
+                 
+                      <div class="image-item">     
+                        <img src="\QSPresentation\Team\2.jpg" alt="Frozenthrone">
+                        <div class="text-overlay">
+                            <span class="Nick">Mozenrath</span><span class="Job">WebDesigner</span>
+                        </div>
+                        <div class="icons">
+                           
+                        </div> </div> 
+                        <div class="image-item">     
+                          <img src="\QSPresentation\Team\3.jpg" alt="Егор">
+                          <div class="text-overlay">
+                              <span class="Nick">Leonidovich</span><span class="Job">DevOps</span>
+                          </div>
+                          <div class="icons">
+                            
+                          </div> </div> 
+                          <div class="image-item">     
+                            <img src="\QSPresentation\Team\4.jpg" alt="Николаж">
+                            <div class="text-overlay">
+                                <span class="Nick">Nick</span><span class="Job">QS Lead</span>
+                            </div>
+                            <div class="icons">
+                            </div> </div> 
+                                 <div class="image-item">     
+                      <img src="\QSPresentation\Team\5.jpg" alt="Andrey">
+                      <div class="text-overlay">
+                          <span class="Nick">Andrey</span><span class="Job">C# Dev</span>
+                      </div>
+                      <div class="icons">
+                          
+                      </div> </div> 
+                 
+                  </div>
+                  <div class="image-row">
+                    <div class="image-item">     
+                      <img src="\QSPresentation\Team\6.jpg" alt="Andrey">
+                      <div class="text-overlay">
+                          <span class="Nick">Alena</span><span class="Job">Support</span>
+                      </div>
+                      <div class="icons">
+                          
+                      </div> </div>  <div class="image-item">     
+                        <img src="\QSPresentation\Team\7.jpg" alt="Slava">
+                        <div class="text-overlay">
+                            <span class="Nick">Alex</span><span class="Job">Dev</span>
+                        </div>
+                        <div class="icons">
+                            
+                        </div> </div>  <div class="image-item">     
+                          <img src="\QSPresentation\Team\8.jpg" alt="Andrey">
+                          <div class="text-overlay">
+                              <span class="Nick">Gibson</span><span class="Job">C# Dev</span>
+                          </div>
+                          <div class="icons">
+                              
+                          </div> </div>  <div class="image-item">     
+                            <img src="\QSPresentation\Team\9.jpg" alt="Denis">
+                            <div class="text-overlay">
+                                <span class="Nick">Denis</span><span class="Job">BackEnd Dev</span>
+                            </div>
+                            <div class="icons">
+                                
+                            </div> </div> 
+                          </div> 
+                  <div class="image-row">
+      
+                    <div class="image-item">     
+                      <img src="\QSPresentation\Team\10.jpg" alt="Kokos">
+                      <div class="text-overlay">
+                          <span class="Nick">NoDeadLine</span><span class="Job">CEO</span>
+                      </div>
+                      <div class="icons">
+                        <a href="https://t.me/YesDeadline" class="telegram-link"><i class="fab fa-telegram-plane"></i></a>
+                        <a href="https://www.instagram.com/kosermolaev/" class="icon-link"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.youtube.com/unlim3d" class="icon-link"><i class="fab fa-youtube"></i></a>
+                      </div> </div>  
+                  <div class="image-item">     
+                        <img src="\QSPresentation\Team\11.jpg" alt="Dementor">
+                        <div class="text-overlay">
+                            <span class="Nick">Netherspite</span><span class="Job">CTO</span>
+                        </div>
+                        <div class="icons">
+                          <a href="https://t.me/Netherspite" class="telegram-link"><i class="fab fa-telegram-plane"></i></a>
+      
+                        </div> </div> 
+                  </div>
+              </div>
+          </div>
+          
+      </div></div>
+        <div class="state_5"> 
+          <div class="invest-container">
+  
+            <div class="invest-highlight">Стать совладельцем QWERTYSTOCK</div>
+         
+          
+            
+              <span class="invest-highlight2">Только для АВТОРОВ</span> Мы даем возможность купить Акции всем участникам проекта М+ и StockSubmitter, зарегистрированным не позднее 1 февраля 2024 года.
+              <br>Наша задача оставить контроль над стоком непосредственно Авторам контента.
+              <span class="invest-highlight2">ВЫГОДНО</span>
+              <br>Все последующие размещения акций будут проходить по цене рынка и существенно выше этого предложения. На следующих этапах вы сможете заработать на продаже акций.
+              <span class="invest-highlight2">БЕЗОПАСНО</span>
+              <br>Все средства будут зачислены на ваш баланс на аккаунт М+/SS и вы сможете ими пользоватья до начала следующей фазы продаж.
+              <br>Все средства оставшиеся на балансе на этот момент будут сконвертированы в акции по условиям этого предложения.
+            
+              <span class="invest-highlight2">ДОХОД</span>
+              <br> Вы будете получать ежемесячные дивиденды от дохода QWERTYSTOCK автоматически.
+              
+              <span class="invest-highlight2">Предложение ограничено</span>
+              <br>На текущий момент осталось доступно 6.73% акций.
+              
+            
+              <span class="invest-highlight2">Выберите сумму инвестиций:</span>
+            <div class="investment-buttons">
+             
+              <button class="investment-option selected" data-amount="100">$100</button>
+              <button class="investment-option" data-amount="500">$500</button>
+              <button class="investment-option" data-amount="1000">$1000</button>
+              <button class="investment-option" data-amount="2000">$2000</button>
+              <button class="investment-option" data-amount="2001">$2000+</button>
+          </div>
+          <button id="buyStocksButton">Перейти к Купить X акций</button>
+          <div id="stockInfo" style="display: none;"></div>
+          <div id="contactInfo" style="display: none;">
+              <p>Пожалуйста, свяжитесь с нами для обсуждения инвестиций свыше $2000 через <a href="https://t.me/YesDeadLine" target="_blank">NoDeadLine</a> или <a href="https://t.me/NetherSpite" target="_blank">NetherSpite</a>.</p>
+          </div>
+          <div>
+          </div>
         </div>
-        <div class="chart-container">
-            <canvas id="fileCountChart"></canvas>
         </div>
+
     </div>
 </div>
+  <div class="section" id="page2">
+    
+</div>
 <div class="section" id="page3">
-  <div class="container page3-container">
+  <!-- <div class="page3-container"> -->
 
-    <div class="RoadMap-textContainer">
+    <!-- <div class="RoadMap-textContainer">
       <p>
           <div class="roadmap-highlight">ROADMAP</div>
         </p> 
@@ -175,156 +346,15 @@
         </div>
         </div> 
       </div>
-    </div>
-</div>
+    </div> -->
+ </div>
 <div class="section" id="page4">
-     <div class="container page4-container">
-    <div class="text-container">
-        <p>
-          <div class="roadmap-highlight">КОМАНДА</div>
-        </p>
-        <div class="image-container">
-            <!-- Добавляем изображения с номерами от 1 до 11 -->
-            <div class="image-row">
-              <div class="image-item">     
-                <img src="\QSPresentation\Team\1.jpg" alt="Чума">
-                <div class="text-overlay">
-                    <span class="Nick">Plague</span><span class="Job">Designer</span>
-                </div>
-                <div class="icons">
-                    
-                 
-                </div> </div> 
-           
-                <div class="image-item">     
-                  <img src="\QSPresentation\Team\2.jpg" alt="Frozenthrone">
-                  <div class="text-overlay">
-                      <span class="Nick">Mozenrath</span><span class="Job">WebDesigner</span>
-                  </div>
-                  <div class="icons">
-                     
-                  </div> </div> 
-                  <div class="image-item">     
-                    <img src="\QSPresentation\Team\3.jpg" alt="Егор">
-                    <div class="text-overlay">
-                        <span class="Nick">Leonidovich</span><span class="Job">DevOps</span>
-                    </div>
-                    <div class="icons">
-                      
-                    </div> </div> 
-                    <div class="image-item">     
-                      <img src="\QSPresentation\Team\4.jpg" alt="Николаж">
-                      <div class="text-overlay">
-                          <span class="Nick">Nick</span><span class="Job">QS Lead</span>
-                      </div>
-                      <div class="icons">
-                      </div> </div> 
-                           <div class="image-item">     
-                <img src="\QSPresentation\Team\5.jpg" alt="Andrey">
-                <div class="text-overlay">
-                    <span class="Nick">Andrey</span><span class="Job">C# Dev</span>
-                </div>
-                <div class="icons">
-                    
-                </div> </div> 
-           
-            </div>
-            <div class="image-row">
-              <div class="image-item">     
-                <img src="\QSPresentation\Team\6.jpg" alt="Andrey">
-                <div class="text-overlay">
-                    <span class="Nick">Alena</span><span class="Job">Support</span>
-                </div>
-                <div class="icons">
-                    
-                </div> </div>  <div class="image-item">     
-                  <img src="\QSPresentation\Team\7.jpg" alt="Slava">
-                  <div class="text-overlay">
-                      <span class="Nick">Alex</span><span class="Job">Dev</span>
-                  </div>
-                  <div class="icons">
-                      
-                  </div> </div>  <div class="image-item">     
-                    <img src="\QSPresentation\Team\8.jpg" alt="Andrey">
-                    <div class="text-overlay">
-                        <span class="Nick">Gibson</span><span class="Job">C# Dev</span>
-                    </div>
-                    <div class="icons">
-                        
-                    </div> </div>  <div class="image-item">     
-                      <img src="\QSPresentation\Team\9.jpg" alt="Denis">
-                      <div class="text-overlay">
-                          <span class="Nick">Denis</span><span class="Job">BackEnd Dev</span>
-                      </div>
-                      <div class="icons">
-                          
-                      </div> </div> 
-                    </div> 
-            <div class="image-row">
-
-              <div class="image-item">     
-                <img src="\QSPresentation\Team\10.jpg" alt="Kokos">
-                <div class="text-overlay">
-                    <span class="Nick">NoDeadLine</span><span class="Job">CEO</span>
-                </div>
-                <div class="icons">
-                  <a href="https://t.me/YesDeadline" class="telegram-link"><i class="fab fa-telegram-plane"></i></a>
-                  <a href="https://www.instagram.com/kosermolaev/" class="icon-link"><i class="fab fa-instagram"></i></a>
-                  <a href="https://www.youtube.com/unlim3d" class="icon-link"><i class="fab fa-youtube"></i></a>
-                </div> </div>  
-            <div class="image-item">     
-                  <img src="\QSPresentation\Team\11.jpg" alt="Dementor">
-                  <div class="text-overlay">
-                      <span class="Nick">Netherspite</span><span class="Job">CTO</span>
-                  </div>
-                  <div class="icons">
-                    <a href="https://t.me/Netherspite" class="telegram-link"><i class="fab fa-telegram-plane"></i></a>
-
-                  </div> </div> 
-            </div>
-        </div>
-    </div>
-    
-</div></div></div>
-<div class="section" id="page5">    
-  <div class="invest-container">
-  
-    <div class="invest-highlight">Стать совладельцем QWERTYSTOCK</div>
- 
-  
-    
-      <span class="invest-highlight2">Только для АВТОРОВ</span> Мы даем возможность купить Акции всем участникам проекта М+ и StockSubmitter, зарегистрированным не позднее 1 февраля 2024 года.
-      <br>Наша задача оставить контроль над стоком непосредственно Авторам контента.
-      <span class="invest-highlight2">ВЫГОДНО</span>
-      <br>Все последующие размещения акций будут проходить по цене рынка и существенно выше этого предложения. На следующих этапах вы сможете заработать на продаже акций.
-      <span class="invest-highlight2">БЕЗОПАСНО</span>
-      <br>Все средства будут зачислены на ваш баланс на аккаунт М+/SS и вы сможете ими пользоватья до начала следующей фазы продаж.
-      <br>Все средства оставшиеся на балансе на этот момент будут сконвертированы в акции по условиям этого предложения.
-    
-      <span class="invest-highlight2">ДОХОД</span>
-      <br> Вы будете получать ежемесячные дивиденды от дохода QWERTYSTOCK автоматически.
-      
-      <span class="invest-highlight2">Предложение ограничено</span>
-      <br>На текущий момент осталось доступно 6.73% акций.
-      
-    
-      <span class="invest-highlight2">Выберите сумму инвестиций:</span>
-    <div class="investment-buttons">
-     
-      <button class="investment-option selected" data-amount="100">$100</button>
-      <button class="investment-option" data-amount="500">$500</button>
-      <button class="investment-option" data-amount="1000">$1000</button>
-      <button class="investment-option" data-amount="2000">$2000</button>
-      <button class="investment-option" data-amount="2001">$2000+</button>
-  </div>
-  <button id="buyStocksButton">Перейти к Купить X акций</button>
-  <div id="stockInfo" style="display: none;"></div>
-  <div id="contactInfo" style="display: none;">
-      <p>Пожалуйста, свяжитесь с нами для обсуждения инвестиций свыше $2000 через <a href="https://t.me/YesDeadLine" target="_blank">NoDeadLine</a> или <a href="https://t.me/NetherSpite" target="_blank">NetherSpite</a>.</p>
-  </div>
-  <div>
-  </div>
 </div>
+<div class="section" id="page5">    
+  
+</div>
+<div class="section" id="page6">    
+  
 </div>
 
 <div class="animated-blocks">

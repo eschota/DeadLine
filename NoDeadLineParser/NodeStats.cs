@@ -328,7 +328,34 @@ public class NodeStats
         if (type == 0) File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Nodes.html"), htmlBuilder.ToString());
         if (type == 1) File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "NodesByHour.html"), htmlBuilder.ToString());
         if (type == 2) File.WriteAllText(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "NodesAllTime.html"), htmlBuilder.ToString());
+        DeleteOldFilesOfData();
 
+    }
+    static void DeleteOldFilesOfData()
+    {
+        string directoryPath = Paths.NodeStatsDirectory; // Replace with your directory path
+        TimeSpan fileAgeLimit = TimeSpan.FromDays(7); // Files older than one week
+
+        // Get all files in the directory
+        string[] files = Directory.GetFiles(directoryPath);
+
+        // Current server time
+        DateTime currentTime = DateTime.Now;
+
+        foreach (string file in files)
+        {
+            FileInfo fileInfo = new FileInfo(file);
+
+            // Calculate the age of the file
+            TimeSpan fileAge = currentTime - fileInfo.LastWriteTime;
+
+            // If the file is older than the specified limit, delete it
+            if (fileAge > fileAgeLimit)
+            {
+                fileInfo.Delete();
+                Console.WriteLine($"Deleted file: {fileInfo.Name}");
+            }
+        }
     }
     public static string GenerateChartData(NodeStats node)
     {
