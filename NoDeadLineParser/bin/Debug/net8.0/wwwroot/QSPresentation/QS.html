@@ -1,273 +1,355 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Scrolling Presentation Site</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QwertyStock Presentation</title>
 
 
-<link rel="stylesheet" href="index.css">
-<link rel="stylesheet" href="invest.css">
-<link rel="stylesheet" href="unitystyle.css">
-<script src="https://d3js.org/d3.v5.min.js"></script>
-<link rel="stylesheet" href="roadmap_style.css">
-<link rel="stylesheet" href="Team.css">
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"> 
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="invest.css">
+  <link rel="stylesheet" href="unitystyle.css">
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <link rel="stylesheet" href="roadmap_style.css">
+  <link rel="stylesheet" href="Team.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 
-<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js'></script> 
- 
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js'></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NMBZ7K9VQE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-NMBZ7K9VQE');
+  </script>
 </head>
+<!-- Google tag (gtag.js) -->
 
 <body>
-    <div id="spinner"></div>    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
-    <script src="spinner.js"></script>
-   
+  <div id="spinner"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+  <script src="spinner.js"></script>
 
-    <div class="section active" id="page1">
-        <div class="container">
-            
-                
 
-                <div class="unity-desktop">
-                  <canvas id="unity-canvas" width="1280" height="1280" style="width: 1280px; height: 1280px; cursor: default;"></canvas>
-                  <div id="unity-loading-bar" style="display: none;">
-                    <div id="unity-logo"></div>
-                    <div id="unity-progress-bar-empty">
-                      <div id="unity-progress-bar-full" style="width: 100%;"></div>
-                    </div>
-                  </div>
-                  <div id="unity-warning"></div>
-                  <div id="unity-footer">
-                    <div id="unity-webgl-logo"></div>
-                    <div id="unity-fullscreen-button"></div>
-                    <div id="unity-build-title"></div>
-                  </div>
-                </div>
-
-       <div class="state_1">
-       <a href="http://qwertystock.com" target="_blank">
-                  <img src="qwerty_logo.svg" alt="Qwerty Logo" class="logo">
-                  </a>
-  
-  
-                  <div class="top-right-menu">
-                      <a href="become-an-author.html" target="_blank">Стать Автором</a>
-                      <a href="become-a-co-owner.html" target="_blank">Стать Совладельцем</a>
-                      <a href="current-page.ru.html" target="_blank" class="language-link">To English</a> <!-- Видима на английской версии -->
-  
-        </div>    
-               
-
-          
-          <div class="bot-container">
-            <div class="text-column" id="textBlock" >
-                <div class="text-item">ПЕРВЫЙ</div>
-                <div class="text-item">РАСПРЕДЕЛЕННЫЙ</div>
-                <div class="text-item last">МИКРОСТОК
-                    <div class="subtext-item">
-                        Сток нацеленный на авторов,<br>
-                        призванный решить основные проблемы,<br>
-                        увеличить доход, упростить доступ на рынок.
-                    </div>
-                </div>
-                
-            </div>
-            
-           </div>
-
-           <div class="ScrollDown" id="scrollBlock"><span>Прокрутите вниз</span><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAQlBMVEUAAAD///////////////////////////////////////////////////////////////////////////////////8IX9KGAAAAFXRSTlMAkd/PIJ4/DjgEgCUwCfPw79vKfz5AbFefAAAAjUlEQVQoz6WRWQoEIQwFY6K29jJ73f+qg9C4gNAMUx+JpDAfL3JJdAoWvIwsjhN3DHPjsaYsewBbOuHQc4dXXJt78PV9I1YRCKWplbp2X4y9NCg1olVA1zLMhfwgnjYRjX9FngsltXnCugxXGfM5idy3PtBZ7JvixkMRkuTPG17Sc7TTLjKyBQN1Ua74AoGzCOwtfedNAAAAAElFTkSuQmCC"></div>
-        
+  <div class="section active" id="page1">
+    <div class="container">
+      <div class="unity-desktop">
+        <canvas id="unity-canvas" width="1280" height="1280"
+          style="width: 1280px; height: 1280px; cursor: default;"></canvas>
+        <div id="unity-loading-bar" style="display: none;">
+          <div id="unity-logo"></div>
+          <div id="unity-progress-bar-empty">
+            <div id="unity-progress-bar-full" style="width: 100%;"></div>
+          </div>
         </div>
-        <div class="state_2">
+        <div id="unity-warning"></div>
+        <div id="unity-footer">
+          <div id="unity-webgl-logo"></div>
+          <div id="unity-fullscreen-button"></div>
+          <div id="unity-build-title"></div>
+        </div>
+      </div>
+
+      <div class="state_1">
+        <a href="http://qwertystock.com" target="_blank">
+          <img src="qwerty_logo.svg" alt="Qwerty Logo" class="logo">
+        </a>
+
+        <div class="top-right-menu">
+          <a href="become-an-author.html" target="_blank">Стать Автором</a>
+          <a href="become-a-co-owner.html" target="_blank">Стать Совладельцем</a>
+          <a href="current-page.ru.html" target="_blank" class="language-link">To English</a>
+          <!-- Видима на английской версии -->
+
+        </div>
+
+        <div class="bot-container">
+          <div class="text-column" id="textBlock">
+            <div class="text-item">ПЕРВЫЙ</div>
+            <div class="text-item">РАСПРЕДЕЛЕННЫЙ</div>
+            <div class="text-item last">МИКРОСТОК
+              <div class="subtext-item">
+                Сток нацеленный на авторов,<br>
+                призванный решить основные проблемы,<br>
+                увеличить доход, упростить доступ на рынок.
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="ScrollDown" id="scrollBlock"><span>Прокрутите вниз</span><img
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAQlBMVEUAAAD///////////////////////////////////////////////////////////////////////////////////8IX9KGAAAAFXRSTlMAkd/PIJ4/DjgEgCUwCfPw79vKfz5AbFefAAAAjUlEQVQoz6WRWQoEIQwFY6K29jJ73f+qg9C4gNAMUx+JpDAfL3JJdAoWvIwsjhN3DHPjsaYsewBbOuHQc4dXXJt78PV9I1YRCKWplbp2X4y9NCg1olVA1zLMhfwgnjYRjX9FngsltXnCugxXGfM5idy3PtBZ7JvixkMRkuTPG17Sc7TTLjKyBQN1Ua74AoGzCOwtfedNAAAAAElFTkSuQmCC">
+        </div>
+
+      </div>
+      <div class="state_2">
         <div class="page2-container">
           <div class="text-container">
-              <p>
-                  <span class="highlight">QWERTYSTOCK</span> пользуется популярностью еще до старта продаж<br>
-                  <span class="highlight">970 000</span> файлов
-                  <br><span class="highlight">1570</span> Авторов
-              </p>
-              <div class="chart-container">
-                <canvas id="fileCountChart"></canvas>
+            <p>
+              <span class="highlight">QWERTYSTOCK</span> пользуется популярностью еще до старта продаж<br>
+              <span class="highlight">970 000</span> файлов
+              <br><span class="highlight">1670</span> Авторов
+            </p>
+            <div class="chart-container">
+              <canvas id="fileCountChart"></canvas>
             </div>
           </div>
-          
+
+        </div>
       </div>
-      </div>
-        <div class="state_3">
-        <div class="page2-container">
-          <div class="text-container">
-              <p>
-                  <span class="highlight">RoadMap</span> <br>
-                  <span class="highlight"></span> 
-                  <br><span class="highlight"></span>
-              </p>
-              <!-- <div class="chart-container">
-                <canvas id="fileCountChart"></canvas>
-            </div> -->
+      <div class="state_3">
+        <div class="state3-container">
+          <div class="text-column" id="textBlock" style="opacity: 1; visibility: visible;">
+            <div class="text-item">1 ЭТАП</div>
+            <div class="text-item">ЗАПУСК</div>
+            <div class="text-item last">МИКРОСТОКА
+              <div class="subtext-item">
+                Продажа лицензий всех видов.<br>
+                Отчисления авторам до 95%.<br>
+                Автоматическая проверка и приемка файлов.<br>
+                Возможность масштабирования до любых объемов.<br>
+                Все функции стока распределены и выполняются децентрализованно.
+              </div>
+            </div>
+
           </div>
-          
+        </div>
+        <div class="state3_2-container">
+          <div class="text-column" id="textBlock" style="opacity: 1; visibility: visible;">
+            <div class="text-item">2 ЭТАП</div>
+            <div class="text-item">РАСШИРЕНИЕ</div>
+            <div class="text-item last">НА РЫНКЕ
+              <div class="subtext-item">
+                Децентрализованное хранение файлов.<br>
+                Каждый автор владеет собственным магазином со своими ценами.<br>
+                Минимальные издержки для хранения файлов.<br>
+                Система распределенных вычислений для обработки файлов.<br>
+                Когнитивный поиск с помощью AI. <br>
+                Собственный генератор контента со справедливыми отчислениями Авторам.
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
-      </div>
-       <div class="state_4">  
+
+      <div class="state_4">
         <div class="FadeBGR"></div>
         <div class="page4-container">
           <div class="text-container">
-              <p>
-                <div class="team-highlight">КОМАНДА</div>
-              </p>
-              <div class="image-container">
-                  <!-- Добавляем изображения с номерами от 1 до 11 -->
-                  <div class="image-row">
-                    <div class="image-item">     
-                      <img src="\QSPresentation\Team\1.jpg" alt="Чума">
-                      <div class="text-overlay">
-                          <span class="Nick">Plague</span><span class="Job">Designer</span>
-                      </div>
-                      <div class="icons">
-                          
-                       
-                      </div> </div> 
-                 
-                      <div class="image-item">     
-                        <img src="\QSPresentation\Team\2.jpg" alt="Frozenthrone">
-                        <div class="text-overlay">
-                            <span class="Nick">Mozenrath</span><span class="Job">WebDesigner</span>
-                        </div>
-                        <div class="icons">
-                           
-                        </div> </div> 
-                        <div class="image-item">     
-                          <img src="\QSPresentation\Team\3.jpg" alt="Егор">
-                          <div class="text-overlay">
-                              <span class="Nick">Leonidovich</span><span class="Job">DevOps</span>
-                          </div>
-                          <div class="icons">
-                            
-                          </div> </div> 
-                          <div class="image-item">     
-                            <img src="\QSPresentation\Team\4.jpg" alt="Николаж">
-                            <div class="text-overlay">
-                                <span class="Nick">Nick</span><span class="Job">QS Lead</span>
-                            </div>
-                            <div class="icons">
-                            </div> </div> 
-                                 <div class="image-item">     
-                      <img src="\QSPresentation\Team\5.jpg" alt="Andrey">
-                      <div class="text-overlay">
-                          <span class="Nick">Andrey</span><span class="Job">C# Dev</span>
-                      </div>
-                      <div class="icons">
-                          
-                      </div> </div> 
-                 
+
+            <div class="team-highlight">КОМАНДА</div>
+
+            <div class="image-container">
+              <!-- Добавляем изображения с номерами от 1 до 11 -->
+              <div class="image-row">
+                <div class="image-item">
+                  <img src="\QSPresentation\Team\1.png" alt="Чума">
+                  <div class="text-overlay">
+                    <span class="Nick">Plague</span><span class="Job">Designer</span>
                   </div>
-                  <div class="image-row">
-                    <div class="image-item">     
-                      <img src="\QSPresentation\Team\6.jpg" alt="Andrey">
-                      <div class="text-overlay">
-                          <span class="Nick">Alena</span><span class="Job">Support</span>
-                      </div>
-                      <div class="icons">
-                          
-                      </div> </div>  <div class="image-item">     
-                        <img src="\QSPresentation\Team\7.jpg" alt="Slava">
-                        <div class="text-overlay">
-                            <span class="Nick">Alex</span><span class="Job">Dev</span>
-                        </div>
-                        <div class="icons">
-                            
-                        </div> </div>  <div class="image-item">     
-                          <img src="\QSPresentation\Team\8.jpg" alt="Andrey">
-                          <div class="text-overlay">
-                              <span class="Nick">Gibson</span><span class="Job">C# Dev</span>
-                          </div>
-                          <div class="icons">
-                              
-                          </div> </div>  <div class="image-item">     
-                            <img src="\QSPresentation\Team\9.jpg" alt="Denis">
-                            <div class="text-overlay">
-                                <span class="Nick">Denis</span><span class="Job">BackEnd Dev</span>
-                            </div>
-                            <div class="icons">
-                                
-                            </div> </div> 
-                          </div> 
-                  <div class="image-row">
-      
-                    <div class="image-item">     
-                      <img src="\QSPresentation\Team\10.jpg" alt="Kokos">
-                      <div class="text-overlay">
-                          <span class="Nick">NoDeadLine</span><span class="Job">CEO</span>
-                      </div>
-                      <div class="icons">
-                        <a href="https://t.me/YesDeadline" class="telegram-link"><i class="fab fa-telegram-plane"></i></a>
-                        <a href="https://www.instagram.com/kosermolaev/" class="icon-link"><i class="fab fa-instagram"></i></a>
-                        <a href="https://www.youtube.com/unlim3d" class="icon-link"><i class="fab fa-youtube"></i></a>
-                      </div> </div>  
-                  <div class="image-item">     
-                        <img src="\QSPresentation\Team\11.jpg" alt="Dementor">
-                        <div class="text-overlay">
-                            <span class="Nick">Netherspite</span><span class="Job">CTO</span>
-                        </div>
-                        <div class="icons">
-                          <a href="https://t.me/Netherspite" class="telegram-link"><i class="fab fa-telegram-plane"></i></a>
-      
-                        </div> </div> 
+                  <div class="icons">
+
+
                   </div>
+                </div>
+
+                <div class="image-item">
+                  <img src="\QSPresentation\Team\2.png" alt="Frozenthrone">
+                  <div class="text-overlay">
+                    <span class="Nick">Mozenrath</span><span class="Job">WebDesigner</span>
+                  </div>
+                  <div class="icons">
+
+                  </div>
+                </div>
+                <div class="image-item">
+                  <img src="\QSPresentation\Team\3.png" alt="Егор">
+                  <div class="text-overlay">
+                    <span class="Nick">Leonidovich</span><span class="Job">DevOps</span>
+                  </div>
+                  <div class="icons">
+
+                  </div>
+                </div>
+                <div class="image-item">
+                  <img src="\QSPresentation\Team\4.png" alt="Николаж">
+                  <div class="text-overlay">
+                    <span class="Nick">Nick</span><span class="Job">C# TS Dev</span>
+                  </div>
+                  <div class="icons">
+                  </div>
+                </div>
+                <div class="image-item">
+                  <img src="\QSPresentation\Team\5.png" alt="Andrey">
+                  <div class="text-overlay">
+                    <span class="Nick">Andrey</span><span class="Job">C# Dev</span>
+                  </div>
+                  <div class="icons">
+
+                  </div>
+                </div>
+
               </div>
+              <div class="image-row">
+                <div class="image-item">
+                  <img src="\QSPresentation\Team\6.png" alt="Andrey">
+                  <div class="text-overlay">
+                    <span class="Nick">Alena</span><span class="Job">Support</span>
+                  </div>
+                  <div class="icons">
+
+                  </div>
+                </div>
+                <div class="image-item">
+                  <img src="\QSPresentation\Team\7.png" alt="Slava">
+                  <div class="text-overlay">
+                    <span class="Nick">Alex</span><span class="Job">Dev</span>
+                  </div>
+                  <div class="icons">
+
+                  </div>
+                </div>
+                <div class="image-item">
+                  <img src="\QSPresentation\Team\8.png" alt="Andrey">
+                  <div class="text-overlay">
+                    <span class="Nick">Gibson</span><span class="Job">C# Dev</span>
+                  </div>
+                  <div class="icons">
+
+                  </div>
+                </div>
+                <div class="image-item">
+                  <img src="\QSPresentation\Team\9.png" alt="Denis">
+                  <div class="text-overlay">
+                    <span class="Nick">Denis</span><span class="Job">BackEnd Dev</span>
+                  </div>
+                  <div class="icons">
+
+                  </div>
+                </div>
+              </div>
+              <div class="image-row">
+
+                <div class="image-item">
+                  <img src="\QSPresentation\Team\10.png" alt="Kokos">
+                  <div class="text-overlay">
+                    <span class="Nick">NoDeadLine</span><span class="Job">CEO</span>
+                  </div>
+                  <div class="icons">
+                    <a href="https://t.me/YesDeadline" class="telegram-link"><i class="fab fa-telegram-plane"></i></a>
+                    <a href="https://www.instagram.com/kosermolaev/" class="icon-link"><i
+                        class="fab fa-instagram"></i></a>
+                    <a href="https://www.youtube.com/unlim3d" class="icon-link"><i class="fab fa-youtube"></i></a>
+                  </div>
+                </div>
+                <div class="image-item">
+                  <img src="\QSPresentation\Team\11.png" alt="Dementor">
+                  <div class="text-overlay">
+                    <span class="Nick">Netherspite</span><span class="Job">CTO</span>
+                  </div>
+                  <div class="icons">
+                    <a href="https://t.me/Netherspite" class="telegram-link"><i class="fab fa-telegram-plane"></i></a>
+
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          
-      </div></div>
-        <div class="state_5"> 
-          <div class="invest-container">
-  
-            <div class="invest-highlight">Стать совладельцем QWERTYSTOCK</div>
-         
-          
-            
-              <span class="invest-highlight2">Только для АВТОРОВ</span> Мы даем возможность купить Акции всем участникам проекта М+ и StockSubmitter, зарегистрированным не позднее 1 февраля 2024 года.
-              <br>Наша задача оставить контроль над стоком непосредственно Авторам контента.
-              <span class="invest-highlight2">ВЫГОДНО</span>
-              <br>Все последующие размещения акций будут проходить по цене рынка и существенно выше этого предложения. На следующих этапах вы сможете заработать на продаже акций.
-              <span class="invest-highlight2">БЕЗОПАСНО</span>
-              <br>Все средства будут зачислены на ваш баланс на аккаунт М+/SS и вы сможете ими пользоватья до начала следующей фазы продаж.
-              <br>Все средства оставшиеся на балансе на этот момент будут сконвертированы в акции по условиям этого предложения.
-            
-              <span class="invest-highlight2">ДОХОД</span>
-              <br> Вы будете получать ежемесячные дивиденды от дохода QWERTYSTOCK автоматически.
-              
-              <span class="invest-highlight2">Предложение ограничено</span>
-              <br>На текущий момент осталось доступно 6.73% акций.
-              
-            
-              <span class="invest-highlight2">Выберите сумму инвестиций:</span>
-            <div class="investment-buttons">
-             
-              <button class="investment-option selected" data-amount="100">$100</button>
-              <button class="investment-option" data-amount="500">$500</button>
-              <button class="investment-option" data-amount="1000">$1000</button>
-              <button class="investment-option" data-amount="2000">$2000</button>
-              <button class="investment-option" data-amount="2001">$2000+</button>
+
+        </div>
+      </div>
+      <div class="state_5">
+
+        <div class="investFadeBGR"></div>
+
+
+        <div class="invest-container">
+          <div class="invest-header">
+            <div class="invest-heading red">Стать</div>
+            <div class="invest-heading white">совладельцем</div>
+            <div class="invest-heading red">Qwertystock</div>
           </div>
-          <button id="buyStocksButton">Перейти к Купить X акций</button>
+
+          <div class="invest-text-container">
+            <div class="text-column" id="textBlock" style="opacity: 1; visibility: visible;">
+              <div class="text-invest">ТОЛЬКО ДЛЯ АВТОРОВ</div>
+              <div class="subtext-invest">
+                Мы даем возможность купить Акции всем участникам проекта М+ и StockSubmitter, зарегистрированным не
+                позднее 1 февраля 2024 года.<br>
+                <br>Наша задача оставить контроль над стоком непосредственно Авторам контента.
+              </div>
+            </div>
+          </div>
+
+
+          <div class="invest-text-container">
+            <div class="text-column" id="textBlock" style="opacity: 1; visibility: visible;">
+              <div class="text-invest">ВЫГОДНО</div>
+              <div class="subtext-invest">
+                Все последующие размещения акций будут проходить по цене рынка <br> существенно выше этого
+                предложения.<br> На следующих этапах вы сможете заработать на продаже акций.
+              </div>
+            </div>
+          </div>
+
+          <div class="invest-text-container">
+            <div class="text-column" id="textBlock" style="opacity: 1; visibility: visible;">
+              <div class="text-invest">БЕЗОПАСНО</div>
+              <div class="subtext-invest">
+                Все средства будут зачислены на ваш баланс на аккаунт М+/SS <br> вы сможете ими пользоватья до начала
+                следующей фазы продаж.<br>
+                <br>Все средства оставшиеся на балансе на этот момент будут<br> сконвертированы в акции по условиям
+                этого предложения.
+              </div>
+            </div>
+          </div>
+
+          <div class="invest-text-container">
+            <div class="text-column" id="textBlock" style="opacity: 1; visibility: visible;">
+              <div class="text-invest">ДОХОД</div>
+              <div class="subtext-invest">
+                Вы будете получать дивиденды от дохода QWERTYSTOCK автоматически.<br>Предложение ограничено<br>На
+                текущий момент осталось доступно 6.73% акций по данному предложению.
+              </div>
+            </div>
+          </div>
+
+
+
+          <div class="investment-buttons">
+            <button class="choice-button investment-option selected" data-amount="100">$100</button>
+            <button class="choice-button investment-option" data-amount="500">$500</button>
+            <button class="choice-button investment-option" data-amount="1000">$1000</button>
+            <button class="choice-button investment-option" data-amount="2000">$2000</button>
+            <button class="choice-button investment-option" data-amount="2001">$2000+</button>
+          </div>
+          <button id="buyStocksButton" a="#" class="button">Купить X акций</button>
           <div id="stockInfo" style="display: none;"></div>
           <div id="contactInfo" style="display: none;">
-              <p>Пожалуйста, свяжитесь с нами для обсуждения инвестиций свыше $2000 через <a href="https://t.me/YesDeadLine" target="_blank">NoDeadLine</a> или <a href="https://t.me/NetherSpite" target="_blank">NetherSpite</a>.</p>
+            <p>Пожалуйста, свяжитесь с нами для обсуждения инвестиций свыше $2000 через <a
+                href="https://t.me/YesDeadLine" target="_blank">NoDeadLine</a> или <a href="https://t.me/NetherSpite"
+                target="_blank">NetherSpite</a>.</p>
           </div>
           <div>
           </div>
         </div>
-        </div>
+        <div class="FadeBGR2"></div>
+      </div>
 
     </div>
-</div>
+  </div>
   <div class="section" id="page2">
-    
-</div>
-<div class="section" id="page3">
-  <!-- <div class="page3-container"> -->
+
+  </div>
+  <div class="section" id="page3">
+    <!-- <div class="page3-container"> -->
 
     <!-- <div class="RoadMap-textContainer">
       <p>
@@ -347,69 +429,70 @@
         </div> 
       </div>
     </div> -->
- </div>
-<div class="section" id="page4">
-</div>
-<div class="section" id="page5">    
-  
-</div>
-<div class="section" id="page6">    
-  
-</div>
+  </div>
+  <div class="section" id="page4">
+  </div>
+  <div class="section" id="page5">
 
-<div class="animated-blocks">
+  </div>
+  <div class="section" id="page6">
+
+  </div>
+
+  <div class="animated-blocks">
     <div class="animated-block red-block"></div>
     <div class="animated-block green-block"></div>
     <div class="animated-block blue-block"></div>
-</div>
+  </div>
 
-<script src="scroll.js"></script>
-<script src="animations.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(function() {
+  <script src="scroll.js"></script>
+  <script src="animations.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(function () {
         var scrollDown = document.querySelector('.ScrollDown');
         if (scrollDown) {
-            scrollDown.style.animation = 'fadeInOut 4s ease-in-out infinite';
+          scrollDown.style.animation = 'fadeInOut 4s ease-in-out infinite';
         }
-    }, 5000); // Задержка в 5000 миллисекунд (5 секунд)
-});
-    </script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(function() {
+      }, 5000); // Задержка в 5000 миллисекунд (5 секунд)
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(function () {
         document.querySelectorAll('.section .container').forEach(container => {
-            container.style.opacity = 1; // Устанавливаем прозрачность для всех контейнеров
+          container.style.opacity = 1; // Устанавливаем прозрачность для всех контейнеров
         });
-    }, 500);
-});
-    </script>
-<script src ='filesChart.js'></script>
-<script src ='unityhtml.js'></script>
-<script src ='invest.js'></script>
-<script src ='team.js'></script>
-<script src='roadmap_script.js'></script>
-<script src='SendMessageToUnityFromConsole.js'></script>
- <script>
- document.querySelectorAll('.element').forEach(element => {
-  const tooltipText = element.getAttribute('data-tooltip');
-  const parts = tooltipText.split('|');
-  const tooltipHTML = `<strong style="color: #E91E63;">${parts[0]}</strong>${parts[1]}`;
+      }, 500);
+    });
+  </script>
+  <script src='filesChart.js'></script>
+  <script src='unityhtml.js'></script>
+  <script src='invest.js'></script>
+  <script src='team.js'></script>
+  <script src='roadmap_script.js'></script>
+  <script src='SendMessageToUnityFromConsole.js'></script>
+  <script>
+    document.querySelectorAll('.element').forEach(element => {
+      const tooltipText = element.getAttribute('data-tooltip');
+      const parts = tooltipText.split('|');
+      const tooltipHTML = `<strong style="color: #E91E63;">${parts[0]}</strong>${parts[1]}`;
 
-  const tooltipContainer = element.querySelector('.tooltip-content');
-  tooltipContainer.innerHTML = tooltipHTML; // Убедитесь, что этот код не выполняется повторно в другом месте
+      const tooltipContainer = element.querySelector('.tooltip-content');
+      tooltipContainer.innerHTML = tooltipHTML; // Убедитесь, что этот код не выполняется повторно в другом месте
 
-  element.addEventListener('mouseover', function() {
-      tooltipContainer.style.visibility = 'visible';
-      tooltipContainer.style.opacity = '1';
-  });
+      element.addEventListener('mouseover', function () {
+        tooltipContainer.style.visibility = 'visible';
+        tooltipContainer.style.opacity = '1';
+      });
 
-  element.addEventListener('mouseout', function() {
-      tooltipContainer.style.visibility = 'hidden';
-      tooltipContainer.style.opacity = '0';
-  });
-});
-</script>
+      element.addEventListener('mouseout', function () {
+        tooltipContainer.style.visibility = 'hidden';
+        tooltipContainer.style.opacity = '0';
+      });
+    });
+  </script>
 
 </body>
+
 </html>

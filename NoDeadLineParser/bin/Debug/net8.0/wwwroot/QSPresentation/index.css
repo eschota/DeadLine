@@ -1,47 +1,74 @@
-body, html {
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    --fsz: clamp(14px, 2vw, 16px)
+}
+
+body,
+html {
     margin: 0;
     padding: 0;
     min-height: 100%;
     background-color: #000000;
     font-family: 'Roboto', sans-serif;
-      color: white;
-     
+    color: white;
 }
-.state_1{
-transition: opacity 0.33s ease-in-out; /* Плавное изменение opacity за 0.8 секунд */
+
+button {
+    font-size: inherit;
 }
-.state_2{
+
+.unity-desktop {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+
+.state_1 {
+    transition: opacity 0.33s ease-in-out;
+    /* ÐŸÐ»Ð°Ð²Ð½Ð¾Ðµ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ðµ opacity Ð·Ð° 0.8 ÑÐµÐºÑƒÐ½Ð´ */
+}
+
+.state_2 {
     position: absolute;
     opacity: 0;
-transition: opacity 0.8s ease-in-out; /* Плавное изменение opacity за 0.8 секунд */
+    transition: opacity 0.8s ease-in-out;
+    /* ÐŸÐ»Ð°Ð²Ð½Ð¾Ðµ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ðµ opacity Ð·Ð° 0.8 ÑÐµÐºÑƒÐ½Ð´ */
 }
-.state_3{
-    position: absolute;    
+
+.state_3 {
+    position: absolute;
     opacity: 0;
-transition: opacity 0.8s ease-in-out; /* Плавное изменение opacity за 0.8 секунд */
+    transition: opacity 0.8s ease-in-out;
+    /* ÐŸÐ»Ð°Ð²Ð½Ð¾Ðµ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ðµ opacity Ð·Ð° 0.8 ÑÐµÐºÑƒÐ½Ð´ */
 }
-.state_4{
-    position: absolute;    
+
+.state_4 {
+    position: absolute;
     opacity: 0;
-transition: opacity 0.8s ease-in-out; /* Плавное изменение opacity за 0.8 секунд */
+    transition: opacity 0.8s ease-in-out;
 }
-.state_5{
-    position: absolute;    
+
+.state_5 {
+    position: absolute;
     opacity: 0;
-transition: opacity 0.8s ease-in-out; /* Плавное изменение opacity за 0.8 секунд */
-}
-.section {
-    min-height: 100vh; /* Минимальная высота вместо фиксированной, чтобы разрешить контенту быть больше, если нужно */
+    transition: opacity 0.8s ease-in-out;
     width: 100%;
+    left: 0;
+}
+
+.section {
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-   
 }
 
-/* Удаление pointer-events: none; если не нужно */
-.section::before, .section::after {
+/* Ð£Ð´Ð°Ð»ÐµÐ½Ð¸Ðµ pointer-events: none; ÐµÑÐ»Ð¸ Ð½Ðµ Ð½ÑƒÐ¶Ð½Ð¾ */
+.section::before,
+.section::after {
     content: "";
     position: absolute;
     left: 0;
@@ -61,212 +88,260 @@ transition: opacity 0.8s ease-in-out; /* Плавное изменение opaci
     bottom: 0;
     z-index: 1000;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-} 
-  
- #page1 {
-     background-color: #161616;
-    background-image: url('bg1.jpg'); /* Убедитесь, что путь к изображению правильный */
-    background-repeat: repeat; /* Предотвращает повторение изображения */
-    background-position: left bottom;
-    background-position-x: 50%;
-    background-position-y: 50%;      
-    background-size: 2048px 1024px; /* Фиксированный размер изображения */
-    background-repeat: repeat-x;
-  
 }
-  
-  #page2 {
+
+#page1 {
     background-color: #161616;
-    background-image: url('bg1.jpg'); /* Убедитесь, что путь к изображению правильный */
-    background-repeat: repeat; /* Предотвращает повторение изображения */
+    /* background-image: url('bg1.jpg'); /* Ð£Ð±ÐµÐ´Ð¸Ñ‚ÐµÑÑŒ, Ñ‡Ñ‚Ð¾ Ð¿ÑƒÑ‚ÑŒ Ðº Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸ÑŽ Ð¿Ñ€Ð°Ð²Ð¸Ð»ÑŒÐ½Ñ‹Ð¹ */
+    background-repeat: repeat;
+    /* ÐŸÑ€ÐµÐ´Ð¾Ñ‚Ð²Ñ€Ð°Ñ‰Ð°ÐµÑ‚ Ð¿Ð¾Ð²Ñ‚Ð¾Ñ€ÐµÐ½Ð¸Ðµ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ñ */
     background-position: left bottom;
     background-position-x: 50%;
-    background-position-y: 50%;      
-    background-size: 2048px 1024px; /* Фиксированный размер изображения */
+    background-position-y: 50%;
+    background-size: 2048px 1024px;
+    /* Ð¤Ð¸ÐºÑÐ¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ð¹ Ñ€Ð°Ð·Ð¼ÐµÑ€ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ñ */
     background-repeat: repeat-x;
-  }
-  
-  #page3 {
-    background-color: #161616;
-    background-image: url('bg1.jpg'); /* Убедитесь, что путь к изображению правильный */
-    background-repeat: repeat; /* Предотвращает повторение изображения */
-    background-position: left bottom;
-    background-position-x: 50%;
-    background-position-y: 50%;      
-    background-size: 2048px 1024px; /* Фиксированный размер изображения */
-    background-repeat: repeat-x;
-  }
-  
-  #page4 {
-    background-color: #161616;
-    background-image: url('bg1.jpg'); /* Убедитесь, что путь к изображению правильный */
-    background-repeat: repeat; /* Предотвращает повторение изображения */
-    background-position: left bottom;
-    background-position-x: 50%;
-    background-position-y: 50%;      
-    background-size: 2048px 1024px; /* Фиксированный размер изображения */
-    background-repeat: repeat-x;
-  }
-  
-  #page5 {
-    background-color: #161616;
-    background-image: url('bg1.jpg'); /* Убедитесь, что путь к изображению правильный */
-    background-repeat: repeat; /* Предотвращает повторение изображения */
-    background-position: left bottom;
-    background-position-x: 50%;
-    background-position-y: 50%;      
-    background-size: 2048px 1024px; /* Фиксированный размер изображения */
-    background-repeat: repeat-x;
-  }
-  .container {
-    opacity: 0; 
-    width: 100%; /* Занимает 100% ширины родителя */
-    max-width: 1280px; /* Максимальная ширина контейнера */
-    height: 100vh; 
+
+}
+
+.container {
+    opacity: 0;
+    width: 100%;
+    /* Ð—Ð°Ð½Ð¸Ð¼Ð°ÐµÑ‚ 100% ÑˆÐ¸Ñ€Ð¸Ð½Ñ‹ Ñ€Ð¾Ð´Ð¸Ñ‚ÐµÐ»Ñ */
+    max-width: 1280px;
+    /* ÐœÐ°ÐºÑÐ¸Ð¼Ð°Ð»ÑŒÐ½Ð°Ñ ÑˆÐ¸Ñ€Ð¸Ð½Ð° ÐºÐ¾Ð½Ñ‚ÐµÐ¹Ð½ÐµÑ€Ð° */
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative; 
-    transition: opacity 2s ease-in-out; 
-  }
-  .container span {
-    display: block; /* Блочный элемент, чтобы занимать всю ширину и быть на отдельной строке */
-    color: #ffffff; /* Цвет первой строки, синий */
-    font-size: 18px; /* Размер шрифта первой строки */
-    font-weight: bold; /* Жирное начертание */
+    position: relative;
+    transition: opacity 2s ease-in-out;
 }
-  .logo {
+
+.container span {
+    display: block;
+    /* Ð‘Ð»Ð¾Ñ‡Ð½Ñ‹Ð¹ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð·Ð°Ð½Ð¸Ð¼Ð°Ñ‚ÑŒ Ð²ÑÑŽ ÑˆÐ¸Ñ€Ð¸Ð½Ñƒ Ð¸ Ð±Ñ‹Ñ‚ÑŒ Ð½Ð° Ð¾Ñ‚Ð´ÐµÐ»ÑŒÐ½Ð¾Ð¹ ÑÑ‚Ñ€Ð¾ÐºÐµ */
+    color: #ffffff;
+    /* Ð¦Ð²ÐµÑ‚ Ð¿ÐµÑ€Ð²Ð¾Ð¹ ÑÑ‚Ñ€Ð¾ÐºÐ¸, ÑÐ¸Ð½Ð¸Ð¹ */
+    font-size: 18px;
+    /* Ð Ð°Ð·Ð¼ÐµÑ€ ÑˆÑ€Ð¸Ñ„Ñ‚Ð° Ð¿ÐµÑ€Ð²Ð¾Ð¹ ÑÑ‚Ñ€Ð¾ÐºÐ¸ */
+    font-weight: bold;
+    /* Ð–Ð¸Ñ€Ð½Ð¾Ðµ Ð½Ð°Ñ‡ÐµÑ€Ñ‚Ð°Ð½Ð¸Ðµ */
+}
+
+.logo {
     position: absolute;
     top: 25px;
     left: calc(4.5vw);
     width: 200px;
     opacity: 0.9;
-  }
-  .vignette-left, .vignette-right {
+}
+
+.vignette-left,
+.vignette-right {
     position: absolute;
     height: 100%;
     width: 200px;
     opacity: 0.9;
-    mix-blend-mode: multiply; /* Применение режима multiply */
+    mix-blend-mode: multiply;
+    /* ÐŸÑ€Ð¸Ð¼ÐµÐ½ÐµÐ½Ð¸Ðµ Ñ€ÐµÐ¶Ð¸Ð¼Ð° multiply */
 }
 
 .vignette-left {
     left: 25px;
 }
+
 #textBlock {
     opacity: 0;
     visibility: hidden;
     transition: opacity 2.5s, visibility 2.5s;
-}#scrollBlock {
+}
+
+#scrollBlock {
     opacity: 0;
     visibility: hidden;
     transition: opacity 2.5s, visibility 2.5s;
 }
+
 .vignette-right {
     right: 25px;
-    transform: scaleX(-1); /* Зеркальное отображение вигнетты */
+    transform: scaleX(-1);
+    /* Ð—ÐµÑ€ÐºÐ°Ð»ÑŒÐ½Ð¾Ðµ Ð¾Ñ‚Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ Ð²Ð¸Ð³Ð½ÐµÑ‚Ñ‚Ñ‹ */
 }
+
 .bot-container {
     position: absolute;
-    left: calc(4.5vw);
+    left: calc(2.2vw);
     bottom: 100px;
     width: 100%;
-    text-align: left; /* Выравнивание текста по центру контейнера */
-    padding: 10px; /* Отступы вокруг текста */
-    width: 100%; /* Устанавливаем ширину 100%, но не больше 640px */
-    max-width: 640px; /* Максимальная ширина контейнера */
+    text-align: left;
+    /* Ð’Ñ‹Ñ€Ð°Ð²Ð½Ð¸Ð²Ð°Ð½Ð¸Ðµ Ñ‚ÐµÐºÑÑ‚Ð° Ð¿Ð¾ Ñ†ÐµÐ½Ñ‚Ñ€Ñƒ ÐºÐ¾Ð½Ñ‚ÐµÐ¹Ð½ÐµÑ€Ð° */
+    padding: 10px;
+    /* ÐžÑ‚ÑÑ‚ÑƒÐ¿Ñ‹ Ð²Ð¾ÐºÑ€ÑƒÐ³ Ñ‚ÐµÐºÑÑ‚Ð° */
+    width: 100%;
+    /* Ð£ÑÑ‚Ð°Ð½Ð°Ð²Ð»Ð¸Ð²Ð°ÐµÐ¼ ÑˆÐ¸Ñ€Ð¸Ð½Ñƒ 100%, Ð½Ð¾ Ð½Ðµ Ð±Ð¾Ð»ÑŒÑˆÐµ 640px */
+    max-width: 640px;
+    /* ÐœÐ°ÐºÑÐ¸Ð¼Ð°Ð»ÑŒÐ½Ð°Ñ ÑˆÐ¸Ñ€Ð¸Ð½Ð° ÐºÐ¾Ð½Ñ‚ÐµÐ¹Ð½ÐµÑ€Ð° */
 }
+
+.state3-container,
+.state3_2-container {
+    font-family: 'Roboto', sans-serif;
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    /* Занимает 90% ширины экрана */
+    height: 20vh;
+    /* Занимает 20% высоты экрана */
+    max-height: 0vh;
+    /* Максимальная высота 20% высоты экрана */
+    max-width: 1040px;
+    /* Максимальная ширина контейнера */
+    padding: 10px;
+    /* Отступы вокруг текста */
+    /* display: flex; */
+    /* flex-wrap: nowrap; */
+    /* Предотвращаем перенос элементов на следующую строку */
+    /* align-items: flex-start; */
+    /* Выравнивание элементов по левому краю */
+    /* align-content: space-around; */
+    /* box-sizing: border-box; */
+    /* Учитываем padding и border в ширине и высоте */
+    /* Минимальный размер 14px, оптимальный 2vw, максимальный 18px */
+}
+
+.state3-container {
+    top: 15%;
+}
+
+.state3_2-container {
+    top: 50%;
+}
+
 @media (max-width: 640px) {
     .bot-container {
-        width: 100%; /* На экранах шириной меньше 640px контейнер занимает 100% ширины */
+        width: 80%;
+        /* ÐÐ° ÑÐºÑ€Ð°Ð½Ð°Ñ… ÑˆÐ¸Ñ€Ð¸Ð½Ð¾Ð¹ Ð¼ÐµÐ½ÑŒÑˆÐµ 640px ÐºÐ¾Ð½Ñ‚ÐµÐ¹Ð½ÐµÑ€ Ð·Ð°Ð½Ð¸Ð¼Ð°ÐµÑ‚ 100% ÑˆÐ¸Ñ€Ð¸Ð½Ñ‹ */
     }
 }
 
 @media (max-width: 320px) {
     .bot-container {
-        width: 320px; /* Фиксируем ширину в 320px на очень маленьких экранах */
+        width: 320px;
+        /* Ð¤Ð¸ÐºÑÐ¸Ñ€ÑƒÐµÐ¼ ÑˆÐ¸Ñ€Ð¸Ð½Ñƒ Ð² 320px Ð½Ð° Ð¾Ñ‡ÐµÐ½ÑŒ Ð¼Ð°Ð»ÐµÐ½ÑŒÐºÐ¸Ñ… ÑÐºÑ€Ð°Ð½Ð°Ñ… */
     }
 }
+
 .text-item {
-   font-family: 'Roboto', sans-serif;
-   font-size: calc(32px + 2vw);
-    font-weight: bold; /* Жирное начертание текста */
-    margin: -10px 0; /* Отступы между элементами текста */
+    font-family: 'Roboto', sans-serif;
+    font-size: clamp(32px, 3vw, 64px);
+    font-weight: bold;
+    /* Ð–Ð¸Ñ€Ð½Ð¾Ðµ Ð½Ð°Ñ‡ÐµÑ€Ñ‚Ð°Ð½Ð¸Ðµ Ñ‚ÐµÐºÑÑ‚Ð° */
+    margin: -10px 0;
+    /* ÐžÑ‚ÑÑ‚ÑƒÐ¿Ñ‹ Ð¼ÐµÐ¶Ð´Ñƒ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚Ð°Ð¼Ð¸ Ñ‚ÐµÐºÑÑ‚Ð° */
+    width: fit-content;
 }
 
-.text-item:nth-child(1) { /* Стили для первого текста */
+.text-item:nth-child(1) {
+    /* Ð¡Ñ‚Ð¸Ð»Ð¸ Ð´Ð»Ñ Ð¿ÐµÑ€Ð²Ð¾Ð³Ð¾ Ñ‚ÐµÐºÑÑ‚Ð° */
     color: rgb(255 255 255);
 }
 
-.text-item:nth-child(2) { /* Стили для второго текста */
-    color: rgb(227 63 123);
+.text-item:nth-child(2) {
+    /* Ð¡Ñ‚Ð¸Ð»Ð¸ Ð´Ð»Ñ Ð²Ñ‚Ð¾Ñ€Ð¾Ð³Ð¾ Ñ‚ÐµÐºÑÑ‚Ð° */
+    color: #E91E63;
 }
 
-.text-item:nth-child(3) { /* Стили для третьего текста */
+.text-item:nth-child(3) {
+    /* Ð¡Ñ‚Ð¸Ð»Ð¸ Ð´Ð»Ñ Ñ‚Ñ€ÐµÑ‚ÑŒÐµÐ³Ð¾ Ñ‚ÐµÐºÑÑ‚Ð° */
     color: white;
 }
 
 .subtext-item {
     position: relative;
-    right: 0px; /* Динамическое смещение влево */
-    top: 0; /* Динамическое вертикальное смещение */
-    color: white;
+    right: 0px;
+    /* Ð”Ð¸Ð½Ð°Ð¼Ð¸Ñ‡ÐµÑÐºÐ¾Ðµ ÑÐ¼ÐµÑ‰ÐµÐ½Ð¸Ðµ Ð²Ð»ÐµÐ²Ð¾ */
+    top: 0;
+    /* Ð”Ð¸Ð½Ð°Ð¼Ð¸Ñ‡ÐµÑÐºÐ¾Ðµ Ð²ÐµÑ€Ñ‚Ð¸ÐºÐ°Ð»ÑŒÐ½Ð¾Ðµ ÑÐ¼ÐµÑ‰ÐµÐ½Ð¸Ðµ */
+    color: #d5d5d5d4;
     font-family: 'Roboto', sans-serif;
-    font-size: calc(9px + 0.5vw); /* Динамический размер шрифта */
+    font-size: var(--fsz);
+    /* Ð”Ð¸Ð½Ð°Ð¼Ð¸Ñ‡ÐµÑÐºÐ¸Ð¹ Ñ€Ð°Ð·Ð¼ÐµÑ€ ÑˆÑ€Ð¸Ñ„Ñ‚Ð° */
     margin: 0;
-    transition: all 0.3s ease; /* Плавные переходы для всех изменений */
+    transition: all 0.3s ease;
+    /* ÐŸÐ»Ð°Ð²Ð½Ñ‹Ðµ Ð¿ÐµÑ€ÐµÑ…Ð¾Ð´Ñ‹ Ð´Ð»Ñ Ð²ÑÐµÑ… Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ð¹ */
 }
+
 .top-right-menu {
-   
+
     font-family: 'Roboto', sans-serif;
     position: absolute;
     top: 22px;
     right: 25px;
-    display: inline-block; /* Убедитесь, что элемент видим по умолчанию */
+    display: inline-block;
+    /* Ð£Ð±ÐµÐ´Ð¸Ñ‚ÐµÑÑŒ, Ñ‡Ñ‚Ð¾ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚ Ð²Ð¸Ð´Ð¸Ð¼ Ð¿Ð¾ ÑƒÐ¼Ð¾Ð»Ñ‡Ð°Ð½Ð¸ÑŽ */
 }
 
 .top-right-menu a {
-   
+
     text-decoration: none;
-    color: #d2d2d2; /* Темно-серый цвет текста */
+    color: #d2d2d2;
+    /* Ð¢ÐµÐ¼Ð½Ð¾-ÑÐµÑ€Ñ‹Ð¹ Ñ†Ð²ÐµÑ‚ Ñ‚ÐµÐºÑÑ‚Ð° */
     padding: 0px;
     display: inline-block;
     font-size: 16px;
-    transition: color 0.3s; /* Плавное изменение цвета */
-    opacity: 1; /* Полная видимость */
-    visibility: visible; /* Элемент видим */
+    transition: color 0.3s;
+    /* ÐŸÐ»Ð°Ð²Ð½Ð¾Ðµ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ðµ Ñ†Ð²ÐµÑ‚Ð° */
+    opacity: 1;
+    /* ÐŸÐ¾Ð»Ð½Ð°Ñ Ð²Ð¸Ð´Ð¸Ð¼Ð¾ÑÑ‚ÑŒ */
+    visibility: visible;
+    /* Ð­Ð»ÐµÐ¼ÐµÐ½Ñ‚ Ð²Ð¸Ð´Ð¸Ð¼ */
     transition: opacity 0.5s, visibility 0.5s;
 }
 
 .top-right-menu a:hover {
-    transform: scale(1.02); 
-    color: #ffffff; /* Светлее при наведении */
+    transform: scale(1.02);
+    color: #ffffff;
+    /* Ð¡Ð²ÐµÑ‚Ð»ÐµÐµ Ð¿Ñ€Ð¸ Ð½Ð°Ð²ÐµÐ´ÐµÐ½Ð¸Ð¸ */
 }
+
 @media (max-width: 699px) {
     .top-right-menu {
         opacity: 0;
         visibility: hidden;
-        transition: opacity 0.5s, visibility 0s 0s; /* Убираем задержку при показе */
+        transition: opacity 0.5s, visibility 0s 0s;
+        /* Ð£Ð±Ð¸Ñ€Ð°ÐµÐ¼ Ð·Ð°Ð´ÐµÑ€Ð¶ÐºÑƒ Ð¿Ñ€Ð¸ Ð¿Ð¾ÐºÐ°Ð·Ðµ */
         pointer-events: none;
     }
 }
+
 .dropbtn:focus {
     outline: none;
 }
+
 .language-link {
     text-decoration: none;
-    color: #d2d2d2; /* Цвет текста */
-    padding: 8px 15px; /* Внутренние отступы для создания пространства вокруг текста */
+    color: #d2d2d2;
+    /* Ð¦Ð²ÐµÑ‚ Ñ‚ÐµÐºÑÑ‚Ð° */
+    padding: 8px 15px;
+    /* Ð’Ð½ÑƒÑ‚Ñ€ÐµÐ½Ð½Ð¸Ðµ Ð¾Ñ‚ÑÑ‚ÑƒÐ¿Ñ‹ Ð´Ð»Ñ ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ñ Ð¿Ñ€Ð¾ÑÑ‚Ñ€Ð°Ð½ÑÑ‚Ð²Ð° Ð²Ð¾ÐºÑ€ÑƒÐ³ Ñ‚ÐµÐºÑÑ‚Ð° */
     font-size: 16px;
-    border: 2px solid rgba(210, 210, 210, 0.5); /* Прозрачная серебристая рамка */
-    border-radius: 8px; /* Скругление углов рамки */
-    transition: color 0.3s, border-color 0.3s; /* Плавное изменение цвета и рамки */
+    border: 2px solid rgba(210, 210, 210, 0.5);
+    /* ÐŸÑ€Ð¾Ð·Ñ€Ð°Ñ‡Ð½Ð°Ñ ÑÐµÑ€ÐµÐ±Ñ€Ð¸ÑÑ‚Ð°Ñ Ñ€Ð°Ð¼ÐºÐ° */
+    border-radius: 8px;
+    /* Ð¡ÐºÑ€ÑƒÐ³Ð»ÐµÐ½Ð¸Ðµ ÑƒÐ³Ð»Ð¾Ð² Ñ€Ð°Ð¼ÐºÐ¸ */
+    transition: color 0.3s, border-color 0.3s;
+    /* ÐŸÐ»Ð°Ð²Ð½Ð¾Ðµ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ðµ Ñ†Ð²ÐµÑ‚Ð° Ð¸ Ñ€Ð°Ð¼ÐºÐ¸ */
 }
 
 .language-link:hover {
-    color: #ffffff; /* Светлее при наведении */
-    border-color: rgba(255, 255, 255, 0.75); /* Более яркая и более прозрачная рамка при наведении */
+    color: #ffffff;
+    /* Ð¡Ð²ÐµÑ‚Ð»ÐµÐµ Ð¿Ñ€Ð¸ Ð½Ð°Ð²ÐµÐ´ÐµÐ½Ð¸Ð¸ */
+    border-color: rgba(255, 255, 255, 0.75);
+    /* Ð‘Ð¾Ð»ÐµÐµ ÑÑ€ÐºÐ°Ñ Ð¸ Ð±Ð¾Ð»ÐµÐµ Ð¿Ñ€Ð¾Ð·Ñ€Ð°Ñ‡Ð½Ð°Ñ Ñ€Ð°Ð¼ÐºÐ° Ð¿Ñ€Ð¸ Ð½Ð°Ð²ÐµÐ´ÐµÐ½Ð¸Ð¸ */
 }
+
 .ScrollDown {
     position: absolute;
     bottom: 12.5vw;
@@ -274,29 +349,42 @@ transition: opacity 0.8s ease-in-out; /* Плавное изменение opaci
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0; /* Начальное состояние прозрачности, чтобы элемент был невидим сначала */
+    opacity: 0;
+    /* ÐÐ°Ñ‡Ð°Ð»ÑŒÐ½Ð¾Ðµ ÑÐ¾ÑÑ‚Ð¾ÑÐ½Ð¸Ðµ Ð¿Ñ€Ð¾Ð·Ñ€Ð°Ñ‡Ð½Ð¾ÑÑ‚Ð¸, Ñ‡Ñ‚Ð¾Ð±Ñ‹ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚ Ð±Ñ‹Ð» Ð½ÐµÐ²Ð¸Ð´Ð¸Ð¼ ÑÐ½Ð°Ñ‡Ð°Ð»Ð° */
 }
 
 @keyframes fadeInOut {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 0;
     }
+
     50% {
         opacity: 1;
     }
 }
+
 p {
-    color: #e1e1e1; /* Основной цвет текста */
-    font-size: 16px; /* Размер шрифта */
-    text-align: center; /* Центрирование текста */
+    color: #e1e1e1;
+    /* ÐžÑÐ½Ð¾Ð²Ð½Ð¾Ð¹ Ñ†Ð²ÐµÑ‚ Ñ‚ÐµÐºÑÑ‚Ð° */
+    font-size: 16px;
+    /* Ð Ð°Ð·Ð¼ÐµÑ€ ÑˆÑ€Ð¸Ñ„Ñ‚Ð° */
+    text-align: center;
+    /* Ð¦ÐµÐ½Ñ‚Ñ€Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ñ‚ÐµÐºÑÑ‚Ð° */
 }
+
 .page2-container span {
-    display:inline; /* Блочный элемент, чтобы занимать всю ширину и быть на отдельной строке */
-    color: rgb(227 63 123); /* Цвет первой строки, синий */
-    font-size: 24px; /* Размер шрифта первой строки */
-    font-weight: bold; /* Жирное начертание */
+    display: inline;
+    /* Ð‘Ð»Ð¾Ñ‡Ð½Ñ‹Ð¹ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð·Ð°Ð½Ð¸Ð¼Ð°Ñ‚ÑŒ Ð²ÑÑŽ ÑˆÐ¸Ñ€Ð¸Ð½Ñƒ Ð¸ Ð±Ñ‹Ñ‚ÑŒ Ð½Ð° Ð¾Ñ‚Ð´ÐµÐ»ÑŒÐ½Ð¾Ð¹ ÑÑ‚Ñ€Ð¾ÐºÐµ */
+    color: rgb(227 63 123);
+    /* Ð¦Ð²ÐµÑ‚ Ð¿ÐµÑ€Ð²Ð¾Ð¹ ÑÑ‚Ñ€Ð¾ÐºÐ¸, ÑÐ¸Ð½Ð¸Ð¹ */
+    font-size: 24px;
+    /* Ð Ð°Ð·Ð¼ÐµÑ€ ÑˆÑ€Ð¸Ñ„Ñ‚Ð° Ð¿ÐµÑ€Ð²Ð¾Ð¹ ÑÑ‚Ñ€Ð¾ÐºÐ¸ */
+    font-weight: bold;
+    /* Ð–Ð¸Ñ€Ð½Ð¾Ðµ Ð½Ð°Ñ‡ÐµÑ€Ñ‚Ð°Ð½Ð¸Ðµ */
     margin: 0 5px;
-} 
+}
 
 .page2-container {
     width: 100%;
@@ -304,7 +392,8 @@ p {
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 960px; /* или другое значение, подходящее для вашего дизайна */
+    max-width: 960px;
+    /* Ð¸Ð»Ð¸ Ð´Ñ€ÑƒÐ³Ð¾Ðµ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ, Ð¿Ð¾Ð´Ñ…Ð¾Ð´ÑÑ‰ÐµÐµ Ð´Ð»Ñ Ð²Ð°ÑˆÐµÐ³Ð¾ Ð´Ð¸Ð·Ð°Ð¹Ð½Ð° */
 }
 
 .text-container {
@@ -316,26 +405,29 @@ p {
 .chart-container {
     transform: translateY(10%);
     width: 100%;
-    max-height: 800px;            
+    max-height: 800px;
     height: auto !important;
 }
 
 #fileCountChart {
     width: 100% !important;
 }
+
 #page3 .page3-container {
     width: 80%;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 960px; /* или другое значение, подходящее для вашего дизайна */
+    max-width: 960px;
+    /* Ð¸Ð»Ð¸ Ð´Ñ€ÑƒÐ³Ð¾Ðµ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ, Ð¿Ð¾Ð´Ñ…Ð¾Ð´ÑÑ‰ÐµÐµ Ð´Ð»Ñ Ð²Ð°ÑˆÐµÐ³Ð¾ Ð´Ð¸Ð·Ð°Ð¹Ð½Ð° */
 }
 
 #page3 .text-container {
     text-align: center;
     margin-bottom: 20px;
 }
+
 .animated-block {
     position: fixed;
     width: 100%;
@@ -343,9 +435,12 @@ p {
     z-index: 10;
     transition: transform 0.1s ease-in-out;
     top: 0;
-    transform: translateY(-200%); /* Убедитесь, что блоки изначально не видны */
-    display: block; /* Убедитесь, что блоки не скрыты другим свойством display */
+    transform: translateY(-200%);
+    /* Ð£Ð±ÐµÐ´Ð¸Ñ‚ÐµÑÑŒ, Ñ‡Ñ‚Ð¾ Ð±Ð»Ð¾ÐºÐ¸ Ð¸Ð·Ð½Ð°Ñ‡Ð°Ð»ÑŒÐ½Ð¾ Ð½Ðµ Ð²Ð¸Ð´Ð½Ñ‹ */
+    display: block;
+    /* Ð£Ð±ÐµÐ´Ð¸Ñ‚ÐµÑÑŒ, Ñ‡Ñ‚Ð¾ Ð±Ð»Ð¾ÐºÐ¸ Ð½Ðµ ÑÐºÑ€Ñ‹Ñ‚Ñ‹ Ð´Ñ€ÑƒÐ³Ð¸Ð¼ ÑÐ²Ð¾Ð¹ÑÑ‚Ð²Ð¾Ð¼ display */
 }
+
 .animated-block {
     position: fixed;
     width: 100%;
@@ -354,27 +449,29 @@ p {
     transition: transform 5.5s ease-in-out;
     top: 0;
     transform: translateY(200%);
-    pointer-events: none; 
-  
-}.red-block {
+    pointer-events: none;
+
+}
+
+.red-block {
     background-color: #0000008f;
-     height: 50%;
+    height: 50%;
     width: 100%;
-     top: 10%;
+    top: 10%;
 }
 
 .green-block {
     background-color: #00000000;
-   height: 50%;
-     top: 40%;
+    height: 50%;
+    top: 40%;
     width: 100%;
 }
 
 .blue-block {
-   
+
     background-color: #4d4d4d00;
     height: 40%;
     width: 100%;
 
-     top: 30%;
+    top: 30%;
 }
