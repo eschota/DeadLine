@@ -16,6 +16,9 @@ internal static class TSParse
 {
             private static List<string> pages= new List<string>();
             
+
+
+     
       public static async Task <bool> ParseTopPages(string[] dirs)
       {
         Stopwatch stopwatch = new Stopwatch();
@@ -89,10 +92,7 @@ internal static class TSParse
                     DateTime newdate = File.GetCreationTime(page);
 
 
-                    if(product.ProductID== 2213721)
-                    {
-                        ;
-                    }
+                    
                     var cert = node.SelectSingleNode(".//div[contains(@class, 'certifications')]");
                     
                     if (cert != null)

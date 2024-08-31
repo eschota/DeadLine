@@ -20,6 +20,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using Newtonsoft.Json.Linq;
 using Telegram.Bot.Requests;
 using Telegram.Bot.Types.ReplyMarkups;
+using System.Text.Json.Nodes;
 internal static class Chat
 {
     internal static TelegramBotClient Bot;
@@ -32,7 +33,56 @@ internal static class Chat
             //Console.WriteLine($"update.Type: {update.Type}: update.Message.Chat.Id {update.Message.Chat.Id}:update.Message {update.Message.Text}");
             await Buttons.HandleUpdateAsync(update);
             if (update.Type == UpdateType.Message)
+             
             {
+
+              //  if(await FilesManager.IsCreate(update.Message)==true) return;
+               // if(Games.GetGame(update.Message)==true) return;
+                if ( update.Message.Text!=null) Console.WriteLine(update.Message.Text);
+                bool isGif = update.Message.Text != null && Regex.IsMatch(update.Message.Text.ToLower(), @"\b(гиф)\b");
+                if (isGif)
+                {
+                    string ms = update.Message.Text.ToLower();
+                    string p = GetImagePath();
+                    string lin = Path.Combine(@"https://renderfin.com/Sites/Imagine/", Path.GetFileName(p));
+                    ms = await OpenAIClient.AskOpenAI(Clear($"по указанному тексту создай промпт для Stable Diffusion, добавь для запроса некоторые детали, отвечай только одной строкой ответа на английском языке: [{ ms}]", new string[] { "гиф", "бот" }));
+                    await StableDiffusion.StableDiffusionGif(ms, "", p,  0);
+
+                    //                await Bot.SendAnimationAsync(
+                    //chatId: update.Message.Chat.Id,
+                    //animation: InputFile.FromUri(lin),
+                    //caption: $"{update.Message.Text}: {ms}");
+                    await Bot.SendVideoAsync(
+                    chatId: update.Message.Chat.Id,
+                    video: new InputFileStream(new FileStream(p, FileMode.Open, FileAccess.Read, FileShare.Read)),
+                    caption: $"{update.Message.Text}: {ms}");
+
+
+
+                    //await SendPhotoMessage(update.Message.Chat.Id,p, ms,"","");
+                    return;
+                }
+                if (await isSkazka(update.Message)) return;
+                     bool isImg = update.Message.Text != null && Regex.IsMatch(update.Message.Text.ToLower(), @"\b(картинка|нарисуй)\b");
+                if (isImg)
+                {
+                    await GenerateGalleryAnswer(update.Message);
+                    return;
+                }
+                bool isLLama  = update.Message.Text != null && Regex.IsMatch(update.Message.Text.ToLower(), @"\b(лама|ллама)\b");
+                if(isLLama)
+                {
+                    string ms = update.Message.Text.ToLower(); try { ms = ms.Replace("ллама", ""); }catch { };
+                    ms = "["+ms+"]"+ " : [ГЛАВНЫЙ ВОПРОС] \n\n\n\n. Для понимания используй историю из этого чата: \n[" + GetChatHistoryFiles(update.Message) + "]\n. НО ЭТА ИСТОРИЯ НЕ ОБЯЗАТЕЛЬНА, ОНА ПРОСТО ВСПОМОГАТЕЛЬНАЯ. ОТВЕЧАЙ ТОЛЬКО НА [ГЛАВНЫЙ ВОПРОС]";
+                    ms = await Ollama.AskLLama(ms);
+                    ms = await TranslateText(ms,"ru");
+                    if (ms.Length > 4000) ms.Substring(0, 3999);
+                    await Bot.SendTextMessageAsync(update.Message.Chat.Id, ms, parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown, disableNotification: true);
+                    return;
+                }
+
+
+
                 bool isAudio = update.Message.Type == MessageType.Voice;
                 bool isGroupChat = update.Message.Chat.Type != ChatType.Private;
                 bool containsBotKeyword = update.Message.Text != null && Regex.IsMatch(update.Message.Text.ToLower(), @"\bбот\b");
@@ -72,34 +122,25 @@ internal static class Chat
         }
         catch { }
     }
-    public static string GetChatHistoryFiles(string chatHistoryPath, int MessageCount)
+
+    public static string GetImagePath()
     {
+        string fName = $"{DateTime.Now:yyyyMMdd_HHmmssfff}.gif";
+        string filePath = Path.Combine(Paths.Imagine, fName);
+        return filePath;
+    }
+    public static string GetChatHistoryFiles( Message message)
+    {
+        bool isGroupChat = message.Chat.Type != ChatType.Private;
+        string chatHistoryPath = "";
 
-        if (!Directory.Exists(chatHistoryPath))
-        {
-            Logger.AddLog("No history available.");
-            return "";
-        }
+        if (isGroupChat)
+            chatHistoryPath = Path.Combine(Paths.Chats, "history_" + message.Chat.Title + ".json");
+        else
+            chatHistoryPath = Path.Combine(GetChatPath(message), "history.json");
 
-        // Get all files in the directory, ordered by creation time (oldest first)
-        var allFiles = Directory.GetFiles(chatHistoryPath)
-            .Select(filePath => new FileInfo(filePath))
-            .OrderBy(fileInfo => fileInfo.CreationTime)
-            .ToList();
 
-        // Ensure MessageCount does not exceed the number of files
-        if (MessageCount > allFiles.Count)
-        {
-            MessageCount = allFiles.Count;
-        }
-
-        // Take the latest 'MessageCount' files
-        var fileContents = allFiles
-            .TakeLast(MessageCount)
-            .Select(fileInfo => System.IO.File.ReadAllText(fileInfo.FullName));
-
-        // Concatenate all file contents
-        return string.Join(Environment.NewLine, fileContents).ToLower().Replace("нарисуй", "");
+        return System.IO.File.ReadAllText(chatHistoryPath);
     }
 
     static void SaveMessageToHistory(Message message)
@@ -131,7 +172,7 @@ internal static class Chat
         }
 
 
-        LimitLinesInFile(chatHistoryPath, 1000);
+        LimitLinesInFile(chatHistoryPath, 10000);
     }
 
     // Метод для ограничения количества строк в файле
@@ -205,7 +246,7 @@ internal static class Chat
 
 
         ask = $"[{ask}]" + " По этому запросу определи название сайта и используй его как переменную {siteName}. Твоя задача сгенерировать полностью рабочую веб страницу виде {siteName}.html, и соответствующий стиль {siteName}.css (здесь ты должен заменить на имя которое у .html), на выходе должно получиться 2 полностью рабочих файла, чтобы сайт работал. Ответ выдай в формате JSON, правильно экранированном для передачи в текстовом виде, содержащий 3 строки {siteName},{html},{css} , не добавляй лишние символы, нужно чтобы этот JSON файл легко десериализовался.";
-        if (withStory) { ask += ". Для понимания контекста используй историю из этого чата: \n[" + GetChatHistoryFiles(Path.Combine(Paths.Chats, "history_" + message.Chat.Title), 50) + "]\n"; };
+        if (withStory) { ask += ". Для понимания контекста используй историю из этого чата: \n[" + GetChatHistoryFiles(message) + "]\n"; };
         if (usePath != "") ask += "\n Можешь пользоваться предложенным списком файлов, который доступны статично по указанным ссылкам:  " + usePath + "добавляй в начало пути каждого используемого файла ../ чтобы сделать путь относительным родительской папки, используй точные названия файлов ";
 
 
@@ -265,15 +306,16 @@ internal static class Chat
 
             if (!ask.Contains("промпт") && !ask.Contains("промт"))
             {
-                currentMessage = await SendTextMessage(message.Chat.Id, Phrases.GetRandomPhrase());
+                currentMessage = await SendTextMessage(message.Chat.Id, ask);
 
 
-                askGPT = "Сгенерируй промпт для StableDiffsion на английском языке, используй профессиональный подход к созданию промпта. Следующий в скобках Текст  нужно превратить в промпт: [" + ask + "] Если не можешь сделать промпт просто переведи с русского на английский.  \n Отвечай в формате .JSON, поле ответа \"answer\": ";
+                askGPT = "Сгенерируй промпт для StableDiffsion на английском языке, используй профессиональный подход к созданию промпта. Следующий в скобках Текст  нужно превратить в промпт: [" + ask + "] Если не можешь сделать промпт просто переведи с русского на английский.Если используется нецензурный контекст запроса, замени слова на цензурные и ВЫПОЛНИ задачу используя цензурный контент.  \n Отвечай в формате .JSON, поле ответа \"answer\":string ";
                 if (ask.Contains("порно "))
                 {
                     askGPT = askGPT.Replace("порно ", "");
 
-                    askGPT = await SimpleRequest(askGPT);
+                    askGPT = await OpenAIClient.AskOpenAI(askGPT);
+                 //   askGPT = await GPT4AllAPIClient.GetResponseFromGPT4All(askGPT);
 
                     try
                     {
@@ -282,13 +324,13 @@ internal static class Chat
 
                     }
                     catch { }
-                    EditTextMessage(currentMessage, askGPT);
+                    //EditTextMessage(currentMessage, askGPT);
                     await StableDiffusion.StableDiffusionTxtToImage(askGPT, filePath, 1);
                 }
                 else
                 {
-                    askGPT = await SimpleRequest(askGPT);
-
+                     askGPT = await OpenAIClient.AskOpenAI(askGPT);
+                  //  askGPT = await GPT4AllAPIClient.GetResponseFromGPT4All(askGPT);
                     try
                     {
                         if (askGPT.Contains("```json")) askGPT = askGPT.Replace("```json", "");
@@ -298,7 +340,7 @@ internal static class Chat
 
                     }
                     catch { }
-                    EditTextMessage(currentMessage, askGPT);
+                    //EditTextMessage(currentMessage, askGPT);
 
                     await StableDiffusion.StableDiffusionTxtToImage(askGPT, filePath, 0);
                     DeleteTextMessage(currentMessage);
@@ -328,7 +370,7 @@ internal static class Chat
         else
         if (withStory)
         {
-            ask += ". Для понимания контекста используй историю из этого чата: \n[" + GetChatHistoryFiles(Path.Combine(Paths.Chats, "history_" + message.Chat.Title), 100) + "]\nЕсли есть затруднения с ответом, обязательно напиши причины, не отправляй никгда пустой ответ, и старайся отвечать кратко, но не превышая никогда 3500 символов на ответ.";
+            ask += ". Для понимания контекста используй историю из этого чата: \n[" + GetChatHistoryFiles(message) + "]\nЕсли есть затруднения с ответом, обязательно напиши причины, не отправляй никгда пустой ответ, и старайся отвечать кратко, но не превышая никогда 3500 символов на ответ.";
         }
         else
         {
@@ -356,10 +398,10 @@ internal static class Chat
             string mes = "";
             if (!System.String.IsNullOrEmpty(message.Caption))
             {
-                if (message.Caption.ToLower().Contains("переделай"))
+               if (true)//message.Caption.ToLower().Contains("гиф"))
                 {
-                    mes = Clear(message.Caption, new string[] { "переделай", "бот", "нарисуй" });
-                    mes = await SimpleRequest($"переведи запрос на английский язык, вот запрос: ({mes}), ответ предоставь одной строчкой, только полученный перевод запроса.");
+                    mes = Clear(message.Caption, new string[] { "гиф", "бот", "нарисуй" });
+                    mes = await OpenAIClient.AskOpenAI($"переведи запрос на английский язык, вот запрос: ({mes}), ответ предоставь одной строчкой, только полученный перевод запроса.");
 
                     string fName = imagePath.Replace(".jpg", "_repaint.jpg");
                     await StableDiffusion.StableDiffusionImgToImg(mes, imagePath, fName, 3);
@@ -369,16 +411,12 @@ internal static class Chat
                         {
                             Message mM;
                             string ServerRelativePath = "../Imagine/" + System.IO.Path.GetFileName(Path.Combine(Paths.Imagine, fName));
-                            using (Stream stream = System.IO.File.OpenRead(fName))
-                            {
-                                mM = await Bot.SendPhotoAsync(
-                                chatId: message.Chat.Id,
-                                photo: InputFile.FromStream(stream, "filename.jpg"), // Здесь необходимо указать имя файла
-                                caption: $"@{message.From.Username}: [{ServerRelativePath}]\n{message.Text} *{stopwatch.Elapsed.TotalSeconds.ToString("00")}*",
-                                disableNotification: true,
-                                parseMode: ParseMode.Markdown
-                            );
-                            };
+
+                            await SendPhotoMessage(message.Chat.Id, fName,mes,"","");
+                       //     await Bot.SendVideoAsync(
+                       //chatId: message.Chat.Id,
+                       //video: new InputFileStream(new FileStream(fName, FileMode.Open, FileAccess.Read, FileShare.Read)),
+                       //caption: $"{message.Text}: {mes}");
                         }
                         else
                         {
@@ -426,7 +464,11 @@ internal static class Chat
             }
             else
             {
-                m.Add(await ReceiveText(message, stopwatch, ask, withStory));
+                string askAI = await OpenAIClient.AskOpenAI(message.Text);
+
+                message.Text=askAI;
+                await GenerateGalleryAnswer(message, askAI);
+                return;
             }
         }
 
@@ -434,31 +476,31 @@ internal static class Chat
 
         if (message.Type == MessageType.Voice)
         {
-            if (message.Chat.Type == ChatType.Private) m.Add(await Bot.SendTextMessageAsync(message.Chat.Id, "Распознаю вашу бессвязную речь, 60 сек.", parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown));
+        //    if (message.Chat.Type == ChatType.Private) m.Add(await Bot.SendTextMessageAsync(message.Chat.Id, "Распознаю вашу бессвязную речь, 60 сек.", parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown));
 
-            string audioPath = await LoadAudio(message);
+        //    string audioPath = await LoadAudio(message);
 
-            string text = Audio.ConvertOggToWav(audioPath);
+        //    string text = Audio.ConvertOggToWav(audioPath);
 
-            byte[] questionBytes = System.Text.Encoding.UTF8.GetBytes(ask);
-            byte[] compressedQuestionBytes = CompressGzip(questionBytes);
-            string compressedQuestionBase64 = Convert.ToBase64String(compressedQuestionBytes);
-            if (System.String.IsNullOrEmpty(text))
-                await Bot.SendTextMessageAsync(message.Chat.Id, "Audio not recognized!", parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown);
+        //    byte[] questionBytes = System.Text.Encoding.UTF8.GetBytes(ask);
+        //    byte[] compressedQuestionBytes = CompressGzip(questionBytes);
+        //    string compressedQuestionBase64 = Convert.ToBase64String(compressedQuestionBytes);
+        //    if (System.String.IsNullOrEmpty(text))
+        //        await Bot.SendTextMessageAsync(message.Chat.Id, "Audio not recognized!", parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown);
 
 
-            if (message.Chat.Type == ChatType.Private) 
-        { 
-            string response = ConnectToOpenAI_App("", compressedQuestionBase64, "");
-            try
-            {
-                await Bot.SendTextMessageAsync(message.Chat.Id, response + $"P{text} *{stopwatch.Elapsed.TotalSeconds.ToString("00")}s*", parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            } 
-        }
+        //    if (message.Chat.Type == ChatType.Private) 
+        //{ 
+        //    string response = ConnectToOpenAI_App("", compressedQuestionBase64, "");
+        //    try
+        //    {
+        //        await Bot.SendTextMessageAsync(message.Chat.Id, response + $"P{text} *{stopwatch.Elapsed.TotalSeconds.ToString("00")}s*", parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.ToString());
+        //    } 
+        //}
         }
         // foreach (var item in m)
         try
@@ -842,7 +884,8 @@ internal static class Chat
                 }
             }
         }
-        catch (Exception ex) { Console.WriteLine("Exception: " + ex.Message); }
+        catch (Exception ex) 
+        { Console.WriteLine("Exception: " + ex.Message); }
     }
 
     static internal void TelegramBot(string token)
@@ -969,7 +1012,8 @@ internal static class Chat
         Message m = null;
         try
         {
-            m = await Bot.SendTextMessageAsync(chatID, Phrases.Narisuy[new Random().Next(Phrases.Narisuy.Length)], parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown,disableNotification: true);
+            //m = await Bot.SendTextMessageAsync(chatID, Phrases.Narisuy[new Random().Next(Phrases.Narisuy.Length)], parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown,disableNotification: true);
+            m = await Bot.SendTextMessageAsync(chatID, await Ollama.AskLLama("напиши смешную очень короткую шутку для программистов и дизайнеров на русском языке, на основе запроса: "+message), parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown,disableNotification: true);
         }
         catch (Exception e)
         {
@@ -1006,7 +1050,7 @@ internal static class Chat
         try
         {
             string ServerRelativePath = "../Imagine/" + System.IO.Path.GetFileName(filePath);
-            var inlineKeyboard = CreateInlineKeyboard("Повторить!", ServerRelativePath);
+            //var inlineKeyboard = CreateInlineKeyboard("Повторить!", ServerRelativePath);
 
            
             
@@ -1017,8 +1061,8 @@ internal static class Chat
                 photo: InputFile.FromStream(stream, "filename.jpg"), // Здесь необходимо указать имя файла
                 caption: $"{username} {Caption}\n{prompt}",
                 disableNotification: true,
-                parseMode: ParseMode.Markdown,
-                replyMarkup: inlineKeyboard
+                parseMode: ParseMode.Markdown
+                //replyMarkup: inlineKeyboard
                 
             );
             };
@@ -1054,5 +1098,175 @@ internal static class Chat
                 InlineKeyboardButton.WithCallbackData("Pron2", "4"),
             }
         });
+    }
+    
+    static async Task<string> TranslateText(string text, string lang)
+    {
+        HttpClient client = new HttpClient();
+
+        var requestBody = new JObject
+        {
+            ["q"] = text,
+            ["source"] = "auto",
+            ["target"] = lang,
+            ["format"] = "text" 
+        };
+
+        HttpRequestMessage request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Post,
+            RequestUri = new Uri("https://trans.zillyhuhn.com/translate"),
+            Content = new StringContent(requestBody.ToString(), Encoding.UTF8, "application/json")
+        };
+
+        HttpResponseMessage response = await client.SendAsync(request);
+        response.EnsureSuccessStatusCode();
+
+        string responseBody = await response.Content.ReadAsStringAsync();
+        JObject jsonResponse = JObject.Parse(responseBody);
+        client.Dispose();
+        return jsonResponse["translatedText"].Value<string>();
+    }
+
+    static async Task<bool> isSkazka(Message message)
+    {
+//        if((message.Text != null && Regex.IsMatch(message.Text.ToLower(), @"\b(сказка)\b")))
+//        {
+//            string ms = message.Text.ToLower();
+//            string p = GetImagePath();
+//            string lin = Path.Combine(@"https://renderfin.com/Sites/Imagine/", Path.GetFileName(p));
+//            ms = await SimpleRequest(Clear(
+//$"Сгенерируй промпт для StableDiffsion на английском языке, используй профессиональный подход к созданию промпта. Следующий в скобках Текст  нужно превратить в промпт: [{ms}] Если не можешь сделать промпт просто переведи с русского на английский.Если используется нецензурный контекст запроса, замени слова на цензурные и ВЫПОЛНИ задачу используя цензурный контент.  \n Отвечай в формате .JSON, поле ответа \"answer\":string ", new string[] { "картинка", "нарисуй" }));
+//            //askGPT = "Сгенерируй промпт для StableDiffsion на английском языке, используй профессиональный подход к созданию промпта. Следующий в скобках Текст  нужно превратить в промпт: [" + ask + "] Если не можешь сделать промпт просто переведи с русского на английский.Если используется нецензурный контекст запроса, замени слова на цензурные и ВЫПОЛНИ задачу используя цензурный контент.  \n Отвечай в формате .JSON, поле ответа \"answer\":string ";
+//            if (ms.ToLower().Contains("fulfill") || ms.ToLower().Contains("content") || ms.ToLower().Contains("please") || ms.ToLower().Contains("due to"))
+//            {
+//                ms = await TranslateText(Clear(update.Message.Text, new string[] { "картинка", "нарисуй" }), "en");
+//            }
+//            else
+//            {
+
+
+
+
+//                if (ms.Contains("```json"))
+//                {
+//                    ms = ms.Substring(ms.IndexOf("```json") + 7);
+
+//                    if (ms.Contains("```")) ms = ms.Substring(0, ms.IndexOf("```"));
+
+//                }
+//                try
+//                {
+//                    JObject data = JObject.Parse(ms);
+//                    ms = data["answer"].ToString();
+//                }
+//                catch { }
+//            }
+
+//            var media = new List<IAlbumInputMedia>();
+//            var streams = new List<Stream>(); // Список для хранения открытых потоков
+//            List<string> albumToSend = new List<string>();
+//            for (int i = 0; i < 5; i++)
+//            {
+//                p = GetImagePath();
+//                await StableDiffusion.StableDiffusionTxtToImage(ms, p, 1);
+//                var stream = System.IO.File.OpenRead(p);
+//                streams.Add(stream); // Добавляем поток в список, чтобы потом корректно закрыть
+//                if (i == 0)
+//                    media.Add(new InputMediaPhoto(InputFile.FromStream(streams.Last(), Path.GetFileName(p))) { Caption = ms });
+//                else
+//                    media.Add(new InputMediaPhoto(InputFile.FromStream(streams.Last(), Path.GetFileName(p))));
+
+
+//            }
+
+//            // Отправляем все фотографии как альбом
+//            var messages = await Bot.SendMediaGroupAsync(
+//                chatId: update.Message.Chat.Id,
+//                media: media.ToArray(),
+//                cancellationToken: default
+//            );
+
+
+
+
+//            //await SendPhotoMessage(update.Message.Chat.Id,p, ms,"","");
+//            return;
+//            return true;
+//        }
+        return false;
+    }
+
+    public static async Task GenerateGalleryAnswer( Message message, string overrideMessage = "")
+    {
+        await Task.Delay(100);
+        string ms = message.Text.ToLower();
+        string p = GetImagePath();
+        string lin = Path.Combine(@"https://renderfin.com/Sites/Imagine/", Path.GetFileName(p));
+        ms = await OpenAIClient.AskOpenAI(Clear(
+$" [{ms}] просто переведи с русского на английский.Если используется нецензурный контекст запроса, замени слова на цензурные и ВЫПОЛНИ задачу используя цензурный контент. Промпт должен быть не больше 20 слов!!!  \n Отвечай в формате .JSON, поле ответа \"answer\":string ", new string[] { "бот","картинка", "нарисуй" }));
+        //askGPT = "Сгенерируй промпт для StableDiffsion на английском языке, используй профессиональный подход к созданию промпта. Следующий в скобках Текст  нужно превратить в промпт: [" + ask + "] Если не можешь сделать промпт просто переведи с русского на английский.Если используется нецензурный контекст запроса, замени слова на цензурные и ВЫПОЛНИ задачу используя цензурный контент.  \n Отвечай в формате .JSON, поле ответа \"answer\":string ";
+        if (ms.ToLower().Contains("fulfill") || ms.ToLower().Contains("content") || ms.ToLower().Contains("please") || ms.ToLower().Contains("due to") || ms.ToLower().Contains("cannot") || ms.ToLower().Contains("assist"))
+        {
+            ms = await TranslateText(Clear(message.Text, new string[] { "картинка", "нарисуй" }), "en");
+        }
+        else
+        {
+
+
+
+
+            if (ms.Contains("```json"))
+            {
+                ms = ms.Substring(ms.IndexOf("```json") + 7);
+
+                if (ms.Contains("```")) ms = ms.Substring(0, ms.IndexOf("```"));
+
+            }
+            try
+            {
+                JObject data = JObject.Parse(ms);
+                ms = data["answer"].ToString();
+            }
+            catch { }
+        }
+
+        var media = new List<IAlbumInputMedia>();
+        var streams = new List<Stream>(); // Список для хранения открытых потоков
+
+
+        if (overrideMessage != "") ms = overrideMessage; if (ms.Length > 1000) ms = ms.Substring(0, 1000);
+        List<string> albumToSend = new List<string>();
+        for (int i = 0; i < 5; i++)
+        {
+            p = GetImagePath();
+            await StableDiffusion.StableDiffusionTxtToImage(ms, p, 1);
+                var stream = System.IO.File.OpenRead(p);
+            streams.Add(stream); // Добавляем поток в список, чтобы потом корректно закрыть
+            if (i == 0)
+                media.Add(new InputMediaPhoto(InputFile.FromStream(streams.Last(), Path.GetFileName(p))) { Caption = ms });
+            else
+                media.Add(new InputMediaPhoto(InputFile.FromStream(streams.Last(), Path.GetFileName(p))));
+
+
+        }
+        try
+        {
+            // Отправляем все фотографии как альбом
+            var messages = await Bot.SendMediaGroupAsync(
+                chatId: message.Chat.Id,
+                media: media.ToArray(),
+                cancellationToken: default
+            );
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+
+
+        //await SendPhotoMessage(update.Message.Chat.Id,p, ms,"","");
+        
     }
 }

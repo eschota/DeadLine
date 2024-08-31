@@ -10,7 +10,9 @@ using static Worker.Page;
  
     public class Site
     {
-        public DateTime LastParse
+    public List<Page> LocalPages= new List<Page>();
+
+    public DateTime LastParse
     {
         get
         {
@@ -35,7 +37,7 @@ using static Worker.Page;
     }
         public List<Product> products = new List<Product>();
         public string SiteName ="TurboSquid";
-        public string Url = "https://www.turbosquid.com/Search/Index.cfm?page_num=1&size=200";
+        public string Url = "https://www.turbosquid.com/Search/3D-Models?media_typeid=2&page_num=1";
         
         public int PagesToParse = 500;
         public string RawFolder => Path.Combine(AppContext.BaseDirectory, "Parse", SiteName, "RawData");
@@ -52,7 +54,8 @@ using static Worker.Page;
         public string ProductPagesFolder => Path.Combine(AppContext.BaseDirectory, "Parse", SiteName, "ProductPages");
 
         public List<int> pageIds = new List<int>(); 
-        public Site (string _name, int _pages,string url = "https://www.turbosquid.com/Search/Index.cfm?page_num=1&size=200")
+        //public Site (string _name, int _pages,string url = "https://www.turbosquid.com/Search/Index.cfm?page_num=1&size=100")
+        public Site (string _name, int _pages,string url = "https://www.turbosquid.com/Search/3D-Models?media_typeid=2&page_num=1")
             {
                 SiteName = _name;
                 PagesToParse = _pages;
@@ -75,8 +78,17 @@ using static Worker.Page;
         Worker.sites.Add(this);
                 
     }
+
+    public bool CheckPage(string p)
+    {
+        if (File.Exists(p)) return false;
+        else return true;
+    }
             public void FindPagesToParse()// Parse every page with minimal delay of 1-10 seconds, not more than 8 
-            {
+             {
+
+                pageIds.Clear();
+
                 string isParseCompleted = Path.Combine(Paths.ParseFolder, RawFolder, System.Text.RegularExpressions.Regex.Replace(DateTime.Now.Date.ToString("dd/MM/yyyy"), "[\\/:*?\"<>|]", "_"), "Completed.log");
                 if (File.Exists(isParseCompleted)) return;
 
@@ -84,7 +96,7 @@ using static Worker.Page;
 
 
                         for (int i = 1; i <= PagesToParse; i++) pageIds.Add(i);        
-                        pageIds = pageIds.OrderBy(x => Guid.NewGuid()).ToList();
+                        //pageIds = pageIds.OrderBy(x => Guid.NewGuid()).ToList();
 
                         foreach (int pageId in pageIds)
                         {
@@ -97,9 +109,11 @@ using static Worker.Page;
 
                             if (!Directory.Exists(Path.GetDirectoryName(filePage))) Directory.CreateDirectory(Path.GetDirectoryName(filePage));
 
-            if (!File.Exists(filePage)  && !Worker.pagesToParse.Any(p => p.filePage == filePage || p.url == url))
+            if (!File.Exists(filePage)) // && !Worker.pagesToParse.Any(p => p.filePage == filePage || p.url == url))
             {
-                Worker.pagesToParse.Add(new Worker.Page(url, this, filePage, pageType.Top));
+                if (SiteName != "TurboSquid")
+                    Worker.pagesToParse.Add(new Worker.Page(url, this, filePage, pageType.Top));
+                else LocalPages.Add((new Worker.Page(url, this, filePage, pageType.Top)));
             }
             
 

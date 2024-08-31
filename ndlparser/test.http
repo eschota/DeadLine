@@ -1,0 +1,13 @@
+POST https://renderfin.com/task-result
+Content-Type: application/json
+
+{
+  "installId": "install-id-123123123",
+  "taskId": "task-23423",
+  "taskResult": {
+    "html": "<html>...</html>"
+  },
+  "runningTasks": ["task-1", "task-2", "task-3"]
+}
+
+

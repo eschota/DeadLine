@@ -33,16 +33,16 @@ internal class Proxys
     {
         proxies.Clear();
         // нахуй GetProxyByFile("https://raw.githubusercontent.com/hookzof/socks5_list/master/proxy.txt");
-        GetProxyByFile("https://raw.githubusercontent.com/proxy4parsing/proxy-list/main/http.txt");
+        //   GetProxyByFile("https://raw.githubusercontent.com/proxy4parsing/proxy-list/main/http.txt");
 
         GetProxyByFile("https://raw.githubusercontent.com/jetkai/proxy-list/main/online-proxies/txt/proxies.txt");
         GetProxyByFile("https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/socks4.txt");
         GetProxyByFile("https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt");
         GetProxyByFile("https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/socks5.txt");
         GetProxyByFile("https://raw.githubusercontent.com/MuRongPIG/Proxy-Master/main/http.txt");
-   
 
-        proxies = proxies.OrderBy(x => Guid.NewGuid()).ToList();
+
+        //proxies = proxies.OrderBy(x => Guid.NewGuid()).ToList();
         GetProxyByFileWithAutorization();
     }
 

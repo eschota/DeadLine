@@ -1,3 +1,5 @@
+alert("Hello! I am an alert box!!");
+
 function showChart(container, posData, dateData) {
     console.log('Initializing chart display...');
     var chartCanvas = container.parentElement.querySelector('canvas');

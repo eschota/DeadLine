@@ -10,6 +10,9 @@ internal static class Paths
     "C:\\NoDeadLineTelegramBot\\NoDeadLineTelegramBot\\whisper"};
     internal static string AppPath => AppDomain.CurrentDomain.BaseDirectory; 
     internal static string Chats => Path.Combine(AppPath, "Chats");
+    internal static string Games => Path.Combine(AppPath, "Games");
+    internal static string CreatesDirectory => Path.Combine(AppPath, "Creates");
+    internal static string GamesPromts => Path.Combine(AppPath, "Games","Prompts");
     internal static string Sites => "c:\\DeadLine\\DeadLine\\NoDeadLineParser\\bin\\Debug\\net8.0\\wwwroot\\Sites\\";
     internal static string Imagine => "c:\\DeadLine\\DeadLine\\NoDeadLineParser\\bin\\Debug\\net8.0\\wwwroot\\Sites\\Imagine";
 
@@ -34,10 +37,23 @@ internal static class Paths
         {
             Directory.CreateDirectory(Chats);
         } 
+        if (!Directory.Exists(Games))
+        {
+            Directory.CreateDirectory(Games);
+        } if (!Directory.Exists(GamesPromts))
+        {
+            Directory.CreateDirectory(GamesPromts);
+        } 
         if (!Directory.Exists(Logs))
         {
             Directory.CreateDirectory(Logs);
+        }    
+        if (!Directory.Exists(CreatesDirectory))
+        {
+            Directory.CreateDirectory(CreatesDirectory);
         }
+        FilesManager.LoadCreates();
+
     }
     public static void LimitFileCountInDirectory(string directoryPath, int maxFiles = 500)
     {

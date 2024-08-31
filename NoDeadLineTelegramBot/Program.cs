@@ -4,16 +4,26 @@ using System.Runtime;
 using System.Text;
 using System.Reflection;
 using Python.Runtime;
-
+using System; 
 internal class Program
 {
-    internal static void Main(string[] args)
+    internal static async Task Main(string[] args)
     {
+
         Initialize(args);
         LoadChats();
-        TelegramBot(token);
+        //Games.LoadAllGames();
+        await SDAdapter.RestartStableDiffusion();
+
+        TelegramBot("7198960639:AAFTzz2ZcwggOErqLQpTUtywI__xO5BMsqM");
 
         Console.WriteLine("Hello, World!");
+
+        
+
+
+
+ 
 
         //try
         //{

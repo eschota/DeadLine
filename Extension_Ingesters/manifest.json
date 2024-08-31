@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Ingesters",
+  "version": "1.1",
+  "description": "Нет Дедлайнам!",
+  "icons": {
+    "128": "icon.png"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "tabs"
+  ],
+  "host_permissions": [
+    "*://accounts.stocksubmitter.com/*",
+    "*://qwertystock.com/*",
+    "*://renderfin.com/*",
+    "https://www.renderfin.com/cgtrends"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://qwertystock.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+}

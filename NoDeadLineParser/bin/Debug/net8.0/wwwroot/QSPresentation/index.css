@@ -12,7 +12,7 @@ html {
     padding: 0;
     min-height: 100%;
     background-color: #000000;
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Inter var', 'Inter', 'Roboto', sans-serif;
     color: white;
 }
 
@@ -25,10 +25,9 @@ button {
     overflow: hidden;
 }
 
-
 .state_1 {
+    pointer-events: none;
     transition: opacity 0.33s ease-in-out;
-    /* ÐŸÐ»Ð°Ð²Ð½Ð¾Ðµ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ðµ opacity Ð·Ð° 0.8 ÑÐµÐºÑƒÐ½Ð´ */
 }
 
 .state_2 {
@@ -59,6 +58,8 @@ button {
     left: 0;
 }
 
+
+/*
 .section {
     display: flex;
     align-items: center;
@@ -66,7 +67,7 @@ button {
     position: relative;
 }
 
-/* Ð£Ð´Ð°Ð»ÐµÐ½Ð¸Ðµ pointer-events: none; ÐµÑÐ»Ð¸ Ð½Ðµ Ð½ÑƒÐ¶Ð½Ð¾ */
+
 .section::before,
 .section::after {
     content: "";
@@ -92,24 +93,18 @@ button {
 
 #page1 {
     background-color: #161616;
-    /* background-image: url('bg1.jpg'); /* Ð£Ð±ÐµÐ´Ð¸Ñ‚ÐµÑÑŒ, Ñ‡Ñ‚Ð¾ Ð¿ÑƒÑ‚ÑŒ Ðº Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸ÑŽ Ð¿Ñ€Ð°Ð²Ð¸Ð»ÑŒÐ½Ñ‹Ð¹ */
     background-repeat: repeat;
-    /* ÐŸÑ€ÐµÐ´Ð¾Ñ‚Ð²Ñ€Ð°Ñ‰Ð°ÐµÑ‚ Ð¿Ð¾Ð²Ñ‚Ð¾Ñ€ÐµÐ½Ð¸Ðµ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ñ */
     background-position: left bottom;
     background-position-x: 50%;
     background-position-y: 50%;
     background-size: 2048px 1024px;
-    /* Ð¤Ð¸ÐºÑÐ¸Ñ€Ð¾Ð²Ð°Ð½Ð½Ñ‹Ð¹ Ñ€Ð°Ð·Ð¼ÐµÑ€ Ð¸Ð·Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ñ */
     background-repeat: repeat-x;
-
 }
 
 .container {
     opacity: 0;
     width: 100%;
-    /* Ð—Ð°Ð½Ð¸Ð¼Ð°ÐµÑ‚ 100% ÑˆÐ¸Ñ€Ð¸Ð½Ñ‹ Ñ€Ð¾Ð´Ð¸Ñ‚ÐµÐ»Ñ */
     max-width: 1280px;
-    /* ÐœÐ°ÐºÑÐ¸Ð¼Ð°Ð»ÑŒÐ½Ð°Ñ ÑˆÐ¸Ñ€Ð¸Ð½Ð° ÐºÐ¾Ð½Ñ‚ÐµÐ¹Ð½ÐµÑ€Ð° */
     height: 100vh;
     display: flex;
     align-items: center;
@@ -120,36 +115,13 @@ button {
 
 .container span {
     display: block;
-    /* Ð‘Ð»Ð¾Ñ‡Ð½Ñ‹Ð¹ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð·Ð°Ð½Ð¸Ð¼Ð°Ñ‚ÑŒ Ð²ÑÑŽ ÑˆÐ¸Ñ€Ð¸Ð½Ñƒ Ð¸ Ð±Ñ‹Ñ‚ÑŒ Ð½Ð° Ð¾Ñ‚Ð´ÐµÐ»ÑŒÐ½Ð¾Ð¹ ÑÑ‚Ñ€Ð¾ÐºÐµ */
     color: #ffffff;
-    /* Ð¦Ð²ÐµÑ‚ Ð¿ÐµÑ€Ð²Ð¾Ð¹ ÑÑ‚Ñ€Ð¾ÐºÐ¸, ÑÐ¸Ð½Ð¸Ð¹ */
     font-size: 18px;
-    /* Ð Ð°Ð·Ð¼ÐµÑ€ ÑˆÑ€Ð¸Ñ„Ñ‚Ð° Ð¿ÐµÑ€Ð²Ð¾Ð¹ ÑÑ‚Ñ€Ð¾ÐºÐ¸ */
     font-weight: bold;
-    /* Ð–Ð¸Ñ€Ð½Ð¾Ðµ Ð½Ð°Ñ‡ÐµÑ€Ñ‚Ð°Ð½Ð¸Ðµ */
 }
+*/
 
-.logo {
-    position: absolute;
-    top: 25px;
-    left: calc(4.5vw);
-    width: 200px;
-    opacity: 0.9;
-}
 
-.vignette-left,
-.vignette-right {
-    position: absolute;
-    height: 100%;
-    width: 200px;
-    opacity: 0.9;
-    mix-blend-mode: multiply;
-    /* ÐŸÑ€Ð¸Ð¼ÐµÐ½ÐµÐ½Ð¸Ðµ Ñ€ÐµÐ¶Ð¸Ð¼Ð° multiply */
-}
-
-.vignette-left {
-    left: 25px;
-}
 
 #textBlock {
     opacity: 0;
@@ -163,11 +135,7 @@ button {
     transition: opacity 2.5s, visibility 2.5s;
 }
 
-.vignette-right {
-    right: 25px;
-    transform: scaleX(-1);
-    /* Ð—ÐµÑ€ÐºÐ°Ð»ÑŒÐ½Ð¾Ðµ Ð¾Ñ‚Ð¾Ð±Ñ€Ð°Ð¶ÐµÐ½Ð¸Ðµ Ð²Ð¸Ð³Ð½ÐµÑ‚Ñ‚Ñ‹ */
-}
+
 
 .bot-container {
     position: absolute;
@@ -262,7 +230,7 @@ button {
     position: relative;
     right: 0px;
     /* Ð”Ð¸Ð½Ð°Ð¼Ð¸Ñ‡ÐµÑÐºÐ¾Ðµ ÑÐ¼ÐµÑ‰ÐµÐ½Ð¸Ðµ Ð²Ð»ÐµÐ²Ð¾ */
-    top: 0;
+top: 0;
     /* Ð”Ð¸Ð½Ð°Ð¼Ð¸Ñ‡ÐµÑÐºÐ¾Ðµ Ð²ÐµÑ€Ñ‚Ð¸ÐºÐ°Ð»ÑŒÐ½Ð¾Ðµ ÑÐ¼ÐµÑ‰ÐµÐ½Ð¸Ðµ */
     color: #d5d5d5d4;
     font-family: 'Roboto', sans-serif;
@@ -273,45 +241,14 @@ button {
     /* ÐŸÐ»Ð°Ð²Ð½Ñ‹Ðµ Ð¿ÐµÑ€ÐµÑ…Ð¾Ð´Ñ‹ Ð´Ð»Ñ Ð²ÑÐµÑ… Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ð¹ */
 }
 
-.top-right-menu {
 
-    font-family: 'Roboto', sans-serif;
-    position: absolute;
-    top: 22px;
-    right: 25px;
-    display: inline-block;
-    /* Ð£Ð±ÐµÐ´Ð¸Ñ‚ÐµÑÑŒ, Ñ‡Ñ‚Ð¾ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚ Ð²Ð¸Ð´Ð¸Ð¼ Ð¿Ð¾ ÑƒÐ¼Ð¾Ð»Ñ‡Ð°Ð½Ð¸ÑŽ */
-}
 
-.top-right-menu a {
-
-    text-decoration: none;
-    color: #d2d2d2;
-    /* Ð¢ÐµÐ¼Ð½Ð¾-ÑÐµÑ€Ñ‹Ð¹ Ñ†Ð²ÐµÑ‚ Ñ‚ÐµÐºÑÑ‚Ð° */
-    padding: 0px;
-    display: inline-block;
-    font-size: 16px;
-    transition: color 0.3s;
-    /* ÐŸÐ»Ð°Ð²Ð½Ð¾Ðµ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ðµ Ñ†Ð²ÐµÑ‚Ð° */
-    opacity: 1;
-    /* ÐŸÐ¾Ð»Ð½Ð°Ñ Ð²Ð¸Ð´Ð¸Ð¼Ð¾ÑÑ‚ÑŒ */
-    visibility: visible;
-    /* Ð­Ð»ÐµÐ¼ÐµÐ½Ñ‚ Ð²Ð¸Ð´Ð¸Ð¼ */
-    transition: opacity 0.5s, visibility 0.5s;
-}
-
-.top-right-menu a:hover {
-    transform: scale(1.02);
-    color: #ffffff;
-    /* Ð¡Ð²ÐµÑ‚Ð»ÐµÐµ Ð¿Ñ€Ð¸ Ð½Ð°Ð²ÐµÐ´ÐµÐ½Ð¸Ð¸ */
-}
 
 @media (max-width: 699px) {
     .top-right-menu {
         opacity: 0;
         visibility: hidden;
         transition: opacity 0.5s, visibility 0s 0s;
-        /* Ð£Ð±Ð¸Ñ€Ð°ÐµÐ¼ Ð·Ð°Ð´ÐµÑ€Ð¶ÐºÑƒ Ð¿Ñ€Ð¸ Ð¿Ð¾ÐºÐ°Ð·Ðµ */
         pointer-events: none;
     }
 }
@@ -320,26 +257,11 @@ button {
     outline: none;
 }
 
-.language-link {
-    text-decoration: none;
-    color: #d2d2d2;
-    /* Ð¦Ð²ÐµÑ‚ Ñ‚ÐµÐºÑÑ‚Ð° */
-    padding: 8px 15px;
-    /* Ð’Ð½ÑƒÑ‚Ñ€ÐµÐ½Ð½Ð¸Ðµ Ð¾Ñ‚ÑÑ‚ÑƒÐ¿Ñ‹ Ð´Ð»Ñ ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ñ Ð¿Ñ€Ð¾ÑÑ‚Ñ€Ð°Ð½ÑÑ‚Ð²Ð° Ð²Ð¾ÐºÑ€ÑƒÐ³ Ñ‚ÐµÐºÑÑ‚Ð° */
-    font-size: 16px;
-    border: 2px solid rgba(210, 210, 210, 0.5);
-    /* ÐŸÑ€Ð¾Ð·Ñ€Ð°Ñ‡Ð½Ð°Ñ ÑÐµÑ€ÐµÐ±Ñ€Ð¸ÑÑ‚Ð°Ñ Ñ€Ð°Ð¼ÐºÐ° */
-    border-radius: 8px;
-    /* Ð¡ÐºÑ€ÑƒÐ³Ð»ÐµÐ½Ð¸Ðµ ÑƒÐ³Ð»Ð¾Ð² Ñ€Ð°Ð¼ÐºÐ¸ */
-    transition: color 0.3s, border-color 0.3s;
-    /* ÐŸÐ»Ð°Ð²Ð½Ð¾Ðµ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ðµ Ñ†Ð²ÐµÑ‚Ð° Ð¸ Ñ€Ð°Ð¼ÐºÐ¸ */
-}
+
 
 .language-link:hover {
     color: #ffffff;
-    /* Ð¡Ð²ÐµÑ‚Ð»ÐµÐµ Ð¿Ñ€Ð¸ Ð½Ð°Ð²ÐµÐ´ÐµÐ½Ð¸Ð¸ */
     border-color: rgba(255, 255, 255, 0.75);
-    /* Ð‘Ð¾Ð»ÐµÐµ ÑÑ€ÐºÐ°Ñ Ð¸ Ð±Ð¾Ð»ÐµÐµ Ð¿Ñ€Ð¾Ð·Ñ€Ð°Ñ‡Ð½Ð°Ñ Ñ€Ð°Ð¼ÐºÐ° Ð¿Ñ€Ð¸ Ð½Ð°Ð²ÐµÐ´ÐµÐ½Ð¸Ð¸ */
 }
 
 .ScrollDown {
@@ -365,24 +287,17 @@ button {
     }
 }
 
-p {
+/* p {
     color: #e1e1e1;
-    /* ÐžÑÐ½Ð¾Ð²Ð½Ð¾Ð¹ Ñ†Ð²ÐµÑ‚ Ñ‚ÐµÐºÑÑ‚Ð° */
     font-size: 16px;
-    /* Ð Ð°Ð·Ð¼ÐµÑ€ ÑˆÑ€Ð¸Ñ„Ñ‚Ð° */
     text-align: center;
-    /* Ð¦ÐµÐ½Ñ‚Ñ€Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ñ‚ÐµÐºÑÑ‚Ð° */
-}
+} */
 
-.page2-container span {
+/* .page2-container span {
     display: inline;
-    /* Ð‘Ð»Ð¾Ñ‡Ð½Ñ‹Ð¹ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚, Ñ‡Ñ‚Ð¾Ð±Ñ‹ Ð·Ð°Ð½Ð¸Ð¼Ð°Ñ‚ÑŒ Ð²ÑÑŽ ÑˆÐ¸Ñ€Ð¸Ð½Ñƒ Ð¸ Ð±Ñ‹Ñ‚ÑŒ Ð½Ð° Ð¾Ñ‚Ð´ÐµÐ»ÑŒÐ½Ð¾Ð¹ ÑÑ‚Ñ€Ð¾ÐºÐµ */
     color: rgb(227 63 123);
-    /* Ð¦Ð²ÐµÑ‚ Ð¿ÐµÑ€Ð²Ð¾Ð¹ ÑÑ‚Ñ€Ð¾ÐºÐ¸, ÑÐ¸Ð½Ð¸Ð¹ */
     font-size: 24px;
-    /* Ð Ð°Ð·Ð¼ÐµÑ€ ÑˆÑ€Ð¸Ñ„Ñ‚Ð° Ð¿ÐµÑ€Ð²Ð¾Ð¹ ÑÑ‚Ñ€Ð¾ÐºÐ¸ */
     font-weight: bold;
-    /* Ð–Ð¸Ñ€Ð½Ð¾Ðµ Ð½Ð°Ñ‡ÐµÑ€Ñ‚Ð°Ð½Ð¸Ðµ */
     margin: 0 5px;
 }
 
@@ -393,14 +308,14 @@ p {
     flex-direction: column;
     align-items: center;
     max-width: 960px;
-    /* Ð¸Ð»Ð¸ Ð´Ñ€ÑƒÐ³Ð¾Ðµ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ, Ð¿Ð¾Ð´Ñ…Ð¾Ð´ÑÑ‰ÐµÐµ Ð´Ð»Ñ Ð²Ð°ÑˆÐµÐ³Ð¾ Ð´Ð¸Ð·Ð°Ð¹Ð½Ð° */
+    
 }
 
 .text-container {
     text-align: center;
     margin-bottom: 15%;
 }
-
+ */
 
 .chart-container {
     transform: translateY(10%);

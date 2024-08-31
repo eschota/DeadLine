@@ -1,498 +1,503 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QwertyStock Presentation</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QwertyStock Presentation</title>
+    <link rel="shortcut icon" href="favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="invest.css">
+    <link rel="stylesheet" href="unitystyle.css">
+    
+    <link rel="stylesheet" href="roadmap_style.css">
+    <link rel="stylesheet" href="Team.css">
 
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..600&display=swap" rel="stylesheet">
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"> -->
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <script src="https://d3js.org/d3.v5.min.js"></script>    
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js'></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NMBZ7K9VQE"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
 
-  <link rel="stylesheet" href="index.css">
-  <link rel="stylesheet" href="invest.css">
-  <link rel="stylesheet" href="unitystyle.css">
-  <script src="https://d3js.org/d3.v5.min.js"></script>
-  <link rel="stylesheet" href="roadmap_style.css">
-  <link rel="stylesheet" href="Team.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+        gtag('config', 'G-NMBZ7K9VQE');
 
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js'></script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NMBZ7K9VQE"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
+        window.inst = window.inst || {
+            SendMessage: function () { }
+        };
+        window.getConsoleMessages = window.getConsoleMessages || function () {
+            return [];
+        }
 
-    gtag('config', 'G-NMBZ7K9VQE');
-  </script>
+    </script>
 </head>
 <!-- Google tag (gtag.js) -->
 
 <body>
-  <div id="spinner"></div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
-  <script src="spinner.js"></script>
+    <div id="spinner"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+    <script src="spinner.js"></script>
 
 
-  <div class="section active" id="page1">
-    <div class="container">
-      <div class="unity-desktop">
-        <canvas id="unity-canvas" width="1280" height="1280"
-          style="width: 1280px; height: 1280px; cursor: default;"></canvas>
-        <div id="unity-loading-bar" style="display: none;">
-          <div id="unity-logo"></div>
-          <div id="unity-progress-bar-empty">
-            <div id="unity-progress-bar-full" style="width: 100%;"></div>
-          </div>
-        </div>
-        <div id="unity-warning"></div>
-        <div id="unity-footer">
-          <div id="unity-webgl-logo"></div>
-          <div id="unity-fullscreen-button"></div>
-          <div id="unity-build-title"></div>
-        </div>
-      </div>
-
-      <div class="state_1">
+    <nav class="top-line">
         <a href="http://qwertystock.com" target="_blank">
-          <img src="qwerty_logo.svg" alt="Qwerty Logo" class="logo">
+            <img src="qwerty_logo.svg" alt="Qwerty Logo" class="logo">
         </a>
 
         <div class="top-right-menu">
-          <a href="become-an-author.html" target="_blank">Стать Автором</a>
-          <a href="become-a-co-owner.html" target="_blank">Стать Совладельцем</a>
-          <a href="current-page.ru.html" target="_blank" class="language-link">To English</a>
-          <!-- Видима на английской версии -->
-
+            <!-- <a href="become-an-author.html" target="_blank">Стать Автором</a>
+            <a href="become-a-co-owner.html" target="_blank">Стать Совладельцем</a> -->
+            <a href="QSen.html" target="_blank" class="language-link"> English</a>
         </div>
+    </nav>
 
-        <div class="bot-container">
-          <div class="text-column" id="textBlock">
-            <div class="text-item">ПЕРВЫЙ</div>
-            <div class="text-item">РАСПРЕДЕЛЕННЫЙ</div>
-            <div class="text-item last">МИКРОСТОК
-              <div class="subtext-item">
-                Сток нацеленный на авторов,<br>
-                призванный решить основные проблемы,<br>
-                увеличить доход, упростить доступ на рынок.
-              </div>
+    <main>
+
+
+        <section class="state_1 slide slide-1">
+            <div id="textBlock">
+                <h2 class="h2 color-white">
+                    Первый <span class="color-red">распределенный</span>
+                    микросток
+                </h2>
+                <p class="main-text color-main">
+                    <span class="underlay">
+                        Сток нацеленный на авторов,
+                        призванный решить основные проблемы,
+                        увеличить доход, упростить доступ на рынок.
+                    </span>
+
+                </p>
             </div>
 
-          </div>
+            <div id="scrollBlock" class="scroll-down">
+                <!-- <div class="ScrollDown" id="scrollBlock"><span>Прокрутите вниз</span><img
+                            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAQlBMVEUAAAD///////////////////////////////////////////////////////////////////////////////////8IX9KGAAAAFXRSTlMAkd/PIJ4/DjgEgCUwCfPw79vKfz5AbFefAAAAjUlEQVQoz6WRWQoEIQwFY6K29jJ73f+qg9C4gNAMUx+JpDAfL3JJdAoWvIwsjhN3DHPjsaYsewBbOuHQc4dXXJt78PV9I1YRCKWplbp2X4y9NCg1olVA1zLMhfwgnjYRjX9FngsltXnCugxXGfM5idy3PtBZ7JvixkMRkuTPG17Sc7TTLjKyBQN1Ua74AoGzCOwtfedNAAAAAElFTkSuQmCC">
+                    </div> -->
+                <div>Прокрутите вниз</div>
 
-        </div>
-
-        <div class="ScrollDown" id="scrollBlock"><span>Прокрутите вниз</span><img
-            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAQlBMVEUAAAD///////////////////////////////////////////////////////////////////////////////////8IX9KGAAAAFXRSTlMAkd/PIJ4/DjgEgCUwCfPw79vKfz5AbFefAAAAjUlEQVQoz6WRWQoEIQwFY6K29jJ73f+qg9C4gNAMUx+JpDAfL3JJdAoWvIwsjhN3DHPjsaYsewBbOuHQc4dXXJt78PV9I1YRCKWplbp2X4y9NCg1olVA1zLMhfwgnjYRjX9FngsltXnCugxXGfM5idy3PtBZ7JvixkMRkuTPG17Sc7TTLjKyBQN1Ua74AoGzCOwtfedNAAAAAElFTkSuQmCC">
-        </div>
-
-      </div>
-      <div class="state_2">
-        <div class="page2-container">
-          <div class="text-container">
-            <p>
-              <span class="highlight">QWERTYSTOCK</span> пользуется популярностью еще до старта продаж<br>
-              <span class="highlight">970 000</span> файлов
-              <br><span class="highlight">1670</span> Авторов
-            </p>
-            <div class="chart-container">
-              <canvas id="fileCountChart"></canvas>
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-mouse">
+                        <rect x="5" y="2" width="14" height="20" rx="7" />
+                        <path d="M12 6v4" />
+                    </svg>
+                </div>
             </div>
-          </div>
+        </section>
 
-        </div>
-      </div>
-      <div class="state_3">
-        <div class="state3-container">
-          <div class="text-column" id="textBlock" style="opacity: 1; visibility: visible;">
-            <div class="text-item">1 ЭТАП</div>
-            <div class="text-item">ЗАПУСК</div>
-            <div class="text-item last">МИКРОСТОКА
-              <div class="subtext-item">
-                Продажа лицензий всех видов.<br>
-                Отчисления авторам до 95%.<br>
-                Автоматическая проверка и приемка файлов.<br>
-                Возможность масштабирования до любых объемов.<br>
-                Все функции стока распределены и выполняются децентрализованно.
-              </div>
+
+        <section class="state_2 slide slide-2">
+            <div>
+                <h2 class="h2 color-white">QwertyStock</h2>
+
+                <p class="main-text color-main">
+                    пользуется популярностью еще до старта продаж
+                </p>
+
+
+                <div class="info-blocks">
+                    <div class="info-block">
+                        <svg class="info-block__icon" width="1em" height="1em" viewBox="0 0 48 48" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M23.6842 43.421C34.5846 43.421 43.4211 34.5846 43.4211 23.6842C43.4211 12.7838 34.5846 3.94736 23.6842 3.94736C12.7839 3.94736 3.94739 12.7838 3.94739 23.6842C3.94739 34.5846 12.7839 43.421 23.6842 43.421Z"
+                                stroke="currentColor" stroke-width="3.94737" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path
+                                d="M23.6842 25.6579C26.9543 25.6579 29.6053 23.0069 29.6053 19.7368C29.6053 16.4667 26.9543 13.8158 23.6842 13.8158C20.4141 13.8158 17.7632 16.4667 17.7632 19.7368C17.7632 23.0069 20.4141 25.6579 23.6842 25.6579Z"
+                                stroke="currentColor" stroke-width="3.94737" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path
+                                d="M13.8158 40.7802V37.5C13.8158 36.4531 14.2317 35.449 14.972 34.7088C15.7122 33.9685 16.7163 33.5526 17.7632 33.5526H29.6053C30.6522 33.5526 31.6562 33.9685 32.3965 34.7088C33.1368 35.449 33.5526 36.4531 33.5526 37.5V40.7802"
+                                stroke="currentColor" stroke-width="3.94737" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+
+                        <div class="info-block__meta">
+                            <div class="info-block__value">
+                                1920
+                            </div>
+                            <div class="info-block__text">
+                                авторов
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-block">
+                        <svg class="info-block__icon" width="1em" height="1em" viewBox="0 0 48 48" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M29.6052 3.94736H11.842C10.7951 3.94736 9.79109 4.36324 9.05081 5.10351C8.31054 5.84379 7.89465 6.84782 7.89465 7.89473V39.4737C7.89465 40.5206 8.31054 41.5246 9.05081 42.2649C9.79109 43.0052 10.7951 43.421 11.842 43.421H35.5262C36.5731 43.421 37.5772 43.0052 38.3174 42.2649C39.0577 41.5246 39.4736 40.5206 39.4736 39.4737V13.8158L29.6052 3.94736Z"
+                                stroke="currentColor" stroke-width="3.94737" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path
+                                d="M27.6316 3.94736V11.8421C27.6316 12.889 28.0475 13.893 28.7877 14.6333C29.528 15.3736 30.5321 15.7895 31.579 15.7895H39.4737"
+                                stroke="currentColor" stroke-width="3.94737" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path
+                                d="M19.7368 27.6316C21.9169 27.6316 23.6842 25.8643 23.6842 23.6842C23.6842 21.5041 21.9169 19.7368 19.7368 19.7368C17.5567 19.7368 15.7894 21.5041 15.7894 23.6842C15.7894 25.8643 17.5567 27.6316 19.7368 27.6316Z"
+                                stroke="currentColor" stroke-width="3.94737" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path
+                                d="M39.4737 33.5526L36.9158 30.9947C36.0238 30.1028 34.8141 29.6018 33.5527 29.6018C32.2913 29.6018 31.0815 30.1028 30.1895 30.9947L17.7632 43.421"
+                                stroke="currentColor" stroke-width="3.94737" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+
+
+                        <div class="info-block__meta">
+                            <div class="info-block__value">
+                                970&thinsp;000
+                            </div>
+                            <div class="info-block__text">
+                                загруженных файлов
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
-          </div>
-        </div>
-        <div class="state3_2-container">
-          <div class="text-column" id="textBlock" style="opacity: 1; visibility: visible;">
-            <div class="text-item">2 ЭТАП</div>
-            <div class="text-item">РАСШИРЕНИЕ</div>
-            <div class="text-item last">НА РЫНКЕ
-              <div class="subtext-item">
-                Децентрализованное хранение файлов.<br>
-                Каждый автор владеет собственным магазином со своими ценами.<br>
-                Минимальные издержки для хранения файлов.<br>
-                Система распределенных вычислений для обработки файлов.<br>
-                Когнитивный поиск с помощью AI. <br>
-                Собственный генератор контента со справедливыми отчислениями Авторам.
-              </div>
+            <div class="chart-wrapper">
+                <canvas id="fileCountChart"></canvas>
+            </div>
+        </section>
+
+
+        <section class="state_3 slide slide-3">
+            <div>
+                <h2 class="h2 color-white">
+                    1 этап:
+                    <br />
+                    <span class="color-red">запуск</span>
+                    микростока
+
+                </h2>
+                <ul class="main-text color-main">
+                    <li>Продажа лицензий всех видов</li>
+                    <li>Отчисления авторам до 95%</li>
+                    <li>Автоматическая проверка и приемка файлов</li>
+                    <li>Возможность масштабирования до любых объемов</li>
+                    <li>Все функции стока распределены и выполняются децентрализованно</li>
+                </ul>
             </div>
 
-          </div>
-        </div>
 
-      </div>
+            <div>
+                <h2 class="h2 color-white">
+                    2 этап:
+                    <br />
+                    <span class="color-red">расширение</span>
+                    на &nbsp;рынке
 
-      <div class="state_4">
-        <div class="FadeBGR"></div>
-        <div class="page4-container">
-          <div class="text-container">
+                </h2>
+                <ul class="main-text color-main">
+                    <li>Децентрализованное хранение файлов</li>
+                    <li>Каждый автор владеет собственным магазином со своими ценами</li>
+                    <li>Минимальные издержки для хранения файлов</li>
+                    <li>Система распределенных вычислений для обработки файлов</li>
+                    <li>Когнитивный поиск с помощью AI</li>
+                    <li>Собственный генератор контента со справедливыми отчислениями Авторам</li>
+                </ul>
+            </div>
+        </section>
 
-            <div class="team-highlight">КОМАНДА</div>
+
+        <section class="state_4 slide slide-4">
+            <h2 class="h2 color-white center-on-mobile">КОМАНДА</h2>
 
             <div class="image-container">
-              <!-- Добавляем изображения с номерами от 1 до 11 -->
-              <div class="image-row">
-                <div class="image-item">
-                  <img src="\QSPresentation\Team\1.png" alt="Чума">
-                  <div class="text-overlay">
-                    <span class="Nick">Plague</span><span class="Job">Designer</span>
-                  </div>
-                  <div class="icons">
+                <div class="image-row">
+                    <div class="image-item">
+                        <img src="Team/1.png" alt="Чума">
+                        <div class="text-overlay">
+                            <span class="Nick">Plague</span><span class="Job">Designer</span>
+                        </div>
+                    </div>
 
+                    <div class="image-item">
+                        <img src="Team/2.png" alt="Frozenthrone">
+                        <div class="text-overlay">
+                            <span class="Nick">Mozenrath</span><span class="Job">WebDesigner</span>
+                        </div>
 
-                  </div>
+                    </div>
+                    <div class="image-item">
+                        <img src="Team/3.png" alt="Егор" />
+                        <div class="text-overlay">
+                            <span class="Nick">Leonidovich</span><span class="Job">DevOps</span>
+                        </div>
+                    </div>
+
+                    <div class="image-item">
+                        <img src="Team/9.png" alt="Denis" />
+                        <div class="text-overlay">
+                            <span class="Nick">Denis</span><span class="Job">BackEnd Dev</span>
+                        </div>
+                    </div>
+
+                    <div class="image-item">
+                        <img src="Team/5.png" alt="Andrey" />
+                        <div class="text-overlay">
+                            <span class="Nick">Andrey</span><span class="Job">C# Dev</span>
+                        </div>
+                    </div>
+
+                    <div class="image-item">
+                        <img src="Team/6.png" alt="Andrey" />
+                        <div class="text-overlay">
+                            <span class="Nick">Alena</span><span class="Job">Support</span>
+                        </div>
+                    </div>
+
+                    <div class="image-item">
+                        <img src="Team/7.png" alt="Slava" />
+                        <div class="text-overlay">
+                            <span class="Nick">Alex</span><span class="Job">Dev</span>
+                        </div>
+                    </div>
+
+                    <div class="image-item">
+                        <img src="Team/8.png" alt="Andrey" />
+                        <div class="text-overlay">
+                            <span class="Nick">Gibson</span><span class="Job">C# Dev</span>
+                        </div>
+                    </div>
+
+                    <div class="image-item">
+                        <img src="Team/4.png" alt="Николаж" />
+                        <div class="text-overlay">
+                            <span class="Nick">Nick</span><span class="Job">C# TS Dev</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="image-item">
-                  <img src="\QSPresentation\Team\2.png" alt="Frozenthrone">
-                  <div class="text-overlay">
-                    <span class="Nick">Mozenrath</span><span class="Job">WebDesigner</span>
-                  </div>
-                  <div class="icons">
+                <div class="image-row">
 
-                  </div>
-                </div>
-                <div class="image-item">
-                  <img src="\QSPresentation\Team\3.png" alt="Егор">
-                  <div class="text-overlay">
-                    <span class="Nick">Leonidovich</span><span class="Job">DevOps</span>
-                  </div>
-                  <div class="icons">
+                    <div class="image-item">
+                        <img src="Team/10.png" alt="Kokos">
 
-                  </div>
-                </div>
-                <div class="image-item">
-                  <img src="\QSPresentation\Team\4.png" alt="Николаж">
-                  <div class="text-overlay">
-                    <span class="Nick">Nick</span><span class="Job">C# TS Dev</span>
-                  </div>
-                  <div class="icons">
-                  </div>
-                </div>
-                <div class="image-item">
-                  <img src="\QSPresentation\Team\5.png" alt="Andrey">
-                  <div class="text-overlay">
-                    <span class="Nick">Andrey</span><span class="Job">C# Dev</span>
-                  </div>
-                  <div class="icons">
+                        <div class="text-overlay">
+                            <span class="Nick">NoDeadLine</span><span class="Job">CEO</span>
+                        </div>
 
-                  </div>
-                </div>
+                        <div class="icons">
+                            <a href="https://t.me/YesDeadline" target="_blank" class="telegram-link">
+                                <i class="fab fa-telegram-plane"></i>
+                            </a>
+                            <a href="https://www.instagram.com/kosermolaev/" target="_blank" class="icon-link">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="https://www.youtube.com/unlim3d" target="_blank" class="icon-link">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
 
-              </div>
-              <div class="image-row">
-                <div class="image-item">
-                  <img src="\QSPresentation\Team\6.png" alt="Andrey">
-                  <div class="text-overlay">
-                    <span class="Nick">Alena</span><span class="Job">Support</span>
-                  </div>
-                  <div class="icons">
+                    <div class="image-item">
+                        <img src="Team/11.png" alt="Dementor">
+                        <div class="text-overlay">
+                            <span class="Nick">Netherspite</span><span class="Job">CTO</span>
+                        </div>
+                        <div class="icons">
+                            <a href="https://t.me/Netherspite" target="_blank"  class="telegram-link"><i
+                                    class="fab fa-telegram-plane"></i></a>
 
-                  </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="image-item">
-                  <img src="\QSPresentation\Team\7.png" alt="Slava">
-                  <div class="text-overlay">
-                    <span class="Nick">Alex</span><span class="Job">Dev</span>
-                  </div>
-                  <div class="icons">
-
-                  </div>
-                </div>
-                <div class="image-item">
-                  <img src="\QSPresentation\Team\8.png" alt="Andrey">
-                  <div class="text-overlay">
-                    <span class="Nick">Gibson</span><span class="Job">C# Dev</span>
-                  </div>
-                  <div class="icons">
-
-                  </div>
-                </div>
-                <div class="image-item">
-                  <img src="\QSPresentation\Team\9.png" alt="Denis">
-                  <div class="text-overlay">
-                    <span class="Nick">Denis</span><span class="Job">BackEnd Dev</span>
-                  </div>
-                  <div class="icons">
-
-                  </div>
-                </div>
-              </div>
-              <div class="image-row">
-
-                <div class="image-item">
-                  <img src="\QSPresentation\Team\10.png" alt="Kokos">
-                  <div class="text-overlay">
-                    <span class="Nick">NoDeadLine</span><span class="Job">CEO</span>
-                  </div>
-                  <div class="icons">
-                    <a href="https://t.me/YesDeadline" class="telegram-link"><i class="fab fa-telegram-plane"></i></a>
-                    <a href="https://www.instagram.com/kosermolaev/" class="icon-link"><i
-                        class="fab fa-instagram"></i></a>
-                    <a href="https://www.youtube.com/unlim3d" class="icon-link"><i class="fab fa-youtube"></i></a>
-                  </div>
-                </div>
-                <div class="image-item">
-                  <img src="\QSPresentation\Team\11.png" alt="Dementor">
-                  <div class="text-overlay">
-                    <span class="Nick">Netherspite</span><span class="Job">CTO</span>
-                  </div>
-                  <div class="icons">
-                    <a href="https://t.me/Netherspite" class="telegram-link"><i class="fab fa-telegram-plane"></i></a>
-
-                  </div>
-                </div>
-              </div>
             </div>
-          </div>
+            </div>
 
+
+        </section>
+
+
+        <section class="state_5 slide slide-5">
+            <h2 class="h2 color-red">
+                Стать
+                <span class="color-white">совладельцем</span>
+            </h2>
+            <div>
+                <div>
+                    <h3 class="h3 color-red underlined">Только для авторов
+                    </h3>
+                    <div>
+                        <p class="main-text color-main">
+                            Наша задача&nbsp;&mdash; оставить контроль над стоком непосредственно Авторам контента.
+                            Поэтому мы продаём акции <em>только</em> пользователям М+ и StockSubmitter.
+                        </p>
+
+                        <p class="main-text color-main">
+
+                        </p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="h3 color-red underlined">
+                        Безопасно
+                    </h3>
+                    <div>
+                        <p class="main-text color-main">
+                            1. Вы вносите средства на свой аккаунт в M+/SS.
+                            <br />
+                            2. При желании, можете тратить их сразу.
+                            <br />
+                            3. На 3 этапе продаж остаток средств будет сконвертирован в акции.
+                        </p>
+
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="h3 color-red underlined">
+                        Выгодно
+                    </h3>
+                    <div>
+                        <p class="main-text color-main">
+                            Все последующие размещения акций будут проходить по рыночной цене,
+                            существенно выше текущего предложения.
+                        </p>
+                        <p class="main-text color-main">
+                            Вы будете получать дивиденды от дохода QWERTYSTOCK
+                            автоматически.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="investment-buttons">
+                    <button class="choice-button investment-option selected" data-amount="100">$100</button>
+                    <button class="choice-button investment-option" data-amount="500">$500</button>
+                    <button class="choice-button investment-option" data-amount="1000">$1000</button>
+                    <button class="choice-button investment-option" data-amount="2000">$2000</button>
+                    <button class="choice-button investment-option" data-amount="2001">$2000+</button>
+                </div>
+
+                <button id="buyStocksButton" a="#" class="button">Купить X акций</button>
+
+                <div id="stockInfo" style="display: none;"></div>
+
+                <div id="contactInfo" style="display: none;">
+                    <p>
+                        Пожалуйста, свяжитесь с&nbsp;нами для &nbsp;обсуждения инвестиций свыше $2000
+                        через&nbsp;<a href="https://t.me/YesDeadLine" target="_blank">NoDeadLine</a>
+                        или&nbsp;<a href="https://t.me/NetherSpite" target="_blank">NetherSpite</a>.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+
+    <div class="section active" id="page1">
+        <div class="container">
+            <!-- Unity Canvas -->
+            <div class="unity-wrapper">
+                <div class="unity-desktop">
+                    <canvas id="unity-canvas" width="1280" height="1280"
+                        style="width: 1280px; height: 1280px; cursor: default;"></canvas>
+                    <div id="unity-loading-bar" style="display: none;">
+                        <div id="unity-logo"></div>
+                        <div id="unity-progress-bar-empty">
+                            <div id="unity-progress-bar-full" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                    <div id="unity-warning"></div>
+                    <div id="unity-footer">
+                        <div id="unity-webgl-logo"></div>
+                        <div id="unity-fullscreen-button"></div>
+                        <div id="unity-build-title"></div>
+                    </div>
+                </div>
+                <div class="unity-overlay"></div>
+            </div>
+
+          
         </div>
-      </div>
-      <div class="state_5">
-
-        <div class="investFadeBGR"></div>
-
-
-        <div class="invest-container">
-          <div class="invest-header">
-            <div class="invest-heading red">Стать</div>
-            <div class="invest-heading white">совладельцем</div>
-            <div class="invest-heading red">Qwertystock</div>
-          </div>
-
-          <div class="invest-text-container">
-            <div class="text-column" id="textBlock" style="opacity: 1; visibility: visible;">
-              <div class="text-invest">ТОЛЬКО ДЛЯ АВТОРОВ</div>
-              <div class="subtext-invest">
-                Мы даем возможность купить Акции всем участникам проекта М+ и StockSubmitter, зарегистрированным не
-                позднее 1 февраля 2024 года.<br>
-                <br>Наша задача оставить контроль над стоком непосредственно Авторам контента.
-              </div>
-            </div>
-          </div>
-
-
-          <div class="invest-text-container">
-            <div class="text-column" id="textBlock" style="opacity: 1; visibility: visible;">
-              <div class="text-invest">ВЫГОДНО</div>
-              <div class="subtext-invest">
-                Все последующие размещения акций будут проходить по цене рынка <br> существенно выше этого
-                предложения.<br> На следующих этапах вы сможете заработать на продаже акций.
-              </div>
-            </div>
-          </div>
-
-          <div class="invest-text-container">
-            <div class="text-column" id="textBlock" style="opacity: 1; visibility: visible;">
-              <div class="text-invest">БЕЗОПАСНО</div>
-              <div class="subtext-invest">
-                Все средства будут зачислены на ваш баланс на аккаунт М+/SS <br> вы сможете ими пользоватья до начала
-                следующей фазы продаж.<br>
-                <br>Все средства оставшиеся на балансе на этот момент будут<br> сконвертированы в акции по условиям
-                этого предложения.
-              </div>
-            </div>
-          </div>
-
-          <div class="invest-text-container">
-            <div class="text-column" id="textBlock" style="opacity: 1; visibility: visible;">
-              <div class="text-invest">ДОХОД</div>
-              <div class="subtext-invest">
-                Вы будете получать дивиденды от дохода QWERTYSTOCK автоматически.<br>Предложение ограничено<br>На
-                текущий момент осталось доступно 6.73% акций по данному предложению.
-              </div>
-            </div>
-          </div>
-
-
-
-          <div class="investment-buttons">
-            <button class="choice-button investment-option selected" data-amount="100">$100</button>
-            <button class="choice-button investment-option" data-amount="500">$500</button>
-            <button class="choice-button investment-option" data-amount="1000">$1000</button>
-            <button class="choice-button investment-option" data-amount="2000">$2000</button>
-            <button class="choice-button investment-option" data-amount="2001">$2000+</button>
-          </div>
-          <button id="buyStocksButton" a="#" class="button">Купить X акций</button>
-          <div id="stockInfo" style="display: none;"></div>
-          <div id="contactInfo" style="display: none;">
-            <p>Пожалуйста, свяжитесь с нами для обсуждения инвестиций свыше $2000 через <a
-                href="https://t.me/YesDeadLine" target="_blank">NoDeadLine</a> или <a href="https://t.me/NetherSpite"
-                target="_blank">NetherSpite</a>.</p>
-          </div>
-          <div>
-          </div>
-        </div>
-        <div class="FadeBGR2"></div>
-      </div>
-
     </div>
-  </div>
-  <div class="section" id="page2">
 
-  </div>
-  <div class="section" id="page3">
-    <!-- <div class="page3-container"> -->
+    <div class="section" id="page2"></div>
+    <div class="section" id="page3"></div>
+    <div class="section" id="page4"></div>
+    <div class="section" id="page5"></div>
+    <div class="section" id="page6"></div>
 
-    <!-- <div class="RoadMap-textContainer">
-      <p>
-          <div class="roadmap-highlight">ROADMAP</div>
-        </p> 
-     
-  </div>
-    <div class="roadmap-container">
+    <div class="animated-blocks">
+        <div class="animated-block red-block"></div>
+        <div class="animated-block green-block"></div>
+        <div class="animated-block blue-block"></div>
+    </div>
 
+    <script src="scroll.js"></script>
+    <script src="animations.js"></script>
 
-            <div class="element a" data-tooltip="QwertyStock.com - |Официальный запуск Микростока. Обеспечение лицезирования контента и старт продаж.">
-            <span>QwertyStock.com</span>
-            <div class="tooltip-content"></div>
-            </div>
-    
-            <div class="element b" data-tooltip="Renderfin - |Кросплатформенное приложение, обеспечивающее распределенность QwertyStock, позволяет любому устройству в мире распределять работоспособность стока. ">
-            <span>RenderFin</span>
-            <div class="tooltip-content"></div>
-            </div>
-             
-    
-            <div class="element c" data-tooltip="Акции - | Управление проектом происходит посредством Кораорации в Сингапуре, влдельцы акций получают дивиденды и участвуют в принятии решений. ">
-            <span>Акции</span>
-            <div class="tooltip-content"></div>
-            </div>
-             
-    
-            <div class="element d" data-tooltip="Лицензии - | Royalty Free лицензирование всего контента на стоке. ">
-            <span>Лицензирование</span>
-            <div class="tooltip-content"></div>
-            </div>
-             
-    
-            <div class="element e" data-tooltip="Удобная оплата - | Подключение популярных и удобных систем платежей для покупателей контента, Visa/MasterCard/PayPal и другие.">
-            <span>Платежная система</span>
-            <div class="tooltip-content"></div>
-            </div>
-             
-    
-            <div class="element f" data-tooltip="Масштабирование нагрузок - |Все вычисления для стока выполняются децентрализовано на любом компьютере в интернете, кодирование видео, фото, ИИ генерации, редактирование и т п. ">
-            <span>Распределенные вычисления</span>
-            <div class="tooltip-content"></div>
-            </div>
-             
-    
-            <div class="element g" data-tooltip="Надежное и дешевое хранилище - | База данных стока будет расположена на компьютерах авторов и других людей установивших RenderFin.">
-            <span>Децентрализованное хранение</span>
-            <div class="tooltip-content"></div>
-            </div>
-             
-    
-            <div class="element h" data-tooltip="Свой сток каждому Автору - | Любой клиент приложения может запустить свой собственный сток на своем компьютере автоматически, просто указав папку, где лежит контент. ">
-            <span>Самораспаковывающийся магазин</span>
-            <div class="tooltip-content"></div>
-            </div>
-             
-    
-            <div class="element i" data-tooltip="Почти как майнинг - | Клиенты приложения получают вознаграждения от сети за проделанную работу. ">
-            <span>Система вознаграждений</span>
-            <div class="tooltip-content"></div>
-            </div> 
-
-
-          <div class="arrow a"></div>
-          <div class="arrow b"></div>
-          <div class="arrow c"></div>
-          <div class="arrow d"></div>
-          <div class="arrow e"></div>
-          <div class="arrow f"></div>
-          <div class="arrow g"></div>
-          <div class="arrow h"></div>
-          <div class="arrow i"></div>
-          <div class="arrow j"></div>
-          <div class="dashed-line" data-text="Вторая Фаза"></div>
-          <div class="stage"> Третья Фаза</div>
-        </div>
-        </div> 
-      </div>
-    </div> -->
-  </div>
-  <div class="section" id="page4">
-  </div>
-  <div class="section" id="page5">
-
-  </div>
-  <div class="section" id="page6">
-
-  </div>
-
-  <div class="animated-blocks">
-    <div class="animated-block red-block"></div>
-    <div class="animated-block green-block"></div>
-    <div class="animated-block blue-block"></div>
-  </div>
-
-  <script src="scroll.js"></script>
-  <script src="animations.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      setTimeout(function () {
-        var scrollDown = document.querySelector('.ScrollDown');
-        if (scrollDown) {
-          scrollDown.style.animation = 'fadeInOut 4s ease-in-out infinite';
-        }
-      }, 5000); // Задержка в 5000 миллисекунд (5 секунд)
-    });
-  </script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      setTimeout(function () {
-        document.querySelectorAll('.section .container').forEach(container => {
-          container.style.opacity = 1; // Устанавливаем прозрачность для всех контейнеров
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(function () {
+                var scrollDown = document.querySelector('.ScrollDown');
+                if (scrollDown) {
+                    scrollDown.style.animation = 'fadeInOut 4s ease-in-out infinite';
+                }
+            }, 5000);
+            // Задержка в 5000 миллисекунд (5 секунд)
         });
-      }, 500);
-    });
-  </script>
-  <script src='filesChart.js'></script>
-  <script src='unityhtml.js'></script>
-  <script src='invest.js'></script>
-  <script src='team.js'></script>
-  <script src='roadmap_script.js'></script>
-  <script src='SendMessageToUnityFromConsole.js'></script>
-  <script>
-    document.querySelectorAll('.element').forEach(element => {
-      const tooltipText = element.getAttribute('data-tooltip');
-      const parts = tooltipText.split('|');
-      const tooltipHTML = `<strong style="color: #E91E63;">${parts[0]}</strong>${parts[1]}`;
+    </script>
 
-      const tooltipContainer = element.querySelector('.tooltip-content');
-      tooltipContainer.innerHTML = tooltipHTML; // Убедитесь, что этот код не выполняется повторно в другом месте
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(function () {
+                document.querySelectorAll('.section .container').forEach(container => {
+                    container.style.opacity = 1;
+                    // Устанавливаем прозрачность для всех контейнеров
+                }
+                );
+            }, 500);
+        });
+    </script>
 
-      element.addEventListener('mouseover', function () {
-        tooltipContainer.style.visibility = 'visible';
-        tooltipContainer.style.opacity = '1';
-      });
+    <script src='filesChart.js'></script>
+    <script src='unityhtml.js'></script>
+    <script src='invest.js'></script>
+    <script src='team.js'></script>
+    <script src='roadmap_script.js'></script>
+    <script src='SendMessageToUnityFromConsole.js'></script>
+    <script>
+        document.querySelectorAll('.element').forEach(element => {
+            const tooltipText = element.getAttribute('data-tooltip');
+            const parts = tooltipText.split('|');
+            const tooltipHTML = `<strong style="color: #E91E63;">${parts[0]}</strong>${parts[1]}`;
 
-      element.addEventListener('mouseout', function () {
-        tooltipContainer.style.visibility = 'hidden';
-        tooltipContainer.style.opacity = '0';
-      });
-    });
-  </script>
+            const tooltipContainer = element.querySelector('.tooltip-content');
+            tooltipContainer.innerHTML = tooltipHTML;
+            // Убедитесь, что этот код не выполняется повторно в другом месте
 
+            element.addEventListener('mouseover', function () {
+                tooltipContainer.style.visibility = 'visible';
+                tooltipContainer.style.opacity = '1';
+            });
+
+            element.addEventListener('mouseout', function () {
+                tooltipContainer.style.visibility = 'hidden';
+                tooltipContainer.style.opacity = '0';
+            });
+        }
+        );
+    </script>
 </body>
 
 </html>

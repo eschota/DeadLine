@@ -11,7 +11,37 @@ using System.Web;
 
  internal class TSExtension
 {
-   
+    public class ProductContainer
+    {
+        public int InstallId { get; set; }  // Новое поле для installId
+        public Product[] Products { get; set; }
+    }
+    public static string GetTrendsByIds(Product[] products)
+    {
+        var matchedProducts = Program.TS.products
+         .Where(p => products.Select(x => x.ProductID).Contains(p.ProductID))
+         .Select(p => new Product
+         {
+             Div = p.Div,
+             ProductID = p.ProductID,
+             ProductName = p.ProductName,
+             url = p.url,
+             ProductMainPreviewUrl = p.ProductMainPreviewUrl,
+             Price = p.Price,
+             Pos = p.Pos,
+             // Обновляем каждую дату, удаляя время
+             ProductDate = p.ProductDate.Select(d => d.Date).ToList(),
+             ProductAuthor = p.ProductAuthor,
+             SubmitDate = p.SubmitDate,
+             Formats = p.Formats,
+             Certificate = p.Certificate,
+             AuthorLink = p.AuthorLink,
+             Description = p.Description,
+             Tags = p.Tags
+         }).ToList();
+
+        return JsonConvert.SerializeObject(matchedProducts);
+    }
     public static string TSProductSearch(string html)
     {
         var htmlDoc = new HtmlDocument();
@@ -29,7 +59,7 @@ using System.Web;
             head.AppendChild(scriptTag);
 
             // Добавление вашего скрипта с атрибутом defer
-            var scriptChart = HtmlNode.CreateNode("<script src=\"https://renderfin.com/graphicsTSExtension.js\" defer></script>");
+            var scriptChart = HtmlNode.CreateNode("<script src='https://renderfin.com/graphicsTSExtension.js'></script>");
             head.AppendChild(scriptChart);
         }
         var divs = htmlDoc.DocumentNode.SelectNodes("//div[contains(@class, 'flex')]");
@@ -40,7 +70,6 @@ using System.Web;
             int k = -1;
             if (tsId != string.Empty)
             {
-                
                 int.TryParse(tsId, out k);
             }
             if (k == -1) continue;
@@ -55,30 +84,30 @@ using System.Web;
                 div.InnerHtml += $@"<div class='posLast-badge'>{p.Pos.First().ToString("#,0", System.Globalization.CultureInfo.InvariantCulture).Replace(",", " ")}</div>";
                 string posData = Newtonsoft.Json.JsonConvert.SerializeObject(p.Pos);
                 string dateData = JsonConvert.SerializeObject(p.ProductDate.Select(d => d.ToString("MM-dd")));
-                string canvasId = $"chart{p.ProductName.Replace(" ", "")}__id";
-                string graph = ("<div class='myProduct'>");
 
 
-                graph += "<script>Hello()</script>";
-                graph += "<script>";
-                graph += "document.addEventListener('DOMContentLoaded', function() {";
-                graph += $"var posData = {posData};";
-                graph += $"var dateData = {dateData};";
-                graph += $"var container = document.getElementById('{canvasId}');";
-                graph += "showChart(container, posData, dateData);";
-                graph += "});";
-                graph += "</script>";
-                graph += $"<canvas id='{canvasId}'></canvas>";
-                graph += "</div>";
-                div.InnerHtml += graph;
+
+                div.InnerHtml+=("<div class='ext_product'>");
+
+                div.InnerHtml+=($"<div class='imagegraph' onmouseover='showChart(this, {posData},{dateData})' onmouseout='hideChart(this)'>");
+               
+
+                // Добавляем canvas для графика с исходным размером
+                //htmlBuilder.AppendLine("<div style=\"position: absolute; bottom: -5px; left: -5px; width: calc(100% + 10px); height: 30px; background-color: rgba(0,0,0,0.6); color: white; padding: 0px; box-sizing: border-box;\"></div>");
+
+                div.InnerHtml += ("<canvas class='chart-canvas'></canvas>");
+                div.InnerHtml += ("</div>");
+                
             }
         }
-        //var body = htmlDoc.DocumentNode.SelectSingleNode("//body");
-        //if (body != null)
-        //{
-        //    var scriptTag = HtmlNode.CreateNode("<script src=\"https://renderfin.com/graphicsTSExtension.js\"></script>");
-        //    body.AppendChild(scriptTag);
-        //}
+        var body = htmlDoc.DocumentNode.SelectSingleNode("//body");
+        if (body != null)
+        {
+            var scriptTag = HtmlNode.CreateNode("<script src=\"https://renderfin.com/graphicsTSExtension.js\"></script>");
+            body.AppendChild(scriptTag);
+            
+            body.AppendChild(HtmlNode.CreateNode("<script>alert('Hello! I am an alert box!!');</script>"));
+        }
         return htmlDoc.DocumentNode.OuterHtml;
     }
 } 
