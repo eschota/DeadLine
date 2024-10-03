@@ -436,3 +436,5 @@ FodyWeavers.xsd
 qss/qss.sln
 qss/qss.sln
 qss/qss.sln
+/NoDeadLineTelegramBot/model
+*.zip

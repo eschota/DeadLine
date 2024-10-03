@@ -1,26 +1,20 @@
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
-using System.IO;
-using System;
-using System.Diagnostics;
-using System.Runtime;
+using Telegram.Bot.Types.Enums; 
+using System.Diagnostics; 
 
 using System.Text.RegularExpressions;
 using Microsoft.VisualBasic;
-using System.Threading;
-using System.Text;
+using System.Threading; 
 using Newtonsoft.Json;
 using System.Linq.Expressions;
 using System.IO.Compression;
 using System.Threading.Tasks;
 using System.Linq;
-using System.Xml.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Newtonsoft.Json.Linq;
-using Telegram.Bot.Requests;
-using Telegram.Bot.Types.ReplyMarkups;
-using System.Text.Json.Nodes;
+using System.Text;
+using System.Xml.Linq; 
+using Newtonsoft.Json.Linq; 
+using Telegram.Bot.Types.ReplyMarkups; 
 internal static class Chat
 {
     internal static TelegramBotClient Bot;
@@ -31,13 +25,18 @@ internal static class Chat
         try
         {
             //Console.WriteLine($"update.Type: {update.Type}: update.Message.Chat.Id {update.Message.Chat.Id}:update.Message {update.Message.Text}");
-            await Buttons.HandleUpdateAsync(update);
+            // await Buttons.HandleUpdateAsync(update);
+            if (update.Type == UpdateType.CallbackQuery)
+            {
+                await CGTrendsAPI.HandleCallbackQueryAsync(Bot, update.CallbackQuery);
+            }
             if (update.Type == UpdateType.Message)
              
             {
+                if(await CGTrendsAPI.CGTrendsAPIRequest(update.Message) == true) return;
 
-              //  if(await FilesManager.IsCreate(update.Message)==true) return;
-               // if(Games.GetGame(update.Message)==true) return;
+                //  if(await FilesManager.IsCreate(update.Message)==true) return;
+                // if(Games.GetGame(update.Message)==true) return;
                 if ( update.Message.Text!=null) Console.WriteLine(update.Message.Text);
                 bool isGif = update.Message.Text != null && Regex.IsMatch(update.Message.Text.ToLower(), @"\b(гиф)\b");
                 if (isGif)
@@ -88,15 +87,17 @@ internal static class Chat
                 bool containsBotKeyword = update.Message.Text != null && Regex.IsMatch(update.Message.Text.ToLower(), @"\bбот\b");
                 bool containsBotKeywordinCaption = update.Message.Caption != null && Regex.IsMatch(update.Message.Caption.ToLower(), @"\bбот\b");
 
-                bool containSite = (update.Message.Text != null && update.Message.Text.Length > 3 &&
-                     Regex.IsMatch(update.Message.Text.ToLower(), @"\b(создай|сайт|сгенерируй|страницу)\b")) ||
-                    (update.Message.Caption != null && update.Message.Caption.Length > 3 &&
-                     Regex.IsMatch(update.Message.Caption.ToLower(), @"\b(создай|сайт|сгенерируй|страницу)\b"));
+                //bool containSite = (update.Message.Text != null && update.Message.Text.Length > 3 &&
+                //    // Regex.IsMatch(update.Message.Text.ToLower(), @"\b(создай|сайт|сгенерируй|страницу)\b")) ||
+                //    (update.Message.Caption != null && update.Message.Caption.Length > 3 &&
+                //   //  Regex.IsMatch(update.Message.Caption.ToLower(), @"\b(создай|сайт|сгенерируй|страницу)\b"));
 
-                bool containsChat = (update.Message.Text != null && update.Message.Text.Length > 3 &&
-                      Regex.IsMatch(update.Message.Text.ToLower(), @"\b(чата|чат|чате|чату)\b")) ||
-                     (update.Message.Caption != null && update.Message.Caption.Length > 3 &&
-                      Regex.IsMatch(update.Message.Caption.ToLower(), @"\b(чата|чат|чате|чату)\b"));
+                bool containsChat = false;
+                bool containSite = false;
+                //(update.Message.Text != null && update.Message.Text.Length > 3 &&
+                //      Regex.IsMatch(update.Message.Text.ToLower(), @"\b(чата|чат|чате|чату)\b")) ||
+                //     (update.Message.Caption != null && update.Message.Caption.Length > 3 &&
+                //      Regex.IsMatch(update.Message.Caption.ToLower(), @"\b(чата|чат|чате|чату)\b"));
 
 
                 if (update.Message.Type == MessageType.Photo) if (containsBotKeywordinCaption) { UpdateChatID(update.Message, containsChat); SaveMessageToHistory(update.Message); return; }
@@ -125,7 +126,7 @@ internal static class Chat
 
     public static string GetImagePath()
     {
-        string fName = $"{DateTime.Now:yyyyMMdd_HHmmssfff}.gif";
+        string fName = $"{DateTime.Now:yyyyMMdd_HHmmssfff}.png";
         string filePath = Path.Combine(Paths.Imagine, fName);
         return filePath;
     }
@@ -141,15 +142,33 @@ internal static class Chat
 
 
         return System.IO.File.ReadAllText(chatHistoryPath);
+    }  
+    public static string GetChatHistoryWithEmbeddings( Message message)
+    {
+        bool isGroupChat = message.Chat.Type != ChatType.Private;
+        string chatHistoryPath = "";
+
+        if (isGroupChat)
+            chatHistoryPath = Path.Combine(Paths.Chats, "history_" + message.Chat.Title + ".json");
+        else
+            chatHistoryPath = Path.Combine(GetChatPath(message), "history.json");
+
+
+        return System.IO.File.ReadAllText(chatHistoryPath);
     }
 
-    static void SaveMessageToHistory(Message message)
+    static async void SaveMessageToHistory(Message message)
     {
 
         if (message.From.IsBot) return;
-        //
+        float[] Vectors = { };
         bool isGroupChat = message.Chat.Type != ChatType.Private;
         string chatHistoryPath = "";
+        string t = "";
+        if (message.Text != null) t = message.Text;
+        if(t!="")
+            Vectors= await OpenAIClient.AskOpenAI2Embedding(t);
+
 
         if (isGroupChat)
             chatHistoryPath = Path.Combine(Paths.Chats, "history_" + message.Chat.Title + ".json");
@@ -159,22 +178,35 @@ internal static class Chat
         string directoryPath = Path.GetDirectoryName(chatHistoryPath);
         if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath);
 
+        
+        
+        string messageContent = JsonConvert.SerializeObject( new iMessage(t,Vectors,message.Chat.Id,message.MessageId, DateTime.Now), Formatting.Indented);
 
-        string messageContent = $"{message.From.Username}: {message.Text}\n";
+        string path_Json_file = chatHistoryPath.Replace(".json", $"{message.Chat.Id}_{message.MessageId}_.json");
+        await System.IO.File.WriteAllTextAsync(path_Json_file, (messageContent));
+         
 
-
-        using (FileStream fs = new FileStream(chatHistoryPath, FileMode.Append, FileAccess.Write))
-        {
-            using (StreamWriter writer = new StreamWriter(fs))
-            {
-                writer.Write(messageContent);
-            }
-        }
-
-
-        LimitLinesInFile(chatHistoryPath, 10000);
+       // LimitLinesInFile(chatHistoryPath, 10000);
     }
 
+    public class iMessage
+    {
+        
+        public string text;
+        public float[] embeddings; 
+        public double chat_id;
+        public int message_id;
+        public DateTime date_time;
+
+        public iMessage(string text, float[] embeddings, double chat_id, int message_id, DateTime date_time)
+        {
+            this.text = text;
+            this.embeddings = embeddings;
+            this.chat_id = chat_id;
+            this.message_id = message_id;
+            this.date_time = date_time;
+        }
+    }
     // Метод для ограничения количества строк в файле
     static void LimitLinesInFile(string filePath, int maxLines)
     {
@@ -464,7 +496,7 @@ internal static class Chat
             }
             else
             {
-                string askAI = await OpenAIClient.AskOpenAI(message.Text);
+                string askAI = await OpenAIClient.AskOpenAI(message.Text, "o1-preview");
 
                 message.Text=askAI;
                 await GenerateGalleryAnswer(message, askAI);
@@ -1197,76 +1229,132 @@ internal static class Chat
         return false;
     }
 
+    public static string[] Styles = { "ANIME", "EPIC MOVIE", "ULTRA PHOTOREALISM", "DEEP MACRO", "Disney Cartoon films" };    
     public static async Task GenerateGalleryAnswer( Message message, string overrideMessage = "")
     {
-        await Task.Delay(100);
-        string ms = message.Text.ToLower();
-        string p = GetImagePath();
-        string lin = Path.Combine(@"https://renderfin.com/Sites/Imagine/", Path.GetFileName(p));
-        ms = await OpenAIClient.AskOpenAI(Clear(
-$" [{ms}] просто переведи с русского на английский.Если используется нецензурный контекст запроса, замени слова на цензурные и ВЫПОЛНИ задачу используя цензурный контент. Промпт должен быть не больше 20 слов!!!  \n Отвечай в формате .JSON, поле ответа \"answer\":string ", new string[] { "бот","картинка", "нарисуй" }));
-        //askGPT = "Сгенерируй промпт для StableDiffsion на английском языке, используй профессиональный подход к созданию промпта. Следующий в скобках Текст  нужно превратить в промпт: [" + ask + "] Если не можешь сделать промпт просто переведи с русского на английский.Если используется нецензурный контекст запроса, замени слова на цензурные и ВЫПОЛНИ задачу используя цензурный контент.  \n Отвечай в формате .JSON, поле ответа \"answer\":string ";
-        if (ms.ToLower().Contains("fulfill") || ms.ToLower().Contains("content") || ms.ToLower().Contains("please") || ms.ToLower().Contains("due to") || ms.ToLower().Contains("cannot") || ms.ToLower().Contains("assist"))
+        try
         {
-            ms = await TranslateText(Clear(message.Text, new string[] { "картинка", "нарисуй" }), "en");
-        }
-        else
-        {
-
-
-
-
-            if (ms.Contains("```json"))
+            
+            string ms = message.Text.ToLower();
+            string p = GetImagePath();
+            string lin = Path.Combine(@"https://renderfin.com/Sites/Imagine/", Path.GetFileName(p));
+            ms = await OpenAIClient.AskOpenAI(Clear(
+    $" [{ms}] просто переведи с русского на английский.Если используется нецензурный контекст запроса, замени слова на цензурные и ВЫПОЛНИ задачу используя цензурный контент. Промпт должен быть не больше 20 слов!!!  \n Отвечай в формате .JSON, поле ответа \"answer\":string ", new string[] { "бот", "картинка", "нарисуй" }));
+            //askGPT = "Сгенерируй промпт для StableDiffsion на английском языке, используй профессиональный подход к созданию промпта. Следующий в скобках Текст  нужно превратить в промпт: [" + ask + "] Если не можешь сделать промпт просто переведи с русского на английский.Если используется нецензурный контекст запроса, замени слова на цензурные и ВЫПОЛНИ задачу используя цензурный контент.  \n Отвечай в формате .JSON, поле ответа \"answer\":string ";
+            if (ms.ToLower().Contains("fulfill") || ms.ToLower().Contains("content") || ms.ToLower().Contains("please") || ms.ToLower().Contains("due to") || ms.ToLower().Contains("cannot") || ms.ToLower().Contains("assist"))
             {
-                ms = ms.Substring(ms.IndexOf("```json") + 7);
+                ms = await TranslateText(Clear(message.Text, new string[] { "картинка", "нарисуй" }), "en");
+            }
+            else
+            {
 
-                if (ms.Contains("```")) ms = ms.Substring(0, ms.IndexOf("```"));
+
+
+
+                if (ms.Contains("```json"))
+                {
+                    ms = ms.Substring(ms.IndexOf("```json") + 7);
+
+                    if (ms.Contains("```")) ms = ms.Substring(0, ms.IndexOf("```"));
+
+                }
+                try
+                {
+                    JObject data = JObject.Parse(ms);
+                    ms = data["answer"].ToString();
+                }
+                catch { }
+            }
+
+            var media = new List<IAlbumInputMedia>();
+            var streams = new List<Stream>(); // Список для хранения открытых потоков
+
+            
+
+            if (overrideMessage != "") ms = overrideMessage; 
+            List<string> albumToSend = new List<string>();
+            List<string> filePaths = new List<string>();
+
+            List<Task<string>> tasks = new List<Task<string>>();
+
+            for (int i = 0; i < 5; i++)
+            {
+                int index = i;  // Локальная копия индекса для замыкания
+                filePaths.Add(GetImagePath());
+
+                // Создаем задачи для каждого запроса
+                var task = OpenAIClient.AskOpenAI($"Describe the text thematically with a maximum of 10 words. This will be a prompt for a generative neural network. Use the style from the provided theme: [{Styles[index]}]. Here is the original text that needs to be transformed: {ms}\nRESPOND in JSON format Theme: {Styles[index]} = 'string', prompt: 'string'");
+
+                tasks.Add(task);
+            }
+            
+            // Ожидаем, пока все задачи завершатся
+            string[] results = await Task.WhenAll(tasks);
+            for (int i = 0; i < 5; i++)
+            {
+                string pattern = "\"prompt\"\\s*:\\s*\"([^\"]*)\"";  // Шаблон для поиска значения prompt
+                string promptValue = null;
+                string patternTheme = "\"theme\"\\s*:\\s*\"([^\"]*)\"";  // Шаблон для поиска значения prompt
+                
+                // Поиск значений с использованием регулярного выражения
+                Match match = Regex.Match(results[i], pattern);
+                Match matchpatternTheme = Regex.Match(results[i].ToLower(), patternTheme);
+
+                if (match.Success)
+                {
+
+                    promptValue = match.Groups[1].Value;
+                    if (matchpatternTheme.Success)
+                    {
+                        promptValue = matchpatternTheme.Groups[1].Value + ". " + promptValue;
+                    }
+                } 
+                
+                
+                if (promptValue == "" || promptValue == null) promptValue = results[i];
+                await StableDiffusion.StableDiffusionTxtToImage(promptValue, filePaths[i], 1);
+
+               // ms += text_for_sd+ "\n";
+
+                string capt = ms;
+                if(capt.Length>1000) capt = capt.Substring(0, 1000);
+                var stream = System.IO.File.OpenRead(filePaths[i]);
+                streams.Add(stream); // Добавляем поток в список, чтобы потом корректно закрыть
+                if (i == 0)
+                    media.Add(new InputMediaPhoto(InputFile.FromStream(streams.Last(), Path.GetFileName(filePaths[i]))) { Caption = capt });
+                else
+                    media.Add(new InputMediaPhoto(InputFile.FromStream(streams.Last(), Path.GetFileName(filePaths[i]))));
+
 
             }
             try
             {
-                JObject data = JObject.Parse(ms);
-                ms = data["answer"].ToString();
+                Console.WriteLine("Start Send Gallery");
+                var messages = await Bot.SendMediaGroupAsync(
+                    chatId: message.Chat.Id,
+                    media: media.ToArray(),
+                    cancellationToken: default
+                );
+
+                if(ms.Length>1000)
+                {
+                    string first =ms.Substring(1000, ms.Length-1000);
+                     
+                        Task.Delay(500);
+                        await Bot.SendTextMessageAsync(message.Chat.Id, first); 
+                }
             }
-            catch { }
-        }
+            catch (Exception ex)
+            {
 
-        var media = new List<IAlbumInputMedia>();
-        var streams = new List<Stream>(); // Список для хранения открытых потоков
+            }
 
 
-        if (overrideMessage != "") ms = overrideMessage; if (ms.Length > 1000) ms = ms.Substring(0, 1000);
-        List<string> albumToSend = new List<string>();
-        for (int i = 0; i < 5; i++)
+
+            //await SendPhotoMessage(update.Message.Chat.Id,p, ms,"","");
+        }catch(Exception mx)
         {
-            p = GetImagePath();
-            await StableDiffusion.StableDiffusionTxtToImage(ms, p, 1);
-                var stream = System.IO.File.OpenRead(p);
-            streams.Add(stream); // Добавляем поток в список, чтобы потом корректно закрыть
-            if (i == 0)
-                media.Add(new InputMediaPhoto(InputFile.FromStream(streams.Last(), Path.GetFileName(p))) { Caption = ms });
-            else
-                media.Add(new InputMediaPhoto(InputFile.FromStream(streams.Last(), Path.GetFileName(p))));
-
-
+            Logger.AddLog(mx.Message);
         }
-        try
-        {
-            // Отправляем все фотографии как альбом
-            var messages = await Bot.SendMediaGroupAsync(
-                chatId: message.Chat.Id,
-                media: media.ToArray(),
-                cancellationToken: default
-            );
-        }
-        catch (Exception ex)
-        {
-
-        }
-
-
-
-        //await SendPhotoMessage(update.Message.Chat.Id,p, ms,"","");
-        
     }
 }

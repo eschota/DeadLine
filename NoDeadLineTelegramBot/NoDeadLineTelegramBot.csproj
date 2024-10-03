@@ -16,8 +16,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="NAudio" Version="2.1.0" />
     <PackageReference Include="Python.Included" Version="3.11.6" />
     <PackageReference Include="Telegram.Bot" Version="19.0.0" />
+    <PackageReference Include="Vosk" Version="0.3.38" />
+    <PackageReference Include="VoskSharp" Version="0.0.2" />
     
   </ItemGroup>
 

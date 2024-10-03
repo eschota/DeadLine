@@ -19,7 +19,7 @@ using System.Threading.Tasks;
         var payload = new
         {
             model = "llama3",
-            prompt = _prompt+" .ОТВЕЧАЙ СТРОГО НА РУССКОМ ЯЗЫКЕ!!!",
+            prompt = _prompt,// +" .ОТВЕЧАЙ СТРОГО НА РУССКОМ ЯЗЫКЕ!!!",
             stream = false
              
         };

@@ -9,6 +9,7 @@ internal class Program
 {
     internal static async Task Main(string[] args)
     {
+        await ComfyUI_adapter.TestRun("Hello beautiful girl");
 
         Initialize(args);
         LoadChats();
@@ -16,37 +17,12 @@ internal class Program
         await SDAdapter.RestartStableDiffusion();
 
         TelegramBot("7198960639:AAFTzz2ZcwggOErqLQpTUtywI__xO5BMsqM");
-
-        Console.WriteLine("Hello, World!");
-
-        
+       // await new VoskSpeechRecognizer("model").StartSpeechRecognitionAsync();
 
 
 
- 
-
-        //try
-        //{
-        //    Runtime.PythonDLL = @"c:\Users\escho\AppData\Local\Programs\Python\Python310\python310.dll";
-        //    Translator.InitializePythonEngine();
-        //    string text = "Привет, как дела?";
-        //    string translatedText = Translator.Translate(text);
-        //    Console.WriteLine("Перевод: " + translatedText);
-        //}catch (Exception ex) { Console.WriteLine(ex.ToString()); }
-
-        // StableDiffusion.StableDiffusionImgToImg("beautiful girl", "c:\\CLI\\1.jpg", "c:\\CLI\\output_imageSD.png", 0);
-
-
-
-
-
-
-
-
-
-        while (Console.ReadLine().ToLower() != "q") ;
-
-       
+        Console.WriteLine("Hello, World!"); 
+        while (Console.ReadLine().ToLower() != "q") ; 
     }
    
 

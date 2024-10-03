@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 
 internal class SDAdapter
@@ -48,9 +49,26 @@ internal class SDAdapter
             }
         });
     }
+    private static readonly HttpClient httpClient = new HttpClient();
+    public static async Task<bool> CheckServiceAvailability(string url)
+    {
+        try
+        {
+            var response = await httpClient.GetAsync(url);
 
+            // Возвращаем true, если статус-код 2xx (успешный запрос)
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            // Логируем исключение (опционально)
+            Console.WriteLine($"Exception occurred: {ex.Message}");
+            return false;
+        }
+    }
     public static async Task RestartStableDiffusion()
     {
+       // if (await CheckServiceAvailability("http://127.0.0.1:7860")) return;
         StopStableDiffusion();
         Console.WriteLine("Restarting Stable Diffusion process.");
         await StartStableDiffusion();
