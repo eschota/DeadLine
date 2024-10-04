@@ -14,12 +14,54 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq; 
 using Newtonsoft.Json.Linq; 
-using Telegram.Bot.Types.ReplyMarkups; 
+using Telegram.Bot.Types.ReplyMarkups;
+
+
+public class iMessage
+{
+    
+    public string text = "";
+
+    public string meaning = "";
+    public float[] embeddings = new float[] {};
+    public long chat_id = 0;
+    public int message_id = 0;
+    public long group_id = 0;
+    public int message_type = 0;
+    public DateTime date_time = DateTime.MinValue;
+    // ОБЯЗАТЕЛЬНО ДОБАВЛЯТЬ ДЕФОЛТНЫЕ ЗНАЧЕНИЯ ПОЛЯМ КЛАССА
+    // ОБЯЗАТЕЛЬНО ДОБАВЛЯТЬ ДЕФОЛТНЫЕ ЗНАЧЕНИЯ ПОЛЯМ КЛАССА
+    // ОБЯЗАТЕЛЬНО ДОБАВЛЯТЬ ДЕФОЛТНЫЕ ЗНАЧЕНИЯ ПОЛЯМ КЛАССА
+    // ОБЯЗАТЕЛЬНО ДОБАВЛЯТЬ ДЕФОЛТНЫЕ ЗНАЧЕНИЯ ПОЛЯМ КЛАССА
+
+    public iMessage(string text, float[] embeddings, long chat_id, int message_id, long group_id, int message_type, DateTime date_time, string Meaning)
+    {
+        this.text = text;
+        this.embeddings = embeddings;
+        this.chat_id = chat_id;
+        this.message_id = message_id;
+        this.group_id = group_id;
+        this.message_type = message_type;
+        this.date_time = date_time;
+        this.meaning = Meaning;
+    }
+
+    // НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ
+    // НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ
+    // НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ// НЕ УДАЛЯТЬ
+    public iMessage () { }
+}
+
 internal static class Chat
 {
+    private static string _isApikey = null;
+    public static string Api_key => Environment.GetEnvironmentVariable("API_KEY") ?? throw new InvalidOperationException("API_KEY is not set in environment variables");
+
+
     internal static TelegramBotClient Bot;
     static HashSet<long> chatIds = new HashSet<long>();
     public static int LastMessageID = 0;
+
     private static async Task TelegramUpdate(ITelegramBotClient client, Update update, CancellationToken token)
     {
         try
@@ -34,6 +76,7 @@ internal static class Chat
              
             {
                 if(await CGTrendsAPI.CGTrendsAPIRequest(update.Message) == true) return;
+                if(await MessageHistory.FindMessage(update.Message) == true) return;
 
                 //  if(await FilesManager.IsCreate(update.Message)==true) return;
                 // if(Games.GetGame(update.Message)==true) return;
@@ -166,47 +209,69 @@ internal static class Chat
         string chatHistoryPath = "";
         string t = "";
         if (message.Text != null) t = message.Text;
-        if(t!="")
-            Vectors= await OpenAIClient.AskOpenAI2Embedding(t);
-
-
-        if (isGroupChat)
-            chatHistoryPath = Path.Combine(Paths.Chats, "history_" + message.Chat.Title + ".json");
-        else
-            chatHistoryPath = Path.Combine(GetChatPath(message), "history.json");
-
-        string directoryPath = Path.GetDirectoryName(chatHistoryPath);
-        if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath);
-
-        
-        
-        string messageContent = JsonConvert.SerializeObject( new iMessage(t,Vectors,message.Chat.Id,message.MessageId, DateTime.Now), Formatting.Indented);
-
-        string path_Json_file = chatHistoryPath.Replace(".json", $"{message.Chat.Id}_{message.MessageId}_.json");
-        await System.IO.File.WriteAllTextAsync(path_Json_file, (messageContent));
-         
-
-       // LimitLinesInFile(chatHistoryPath, 10000);
-    }
-
-    public class iMessage
-    {
-        
-        public string text;
-        public float[] embeddings; 
-        public double chat_id;
-        public int message_id;
-        public DateTime date_time;
-
-        public iMessage(string text, float[] embeddings, double chat_id, int message_id, DateTime date_time)
+        string reformulatedText = "";
+        if (t != "")
         {
-            this.text = text;
-            this.embeddings = embeddings;
-            this.chat_id = chat_id;
-            this.message_id = message_id;
-            this.date_time = date_time;
+            reformulatedText = await OpenAIClient.AskOpenAI("Твоя задача описать TargetMessage для раскрытия его смысла. Опиши смысловые свойства TargetMessage в 300 символов без пунктов, сплошным текстом. В ответ не добавляй комментарии. Вот TargetMessage: '"+ t+"'. ");
+            reformulatedText = reformulatedText.Replace("TargetMessage", "");
+            Vectors = await OpenAIClient.AskOpenAI2Embedding(reformulatedText);
+        } 
+
+        //string messageContent = JsonConvert.SerializeObject(new iMessage(new float[] { }, message), Formatting.Indented);
+
+        string path_Json_file = Path.Combine(Paths.Chats, $"{DateTime.Now.ToString()}{new Random().Next(1, 99999).ToString()}.bin".Replace(".", "").Replace(":", "").Replace(" ", "").Replace("bin", ".bin"));
+        //await System.IO.File.WriteAllTextAsync(path_Json_file, (messageContent));
+        var msg = new iMessage(t, new float[] { }, message.From.Id, message.MessageId, message.Chat.Id, (int)message.Type, message.Date, reformulatedText.Length>0 ? reformulatedText: t);
+        EmbeddingStorage.SaveEmbedding(Vectors, msg , path_Json_file);
+        Console.WriteLine();
+        var closestMessages = MessageHistory.Instance.FindClosestMessages(Vectors);
+
+
+
+        // Для каждого сообщения выводим строку
+        foreach (var (messageembd, distance) in closestMessages)
+        {
+            if (messageembd != null)
+            {
+                // Устанавливаем цвет в зависимости от значения Distance
+                if (distance < 0.1)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                }
+                else if (distance > 0.3)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                }
+
+                // Ограничиваем длину текста до 200 символов
+                string text = messageembd.text.Length > 200 ? messageembd.text.Substring(0, 200) + "..." : messageembd.text.PadRight(200);
+                string distStr = distance.ToString("0.00").PadRight(11);
+
+                // Выводим строку
+                Console.WriteLine($"│ {text} │ {distStr} │");
+                Console.ResetColor(); // Сбрасываем цвет для следующей строки
+            }
         }
+
+        // Печатаем нижнюю границу таблицы
+
+
+        msg.embeddings = Vectors;
+
+        var chid = message.Chat.Id.ToString();
+        if (!MessageHistory.Instance._messagesByChatId.ContainsKey(chid))
+        {
+            MessageHistory.Instance._messagesByChatId[chid] = new List<iMessage>();
+        }
+        MessageHistory.Instance._messagesByChatId[chid].Add(msg);
+        // LimitLinesInFile(chatHistoryPath, 10000);
     }
+
+    
     // Метод для ограничения количества строк в файле
     static void LimitLinesInFile(string filePath, int maxLines)
     {
@@ -496,10 +561,18 @@ internal static class Chat
             }
             else
             {
-                string askAI = await OpenAIClient.AskOpenAI(message.Text, "o1-preview");
+                string askAI = await OpenAIClient.AskOpenAI(message.Text, "gpt-4o-2024-08-06");
 
                 message.Text=askAI;
-                await GenerateGalleryAnswer(message, askAI);
+                string ms = message.Text;
+                await Bot.SendTextMessageAsync(message.Chat.Id, ms);
+                if (ms.Length > 4000)
+                {
+                    string first = ms.Substring(4000, ms.Length - 4000);
+
+                    Task.Delay(100);
+                    await Bot.SendTextMessageAsync(message.Chat.Id, first);
+                }
                 return;
             }
         }
@@ -896,28 +969,14 @@ internal static class Chat
         if (!chatIds.Contains(chatId))
         {
             chatIds.Add(chatId);
-            System.IO.Directory.CreateDirectory(chatPath);
+            //System.IO.Directory.CreateDirectory(chatPath);
             Bot.SendTextMessageAsync(223960353, $"Hello @{message.From.Username}{message.From.FirstName}");
         }
 
     }
-    static internal void LoadChats()
+    static internal void LoadMessagesHistory()
     {
-        try
-        {// получаем список чатов из директории Paths.Chats по принципу {nickName}_{chatID}.txt
-            string[] files = Directory.GetDirectories(Paths.Chats);
-            foreach (string file in files)
-            {
-                string[] parts = Path.GetFileNameWithoutExtension(file).Split('_');
-                if (parts.Length == 2)
-                {
-                    long chatId = long.Parse(parts[1]);
-                    chatIds.Add(chatId);
-                }
-            }
-        }
-        catch (Exception ex) 
-        { Console.WriteLine("Exception: " + ex.Message); }
+
     }
 
     static internal void TelegramBot(string token)
@@ -1238,8 +1297,8 @@ internal static class Chat
             string ms = message.Text.ToLower();
             string p = GetImagePath();
             string lin = Path.Combine(@"https://renderfin.com/Sites/Imagine/", Path.GetFileName(p));
-            ms = await OpenAIClient.AskOpenAI(Clear(
-    $" [{ms}] просто переведи с русского на английский.Если используется нецензурный контекст запроса, замени слова на цензурные и ВЫПОЛНИ задачу используя цензурный контент. Промпт должен быть не больше 20 слов!!!  \n Отвечай в формате .JSON, поле ответа \"answer\":string ", new string[] { "бот", "картинка", "нарисуй" }));
+    //        ms = await OpenAIClient.AskOpenAI(Clear(
+    //$" [{ms}] просто переведи с русского на английский.Если используется нецензурный контекст запроса, замени слова на цензурные и ВЫПОЛНИ задачу используя цензурный контент. Промпт должен быть не больше 20 слов!!!  \n Отвечай в формате .JSON, поле ответа \"answer\":string ", new string[] { "бот", "картинка", "нарисуй" }));
             //askGPT = "Сгенерируй промпт для StableDiffsion на английском языке, используй профессиональный подход к созданию промпта. Следующий в скобках Текст  нужно превратить в промпт: [" + ask + "] Если не можешь сделать промпт просто переведи с русского на английский.Если используется нецензурный контекст запроса, замени слова на цензурные и ВЫПОЛНИ задачу используя цензурный контент.  \n Отвечай в формате .JSON, поле ответа \"answer\":string ";
             if (ms.ToLower().Contains("fulfill") || ms.ToLower().Contains("content") || ms.ToLower().Contains("please") || ms.ToLower().Contains("due to") || ms.ToLower().Contains("cannot") || ms.ToLower().Contains("assist"))
             {

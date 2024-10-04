@@ -4,17 +4,21 @@ using System.Runtime;
 using System.Text;
 using System.Reflection;
 using Python.Runtime;
-using System; 
+using System;
+using NoDeadLineTelegramBot;
 internal class Program
 {
     internal static async Task Main(string[] args)
     {
-        await ComfyUI_adapter.TestRun("Hello beautiful girl");
+        var history = MessageHistory.Instance;
+        history.LoadAllMessages(Paths.Chats);
+
+        //await ComfyUI_adapter.TestRun("Hello beautiful girl");
 
         Initialize(args);
-        LoadChats();
+        
         //Games.LoadAllGames();
-        await SDAdapter.RestartStableDiffusion();
+      //  await SDAdapter.RestartStableDiffusion();
 
         TelegramBot("7198960639:AAFTzz2ZcwggOErqLQpTUtywI__xO5BMsqM");
        // await new VoskSpeechRecognizer("model").StartSpeechRecognitionAsync();
@@ -22,7 +26,7 @@ internal class Program
 
 
         Console.WriteLine("Hello, World!"); 
-        while (Console.ReadLine().ToLower() != "q") ; 
+        while (Console.ReadLine().ToLower() != "q") ;
     }
    
 

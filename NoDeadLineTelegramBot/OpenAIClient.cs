@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Requests;
+using Telegram.Bot.Types;
 
 public static class OpenAIClient
     {
@@ -36,7 +37,7 @@ public static class OpenAIClient
 
         using (var httpClient = new HttpClient(handler))
         {
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer sk-proj-GWPUIxesbJqn7xY3bG6HT3BlbkFJaPzMhKBdiBwJ4XxLQfP9");
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {Chat.Api_key}");
             try
             {
                 var response = await httpClient.PostAsync("https://api.openai.com/v1/chat/completions",content); // Обновите URL, если необходимо
@@ -113,7 +114,7 @@ public static class OpenAIClient
 
             using (var httpClient = new HttpClient(handler))
             {
-                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer sk-proj-GWPUIxesbJqn7xY3bG6HT3BlbkFJaPzMhKBdiBwJ4XxLQfP9");
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {Chat.Api_key}");
 
                 var response = await httpClient.PostAsync("https://api.openai.com/v1/chat/completions", content); // Обновите URL, если необходимо
                                                                                                                   //Logger.SavePayLoad(JsonConvert.SerializeObject(response, Formatting.Indented));
@@ -152,6 +153,7 @@ public static class OpenAIClient
         var payload = new
         {
             model = "text-embedding-ada-002",
+           // model = "text-embedding-3-large",
             input = _prompt
         };
         var jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
@@ -159,7 +161,7 @@ public static class OpenAIClient
 
         using (var httpClient = new HttpClient(handler))
         {
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer sk-proj-GWPUIxesbJqn7xY3bG6HT3BlbkFJaPzMhKBdiBwJ4XxLQfP9");
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {Chat.Api_key}");
             try
             {
                 var response = await httpClient.PostAsync("https://api.openai.com/v1/embeddings", content); // Обновите URL, если необходимо
