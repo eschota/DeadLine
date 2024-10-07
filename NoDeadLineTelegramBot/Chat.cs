@@ -1342,7 +1342,18 @@ internal static class Chat
                 filePaths.Add(GetImagePath());
 
                 // Создаем задачи для каждого запроса
-                var task = OpenAIClient.AskOpenAI($"Describe the text thematically with a maximum of 10 words. This will be a prompt for a generative neural network. Use the style from the provided theme: [{Styles[index]}]. Here is the original text that needs to be transformed: {ms}\nRESPOND in JSON format Theme: {Styles[index]} = 'string', prompt: 'string'");
+                //var task = OpenAIClient.AskOpenAI($"Describe the text thematically with a maximum of 30 words. This will be a prompt for a generative neural network. Use the style from the provided theme: [{Styles[index]}]. Here is the original text that needs to be transformed: {ms}\nRESPOND in JSON format Theme: {Styles[index]} = 'string', prompt: 'string'"); 
+                Task<string> task;
+                if (ContainsCyrillic(ms))
+                {
+                    // Если есть кириллические символы, создаем задачу без OpenAIClient.AskOpenAI
+                    task = Task.FromResult($"Theme: {Styles[index]}, prompt: {ms}");
+                }
+                else
+                {
+                    // Если нет кириллических символов, используем OpenAIClient для перевода текста
+                    task = OpenAIClient.AskOpenAI($"JUST TRANSLATE TEXT TO ENGLISH. Here is the original text that needs to be transformed: {ms}. \nRESPOND in JSON format Theme: {Styles[index]} = 'string', prompt: 'string'");
+                }
 
                 tasks.Add(task);
             }
@@ -1371,8 +1382,8 @@ internal static class Chat
                 
                 
                 if (promptValue == "" || promptValue == null) promptValue = results[i];
-                await StableDiffusion.StableDiffusionTxtToImage(promptValue, filePaths[i], 1);
-
+                // await StableDiffusion.StableDiffusionTxtToImage(promptValue, filePaths[i], 1);
+                filePaths[i]=await ComfyUI_adapter.GenerateImage(promptValue, filePaths[i]);
                // ms += text_for_sd+ "\n";
 
                 string capt = ms;
@@ -1405,7 +1416,7 @@ internal static class Chat
             }
             catch (Exception ex)
             {
-
+                Logger.AddLog("Exception " + ex.Message);
             }
 
 
@@ -1415,5 +1426,9 @@ internal static class Chat
         {
             Logger.AddLog(mx.Message);
         }
+    }
+    private static bool ContainsCyrillic(string input)
+    {
+        return Regex.IsMatch(input, @"\p{IsCyrillic}");
     }
 }

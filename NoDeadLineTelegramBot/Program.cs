@@ -13,7 +13,7 @@ internal class Program
         var history = MessageHistory.Instance;
         history.LoadAllMessages(Paths.Chats);
 
-        //await ComfyUI_adapter.TestRun("Hello beautiful girl");
+        
 
         Initialize(args);
         
