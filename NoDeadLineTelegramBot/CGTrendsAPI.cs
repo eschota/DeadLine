@@ -77,7 +77,7 @@ public class CGTrendsAPI
             await Chat.Bot.EditMessageTextAsync(statusMessage.Chat.Id, statusMessage.MessageId, "Отправляю результаты.");
 
             // Send the first page of products
-            await SendGalleryAsync(message.Chat.Id, products, 0, 5);
+            await SendTrends(message.Chat.Id, products, 0, 5);
 
             await Chat.Bot.DeleteMessageAsync(message.Chat.Id, statusMessage.MessageId);
         }
@@ -115,7 +115,7 @@ public class CGTrendsAPI
         }
     }
 
-    public static async Task SendGalleryAsync(long chatId, List<Product> products, int pageIndex, int pageSize)
+    public static async Task SendTrends(long chatId, List<Product> products, int pageIndex, int pageSize)
     {
         try
         {
@@ -288,7 +288,7 @@ public class CGTrendsAPI
 
 
 
-    public static async Task HandleCallbackQueryAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery)
+    public static async Task buttons_CGTRENDS(ITelegramBotClient botClient, CallbackQuery callbackQuery)
     {
         // Получаем идентификатор чата и информацию о текущем запросе
         var chatId = callbackQuery.Message.Chat.Id;
@@ -306,7 +306,7 @@ public class CGTrendsAPI
                     session.CurrentPageIndex = newPageIndex;
 
                     // Отправляем новую страницу галереи
-                    await SendGalleryAsync(chatId, session.Products, newPageIndex, session.PageSize);
+                    await SendTrends(chatId, session.Products, newPageIndex, session.PageSize);
 
                     // Закрываем callback запрос
                     await botClient.AnswerCallbackQueryAsync(callbackQuery.Id);

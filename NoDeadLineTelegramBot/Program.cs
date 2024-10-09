@@ -21,9 +21,10 @@ internal class Program
       //  await SDAdapter.RestartStableDiffusion();
 
         TelegramBot("7198960639:AAFTzz2ZcwggOErqLQpTUtywI__xO5BMsqM");
-       // await new VoskSpeechRecognizer("model").StartSpeechRecognitionAsync();
+        // await new VoskSpeechRecognizer("model").StartSpeechRecognitionAsync();
 
-
+        var ftpUploader = new FtpUploader("ftp://ftp.microstock.plus", "eschota@gmail.com", "91clb6jqwd");
+        ftpUploader.UploadFile("c:\\ComfyUI\\web\\zz_.png", "zz_.png");
 
         Console.WriteLine("Hello, World!"); 
         while (Console.ReadLine().ToLower() != "q") ;

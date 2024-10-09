@@ -70,7 +70,7 @@ internal static class Chat
             // await Buttons.HandleUpdateAsync(update);
             if (update.Type == UpdateType.CallbackQuery)
             {
-                await CGTrendsAPI.HandleCallbackQueryAsync(Bot, update.CallbackQuery);
+              //  await CGTrendsAPI.HandleCallbackQueryAsync(Bot, update.CallbackQuery);
             }
             if (update.Type == UpdateType.Message)
              
@@ -1383,7 +1383,7 @@ internal static class Chat
                 
                 if (promptValue == "" || promptValue == null) promptValue = results[i];
                 // await StableDiffusion.StableDiffusionTxtToImage(promptValue, filePaths[i], 1);
-                filePaths[i]=await ComfyUI_adapter.GenerateImage(promptValue, filePaths[i]);
+                filePaths[i]=await ComfyUI_adapter.GenerateImage(promptValue);
                // ms += text_for_sd+ "\n";
 
                 string capt = ms;
