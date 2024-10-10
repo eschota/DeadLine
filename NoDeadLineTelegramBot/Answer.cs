@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 using Telegram.Bot.Types;
 using Telegram.Bot; 
 using System.Diagnostics;
-using static OpenAIClient;
-using System.Text;
 
 public static class Answer
 {
@@ -117,7 +115,7 @@ public static class Answer
         return true;
     }
 
-    public static async Task GenerateImagesByFunctions(Message message, int count, List<string> imagePrompts, Message statusMessage, Stopwatch stopwatch, List<AssistantFunction> assistantFunctions)
+    public static async Task GenerateImagesByFunctions(Message message, int count, List<string> imagePrompts, Message statusMessage, Stopwatch stopwatch)
     {
         try
         {
@@ -127,26 +125,6 @@ public static class Answer
             int batchSize = 10; // Ограничение на количество изображений за одну отправку
             int totalBatches = (int)Math.Ceiling((double)count / batchSize);
             int generatedImages = 0;
-
-            // Сформируем текст с информацией о всех функциях для статуса
-            var functionsDescription = new StringBuilder();
-            functionsDescription.AppendLine("Запущенные функции:");
-            foreach (var function in assistantFunctions)
-            {
-                functionsDescription.AppendLine($"- Функция: {function.FunctionName}");
-                functionsDescription.AppendLine($"  Параметры:");
-                foreach (var param in function.Parameters)
-                {
-                    functionsDescription.AppendLine($"    {param.Key}: {param.Value}");
-                }
-            }
-
-            // Обновим статусное сообщение перед началом выполнения функций
-            await Chat.Bot.EditMessageTextAsync(
-                chatId: message.Chat.Id,
-                messageId: statusMessage.MessageId,
-                text: $"Начинаем выполнение задач...\n{functionsDescription}\n"
-            );
 
             // Если количество промптов меньше, чем count, создаём расширенный список промптов, заполняя его циклически
             var extendedPrompts = new List<string>();
@@ -243,8 +221,7 @@ public static class Answer
                         text: $"Генерирую {count} изображений по следующим промптам:\n" +
                               $"Текущий промпт: {promptValue}\n" +
                               $"Готово [{generatedImages} из {count}]\n" +
-                              $"Общее время: {stopwatch.Elapsed.TotalSeconds:F2} секунд\n\n" +
-                              $"{functionsDescription}"
+                              $"Общее время: {stopwatch.Elapsed.TotalSeconds:F2} секунд"
                     );
                 }
 
@@ -308,8 +285,7 @@ public static class Answer
                 chatId: message.Chat.Id,
                 messageId: statusMessage.MessageId,
                 text: "Все изображения успешно сгенерированы и отправлены.\n" +
-                      $"Общее время: {stopwatch.Elapsed.TotalSeconds:F2} секунд\n" +
-                      $"{functionsDescription}"
+                      $"Общее время: {stopwatch.Elapsed.TotalSeconds:F2} секунд"
             );
         }
         catch (Exception ex)
@@ -323,7 +299,6 @@ public static class Answer
             );
         }
     }
-
 
 
 

@@ -4,10 +4,16 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.IO;
+using System.Net.WebSockets;
+using System.Threading;
+using System.Collections.Generic;
 
 public static class ComfyUI_adapter
 {
     private static readonly HttpClient client = new HttpClient();
+    private static int queueSize = 0;
+    private static readonly object lockObject = new object();
 
     public static async Task<string> GenerateImage(string prompt)
     {
@@ -15,13 +21,21 @@ public static class ComfyUI_adapter
         string clientId = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
 
         // Формируем корректный JSON, заменяя $prompt на фактический текст
+        if (!File.Exists("c:\\ComfyUI\\workflows\\workflow_flux.json"))
+        {
+            Console.WriteLine("Error: workflow file does not exist.");
+            return null;
+        }
+
         string promptText = await File.ReadAllTextAsync("c:\\ComfyUI\\workflows\\workflow_flux.json");
+        if (string.IsNullOrEmpty(promptText))
+        {
+            Console.WriteLine("Error: workflow file is empty.");
+            return null;
+        }
 
         // Экранируем спецсимволы в prompt с помощью JsonSerializer
-        string escapedPrompt = JsonSerializer.Serialize(prompt);
-
-        // Убираем дополнительные кавычки, добавляемые JsonSerializer (оставляем только экранирование символов)
-        escapedPrompt = escapedPrompt.Trim('"');
+        string escapedPrompt = JsonSerializer.Serialize(prompt).Trim('"');
 
         // Вставляем экранированную строку в JSON
         promptText = promptText.Replace("$prompt", escapedPrompt);
@@ -35,7 +49,21 @@ public static class ComfyUI_adapter
 
         // Проверяем статус генерации изображения
         string imageUrl = $"{serverAddress}/output/{outputImageName}_00001_.png";
-        if (await IsImageAvailable(imageUrl))
+        bool imageAvailable = await IsImageAvailable(imageUrl);
+
+        if (!imageAvailable)
+        {
+            Console.WriteLine("Image was not available within the timeout period, retrying...");
+
+            // Повторная попытка генерации изображения
+            response = await QueuePromptAsync(promptText, clientId, serverAddress);
+            Console.WriteLine(response);
+
+            // Проверяем статус еще раз
+            imageAvailable = await IsImageAvailable(imageUrl);
+        }
+
+        if (imageAvailable)
         {
             Console.WriteLine($"Image generated and available at: {imageUrl}");
 
@@ -61,6 +89,7 @@ public static class ComfyUI_adapter
         Console.WriteLine("Error: Image generation failed or image is not available.");
         return null;
     }
+
     private static async Task<string> DownloadImageLocally(string imageUrl, string localPath)
     {
         try
@@ -83,11 +112,11 @@ public static class ComfyUI_adapter
         }
         return null;
     }
+
     public static async Task<string> QueuePromptAsync(string prompt, string clientId, string serverAddress)
     {
         try
         {
-            // Объединяем prompt и client_id в один объект JSON
             var payload = new
             {
                 prompt = JsonSerializer.Deserialize<JsonElement>(prompt),
@@ -102,6 +131,7 @@ public static class ComfyUI_adapter
             if (response.IsSuccessStatusCode)
             {
                 string responseBody = await response.Content.ReadAsStringAsync();
+                TrackProgress(prompt, clientId);
                 return responseBody;
             }
             else
@@ -113,14 +143,10 @@ public static class ComfyUI_adapter
         {
             Console.WriteLine("Server is not responding. Restarting ComfyUI...");
 
-            // Запускаем Python с скриптом main.py
             bool success = StartComfyUIServer();
             if (success)
             {
-                // Ждем 10 секунд перед повторной попыткой
                 await Task.Delay(10000);
-
-                // Повторяем вызов функции
                 return await QueuePromptAsync(prompt, clientId, serverAddress);
             }
             else
@@ -137,7 +163,7 @@ public static class ComfyUI_adapter
     private static async Task<bool> IsImageAvailable(string imageUrl)
     {
         int attempts = 0;
-        int maxAttempts = 2440; // 240 попыток по 500 мс = 2 минуты
+        int maxAttempts = 240; // 240 попыток по 500 мс = 2 минуты
         int delay = 500; // Задержка между попытками в миллисекундах
 
         while (attempts < maxAttempts)
@@ -146,10 +172,8 @@ public static class ComfyUI_adapter
             {
                 HttpResponseMessage response = await client.GetAsync(imageUrl);
                 if (response.IsSuccessStatusCode)
-                 
                 {
                     var contentType = response.Content.Headers.ContentType.MediaType;
-                    // Проверяем, что контент является изображением
                     if (contentType.StartsWith("image/"))
                     {
                         return true;
@@ -161,7 +185,6 @@ public static class ComfyUI_adapter
                 Console.WriteLine($"Error checking image availability: {ex.Message}");
             }
 
-            // Задержка перед следующей попыткой
             await Task.Delay(delay);
             attempts++;
         }
@@ -233,5 +256,13 @@ public static class ComfyUI_adapter
         {
             return false;
         }
+    }
+
+    public static void TrackProgress(string prompt, string clientId)
+    {
+        // Эмуляция подключения WebSocket для отслеживания прогресса
+        Console.WriteLine("Tracking progress for the prompt...");
+        // Здесь можно добавить реализацию WebSocket для отслеживания прогресса,
+        // где мы будем получать информацию о прогрессе выполнения и обновлять статус.
     }
 }
