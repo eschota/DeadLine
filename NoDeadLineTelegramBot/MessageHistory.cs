@@ -5,6 +5,8 @@ using System.Linq;
 using static CGTrendsAPI;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using static Chat;
+using System.Diagnostics.Contracts;
 
 
 
@@ -365,41 +367,49 @@ public class MessageHistory
             if (string.IsNullOrEmpty(itext)) return false;
 
             itext = itext.ToLower();
-
+            if (itext == "") return false;
             if (!itext.StartsWith("/найди ") && !itext.StartsWith("найди ")) return false;
             itext = itext.StartsWith("/найди ") ? itext.Substring(7) : itext.StartsWith("найди ") ? itext.Substring(6) : itext;
-            float [] vector =  await OpenAIClient.AskOpenAI2Embedding(itext);
-            List<(iMessage msg, double d, List<(iMessage relatedMessage, double distance)> relatedMessages)> results = MessageHistory.Instance.FindClosestMessageBranchInDepth(vector);
-            if(results.Count > 0)
+             
+            List<ThreadMessage> answer = await Chat.GetFromApi(itext, message.Chat.Id, -1);
+            string joinedMessages = string.Join("\n", answer.Select(a => a.Text));
+            if (joinedMessages.Length > 0)
             {
-                var m = results[0];
-                if (m.msg.group_id!= message.Chat.Id)
-                {
-                    await Chat.Bot.SendTextMessageAsync(-4152887032, $"Ищем {itext}. Подсмотрели у других, нашли кое-что похожее. вот текст: " + m.msg.text);
-                    await Chat.Bot.SendTextMessageAsync(message.Chat.Id, $"Ищем {itext}. и нихуя не нашли.");
-                    return true;
-                }
-                try
-                {
-                    var thread = string.Join("\n",
-                         results
-                         .Where(d => d.d < 0.21 && d.relatedMessages != null) // Проверка на null
-                         .SelectMany(m => m.relatedMessages
-                             .Where(r => r.relatedMessage != null && r.relatedMessage.text != null) // Проверка на null внутри связанных сообщений
-                             .Select(r => r.relatedMessage.text))
-                         .Distinct());
-
-                    if (thread.Length == 0) throw new Exception("no thread found");
-                    var construct = await OpenAIClient.AskOpenAI($"Суммируй этот тред, отвечая на вопрос{itext}. 200-600 (в зависимсти от числа информации) символов. Thread:\n{thread}");
-                   await Chat.Bot.SendTextMessageAsync(message.Chat.Id, $"Ищем {itext}. Вот ОНО! ЕБАТЬ! [{m.d}]\n .\n{construct}", replyToMessageId: m.msg.message_id);
-                }
-                catch (Exception ex)
-                {
-                    await Chat.Bot.SendTextMessageAsync(-4152887032, $"Exception: Ищем {itext}.подсмотрели у дркгих, нашли кое-что похожее. вот текст: " + m.msg.text);
-                    await Chat.Bot.SendTextMessageAsync(message.Chat.Id, $"Exception Ищем {itext}. и нихуя не нашли.");
-                    Logger.AddLog($"????????????????: {ex.Message}");
-                }
+               // string a = await OpenAIClient.AskOpenAI($"ответь на вопрос {itext} используя следующий контекст истории сообщений: {joinedMessages}");
+                await Chat.Bot.SendTextMessageAsync(message.Chat.Id, $"Ищем {itext}. Вот ОНО! ЕБАТЬ! []\n .\n{joinedMessages}");
             }
+            //float [] vector =  await OpenAIClient.AskOpenAI2Embedding(itext);
+            //List<(iMessage msg, double d, List<(iMessage relatedMessage, double distance)> relatedMessages)> results = MessageHistory.Instance.FindClosestMessageBranchInDepth(vector);
+            //if(results.Count > 0)
+            //{
+            //    var m = results[0];
+            //    if (m.msg.group_id!= message.Chat.Id)
+            //    {
+            //        await Chat.Bot.SendTextMessageAsync(-4152887032, $"Ищем {itext}. Подсмотрели у других, нашли кое-что похожее. вот текст: " + m.msg.text);
+            //        await Chat.Bot.SendTextMessageAsync(message.Chat.Id, $"Ищем {itext}. и нихуя не нашли.");
+            //        return true;
+            //    }
+            //    try
+            //    {
+            //        var thread = string.Join("\n",
+            //             results
+            //             .Where(d => d.d < 0.21 && d.relatedMessages != null) // Проверка на null
+            //             .SelectMany(m => m.relatedMessages
+            //                 .Where(r => r.relatedMessage != null && r.relatedMessage.text != null) // Проверка на null внутри связанных сообщений
+            //                 .Select(r => r.relatedMessage.text))
+            //             .Distinct());
+
+            //        if (thread.Length == 0) throw new Exception("no thread found");
+            //        var construct = await OpenAIClient.AskOpenAI($"Суммируй этот тред, отвечая на вопрос{itext}. 200-600 (в зависимсти от числа информации) символов. Thread:\n{thread}");
+            //       await Chat.Bot.SendTextMessageAsync(message.Chat.Id, $"Ищем {itext}. Вот ОНО! ЕБАТЬ! [{m.d}]\n .\n{construct}", replyToMessageId: m.msg.message_id);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        await Chat.Bot.SendTextMessageAsync(-4152887032, $"Exception: Ищем {itext}.подсмотрели у дркгих, нашли кое-что похожее. вот текст: " + m.msg.text);
+            //        await Chat.Bot.SendTextMessageAsync(message.Chat.Id, $"Exception Ищем {itext}. и нихуя не нашли.");
+            //        Logger.AddLog($"????????????????: {ex.Message}");
+            //    }
+            //}
 
 
 

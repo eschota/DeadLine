@@ -15,6 +15,7 @@ using System.Text;
 using System.Xml.Linq; 
 using Newtonsoft.Json.Linq; 
 using Telegram.Bot.Types.ReplyMarkups;
+using System.Net.Http.Json;
 
 
 public class iMessage
@@ -77,54 +78,7 @@ internal static class Chat
             {
                 if(await CGTrendsAPI.CGTrendsAPIRequest(update.Message) == true) return;
                 if(await MessageHistory.FindMessage(update.Message) == true) return;
-
-                //  if(await FilesManager.IsCreate(update.Message)==true) return;
-                // if(Games.GetGame(update.Message)==true) return;
-                if ( update.Message.Text!=null) Console.WriteLine(update.Message.Text);
-                bool isGif = update.Message.Text != null && Regex.IsMatch(update.Message.Text.ToLower(), @"\b(гиф)\b");
-                if (isGif)
-                {
-                    string ms = update.Message.Text.ToLower();
-                    string p = GetImagePath();
-                    string lin = Path.Combine(@"https://renderfin.com/Sites/Imagine/", Path.GetFileName(p));
-                    ms = await OpenAIClient.AskOpenAI(Clear($"по указанному тексту создай промпт для Stable Diffusion, добавь для запроса некоторые детали, отвечай только одной строкой ответа на английском языке: [{ ms}]", new string[] { "гиф", "бот" }));
-                    await StableDiffusion.StableDiffusionGif(ms, "", p,  0);
-
-                    //                await Bot.SendAnimationAsync(
-                    //chatId: update.Message.Chat.Id,
-                    //animation: InputFile.FromUri(lin),
-                    //caption: $"{update.Message.Text}: {ms}");
-                    await Bot.SendVideoAsync(
-                    chatId: update.Message.Chat.Id,
-                    video: new InputFileStream(new FileStream(p, FileMode.Open, FileAccess.Read, FileShare.Read)),
-                    caption: $"{update.Message.Text}: {ms}");
-
-
-
-                    //await SendPhotoMessage(update.Message.Chat.Id,p, ms,"","");
-                    return;
-                }
-                if (await isSkazka(update.Message)) return;
-                     bool isImg = update.Message.Text != null && Regex.IsMatch(update.Message.Text.ToLower(), @"\b(картинка|нарисуй)\b");
-                if (isImg)
-                {
-                    await GenerateGalleryAnswer(update.Message);
-                    return;
-                }
-                bool isLLama  = update.Message.Text != null && Regex.IsMatch(update.Message.Text.ToLower(), @"\b(лама|ллама)\b");
-                if(isLLama)
-                {
-                    string ms = update.Message.Text.ToLower(); try { ms = ms.Replace("ллама", ""); }catch { };
-                    ms = "["+ms+"]"+ " : [ГЛАВНЫЙ ВОПРОС] \n\n\n\n. Для понимания используй историю из этого чата: \n[" + GetChatHistoryFiles(update.Message) + "]\n. НО ЭТА ИСТОРИЯ НЕ ОБЯЗАТЕЛЬНА, ОНА ПРОСТО ВСПОМОГАТЕЛЬНАЯ. ОТВЕЧАЙ ТОЛЬКО НА [ГЛАВНЫЙ ВОПРОС]";
-                    ms = await Ollama.AskLLama(ms);
-                    ms = await TranslateText(ms,"ru");
-                    if (ms.Length > 4000) ms.Substring(0, 3999);
-                    await Bot.SendTextMessageAsync(update.Message.Chat.Id, ms, parseMode: Telegram.Bot.Types.Enums.ParseMode.Markdown, disableNotification: true);
-                    return;
-                }
-
-
-
+ 
                 bool isAudio = update.Message.Type == MessageType.Voice;
                 bool isGroupChat = update.Message.Chat.Type != ChatType.Private;
                 bool containsBotKeyword = update.Message.Text != null && Regex.IsMatch(update.Message.Text.ToLower(), @"\bбот\b");
@@ -146,15 +100,15 @@ internal static class Chat
                 if (update.Message.Type == MessageType.Photo) if (containsBotKeywordinCaption) { UpdateChatID(update.Message, containsChat); SaveMessageToHistory(update.Message); return; }
 
 
-                if (containSite && containsBotKeyword)
-                {
-                    GenerateSite(update.Message, containsChat);
-                    SaveMessageToHistory(update.Message);
-                }
-                else
+                //if (containSite && containsBotKeyword)
+                //{
+                //    GenerateSite(update.Message, containsChat);
+                //    SaveMessageToHistory(update.Message);
+                //}
+                //else
             if (!isGroupChat || containsBotKeyword || containsBotKeywordinCaption || isAudio)
                 {
-                    UpdateChatID(update.Message, containsChat);
+                    await Answer.CognitiveAnswer(update.Message);
                     SaveMessageToHistory(update.Message);
                 }
                 else
@@ -204,6 +158,7 @@ internal static class Chat
     {
 
         if (message.From.IsBot) return;
+        SendToApi(message);
         float[] Vectors = { };
         bool isGroupChat = message.Chat.Type != ChatType.Private;
         string chatHistoryPath = "";
@@ -270,9 +225,84 @@ internal static class Chat
         MessageHistory.Instance._messagesByChatId[chid].Add(msg);
         // LimitLinesInFile(chatHistoryPath, 10000);
     }
+     
 
-    
+static void SendToApi(Message message)
+{
+    using (var client = new HttpClient())
+    {
+        var requestBody = new
+        {
+            message_id = message.MessageId,
+            chat_id = message.Chat.Id,
+            user_id = message.From.Id,
+            date_ms = new DateTimeOffset(message.Date).ToUnixTimeMilliseconds(),
+            text = message.Text ?? ""
+        };
+
+        var response = client.PostAsJsonAsync("http://77.238.234.201:3145/messages", requestBody).Result;
+
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Message sent successfully.");
+        }
+        else
+        {
+            Console.WriteLine($"Failed to send message. Status code: {response.StatusCode}");
+        }
+    }
+}
+    public static async Task<List<ThreadMessage>> GetFromApi(string text, double chatId, long messageDateMs)
+    {
+        using (var client = new HttpClient())
+        {
+            var requestBody = new
+            {
+                text = text,
+                chatId = chatId,
+                messageDateMs = messageDateMs
+            };
+
+            var response = await client.PostAsJsonAsync("http://77.238.234.201:3145/findThread", requestBody);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var threadResponse = JsonConvert.DeserializeObject<ThreadResponse>(responseContent);
+                return threadResponse.Thread;
+            }
+            else
+            {
+                Console.WriteLine($"Failed to retrieve thread. Status code: {response.StatusCode}");
+                return new List<ThreadMessage>();
+            }
+        }
+    }
+    public class ThreadResponse
+    {
+        [JsonProperty("thread")]
+        public List<ThreadMessage> Thread { get; set; }
+    }
     // Метод для ограничения количества строк в файле
+  
+
+    public class ThreadMessage
+    {
+        [JsonProperty("message_id")]
+        public double MessageId { get; set; }
+
+        [JsonProperty("chat_id")]
+        public double ChatId { get; set; }
+
+        [JsonProperty("user_id")]
+        public int UserId { get; set; }
+
+        [JsonProperty("date_ms")]
+        public long DateMs { get; set; }
+
+        [JsonProperty("text")]
+        public string Text { get; set; }
+    }
     static void LimitLinesInFile(string filePath, int maxLines)
     {
         var lines = System.IO.File.ReadAllLines(filePath);
@@ -282,8 +312,6 @@ internal static class Chat
             System.IO.File.WriteAllLines(filePath, lines.Skip(lines.Length - maxLines));
         }
     }
-
-
     static internal string GetResources(string ask)
     {
         string usePath = "";
