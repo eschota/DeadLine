@@ -137,7 +137,7 @@ public static class ComfyUI_adapter
     private static async Task<bool> IsImageAvailable(string imageUrl)
     {
         int attempts = 0;
-        int maxAttempts = 1240; // 240 попыток по 500 мс = 2 минуты
+        int maxAttempts = 2440; // 240 попыток по 500 мс = 2 минуты
         int delay = 500; // Задержка между попытками в миллисекундах
 
         while (attempts < maxAttempts)

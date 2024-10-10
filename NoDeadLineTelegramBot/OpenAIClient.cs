@@ -51,7 +51,7 @@ public static class OpenAIClient
 1. **GenerateImages**
    - **Описание:** Генерирует изображения на основе запросов пользователя.
    - **Параметры:**
-     - count (integer): Количество изображений для генерации, максимум 10.
+     - count (integer): Количество изображений для генерации, максимум 100.
      - imagePrompts (array of strings): Массив промптов для генерации изображений.
 
 2. **JustAnswer**
@@ -83,34 +83,20 @@ public static class OpenAIClient
                                     {
                                         anyOf = new object[]
                                         {
-                                            // Schema for GenerateImages
                                             new
                                             {
                                                 type = "object",
                                                 properties = new Dictionary<string, object>
                                                 {
-                                                    {
-                                                        "function", new
-                                                        {
-                                                            type = "string",
-                                                            @enum = new[] { "GenerateImages" }
-                                                        }
-                                                    },
+                                                    { "function", new { type = "string", @enum = new[] { "GenerateImages" } } },
                                                     {
                                                         "parameters", new
                                                         {
                                                             type = "object",
                                                             properties = new Dictionary<string, object>
                                                             {
-                                                                { "count", new { type = "integer", description = "Количество изображений для генерации, максимум 10." } },
-                                                                {
-                                                                    "imagePrompts", new
-                                                                    {
-                                                                        type = "array",
-                                                                        items = new { type = "string" },
-                                                                        description = "Массив промптов для генерации изображений."
-                                                                    }
-                                                                }
+                                                                { "count", new { type = "integer", description = "Количество изображений для генерации, максимум 100." } },
+                                                                { "imagePrompts", new { type = "array", items = new { type = "string" }, description = "Массив промптов для генерации изображений. обязательно на английском языке. Описание деталей и смысла изображения длиной максимум 30 слов, промпт должен описывать Сцену происходящего на будущем изображении. промпты для каждого изображения должны соответствовать общему ответу " } }
                                                             },
                                                             required = new[] { "count", "imagePrompts" },
                                                             additionalProperties = false
@@ -120,26 +106,19 @@ public static class OpenAIClient
                                                 required = new[] { "function", "parameters" },
                                                 additionalProperties = false
                                             },
-                                            // Schema for JustAnswer
                                             new
                                             {
                                                 type = "object",
                                                 properties = new Dictionary<string, object>
                                                 {
-                                                    {
-                                                        "function", new
-                                                        {
-                                                            type = "string",
-                                                            @enum = new[] { "JustAnswer" }
-                                                        }
-                                                    },
+                                                    { "function", new { type = "string", @enum = new[] { "JustAnswer" } } },
                                                     {
                                                         "parameters", new
                                                         {
                                                             type = "object",
                                                             properties = new Dictionary<string, object>
                                                             {
-                                                                { "prompt", new { type = "string", description = "Ответ на запрос пользователя." } }
+                                                                { "prompt", new { type = "string", description = "Ответ на запрос пользователя. Ничего не объясняй, строго пиши только ответ, без обсуждений и рекомендаций, если просят создать историю и тематику, то просто пишешь историю и тематику. строго без комментариев " } }
                                                             },
                                                             required = new[] { "prompt" },
                                                             additionalProperties = false
@@ -163,7 +142,6 @@ public static class OpenAIClient
 
             var jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
 
-            // Логирование пейлоада перед отправкой
             Console.WriteLine("Request Payload:");
             Console.WriteLine(jsonPayload);
 
@@ -180,40 +158,49 @@ public static class OpenAIClient
                     string jsonResponse = await response.Content.ReadAsStringAsync();
                     dynamic responseObject = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(jsonResponse);
 
-                    var assistantContent = responseObject.choices[0].message.content;
-
-                    if (assistantContent != null)
+                    if (responseObject?.choices != null && responseObject.choices.Count > 0 && responseObject.choices[0]?.message?.content != null)
                     {
-                        // Парсим контент ассистента
-                        string contentResponse = assistantContent.ToString();
-                        dynamic actionsResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(contentResponse);
+                        string assistantContent = responseObject.choices[0].message.content.ToString();
 
-                        // Обрабатываем каждое действие и добавляем его в список
-                        foreach (var action in actionsResponse.actions)
+                        try
                         {
-                            string functionName = action.function;
-                            JObject parameters = action.parameters;
+                            dynamic actionsResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(assistantContent);
 
-                            var functionParameters = parameters.ToObject<Dictionary<string, object>>();
-
-                            assistantFunctions.Add(new AssistantFunction
+                            if (actionsResponse.actions != null)
                             {
-                                FunctionName = functionName,
-                                Parameters = functionParameters
-                            });
+                                foreach (var action in actionsResponse.actions)
+                                {
+                                    if (action.function != null && action.parameters != null)
+                                    {
+                                        string functionName = action.function;
+                                        JObject parameters = action.parameters;
+
+                                        var functionParameters = parameters.ToObject<Dictionary<string, object>>();
+
+                                        assistantFunctions.Add(new AssistantFunction
+                                        {
+                                            FunctionName = functionName,
+                                            Parameters = functionParameters
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception parseEx)
+                        {
+                            Console.WriteLine($"Error parsing assistant content: {parseEx.Message}");
                         }
 
                         return assistantFunctions;
                     }
                     else
                     {
-                        // Если контент отсутствует, возвращаем пустой список
+                        Console.WriteLine("No valid content returned from API.");
                         return assistantFunctions;
                     }
                 }
                 else
                 {
-                    // Читаем и логируем сообщение об ошибке из ответа
                     string errorResponse = await response.Content.ReadAsStringAsync();
                     Console.WriteLine($"API Error: {errorResponse}");
                     return assistantFunctions;
