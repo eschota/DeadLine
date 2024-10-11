@@ -11,15 +11,130 @@ using System.Collections.Generic;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+public class Server
+{
+    public string Address { get; private set; }
+    public string Name { get; private set; }
+    public string GPU { get; private set; }
+
+    private static readonly HttpClient client = new HttpClient();
+
+    public Server(string address, string name, string gpu)
+    {
+        Address = address;
+        Name = name;
+        GPU = gpu;
+    }
+
+    // Метод для проверки доступности сервера
+    public async Task<bool> IsAvailable()
+    {
+        try
+        {
+            var response = await client.GetAsync($"{Address}/status");
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                // Проверяем, содержит ли статусный ответ информацию о доступности
+                var jsonDocument = JsonDocument.Parse(responseBody);
+                var root = jsonDocument.RootElement;
+
+                if (root.TryGetProperty("status", out JsonElement status) && status.GetString() == "ok")
+                {
+                    return true;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error checking availability of server {Name}: {ex.Message}");
+        }
+
+        return false;
+    }
+
+    // Метод для получения текущей длины очереди на сервере
+    public async Task<int?> GetQueueSize()
+    {
+        try
+        {
+            var response = await client.GetAsync($"{Address}/queue");
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var jsonDocument = JsonDocument.Parse(responseBody);
+                var root = jsonDocument.RootElement;
+
+                if (root.TryGetProperty("queue_size", out JsonElement queueSize))
+                {
+                    return queueSize.GetInt32();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error retrieving queue size from server {Name}: {ex.Message}");
+        }
+
+        return null;
+    }
+
+    // Метод для получения текущего статуса сервера
+    public async Task<string> GetServerStatus()
+    {
+        try
+        {
+            var response = await client.GetAsync($"{Address}/status");
+            if (response.IsSuccessStatusCode)
+            {
+                var responseBody = await response.Content.ReadAsStringAsync();
+                var jsonDocument = JsonDocument.Parse(responseBody);
+                var root = jsonDocument.RootElement;
+
+                if (root.TryGetProperty("status", out JsonElement status))
+                {
+                    return status.GetString();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error retrieving status from server {Name}: {ex.Message}");
+        }
+
+        return "unknown";
+    }
+}
+
 public static class ComfyUI_adapter
 {
     private static readonly HttpClient client = new HttpClient();
-    private static int queueSize = 0;
-    private static readonly object lockObject = new object();
-
-    public static async Task<string> GenerateImage(string prompt, Message message )
+    private static readonly List<Server> AvailableServers = new List<Server>
     {
-        string serverAddress = "http://5.129.157.224:8188";
+        new Server("http://5.129.157.224:8188", "Vlad 3080rtx", "3080rtx"),
+        new Server("http://5.129.157.224:8288", "Raptor 3070ti", "3070ti"),
+        new Server("http://37.192.2.126:8188", "Nount 3070ti", "3070ti")
+    };
+
+    public static async Task<Server> GetLeastLoadedServer()
+    {
+        foreach (var server in AvailableServers)
+        {
+            if (await server.IsAvailable())
+            {
+                var queueSize = await server.GetQueueSize();
+                if (queueSize.HasValue && queueSize == 0)
+                {
+                    return server;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public static async Task<string> GenerateImage(string prompt, Message message, string serverAddress = "http://5.129.157.224:8188")
+    { 
         string clientId = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
 
         // Формируем корректный JSON, заменяя $prompt на фактический текст
