@@ -110,7 +110,7 @@ internal static class Chat
             if (!isGroupChat || containsBotKeyword || containsBotKeywordinCaption || isAudio)
                 {
                     Console.WriteLine("Start Cognitive Answer\n\n\n");
-                    await Answer.CognitiveAnswer(update.Message);
+                    Answer.CognitiveAnswer(update.Message);
                     SaveMessageToHistory(update.Message);
                 }
                 else

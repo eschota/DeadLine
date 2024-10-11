@@ -330,21 +330,21 @@ public class MessageHistory
 
         if (embeddings.Length == 0) return closestMessages;
 
-        foreach (var chatMessages in _messagesByChatId.Values)
-        {
-            foreach (var message in chatMessages)
-            {
-                if (message.embeddings.Length == 0) continue;
+        //foreach (var chatMessages in _messagesByChatId.Values)
+        //{
+        //    foreach (var message in chatMessages)
+        //    {
+        //        if (message.embeddings.Length == 0) continue;
 
-                double distance = Vectors.CosineDistance(embeddings, message.embeddings);
+        //        double distance = Vectors.CosineDistance(embeddings, message.embeddings);
 
-                // Добавляем сообщение с его дистанцией в список
-                closestMessages.Add((message, distance));
-            }
-        }
+        //        // Добавляем сообщение с его дистанцией в список
+        //        closestMessages.Add((message, distance));
+        //    }
+        //}
 
         // Сортируем список по возрастанию дистанции
-        closestMessages = closestMessages.OrderBy(x => x.distance).ToList();
+        //closestMessages = closestMessages.OrderBy(x => x.distance).ToList();
 
         // Возвращаем только последние 10 (или меньше, если сообщений меньше 10)
         return closestMessages.Take(count).ToList();
