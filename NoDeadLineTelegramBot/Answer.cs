@@ -120,18 +120,11 @@ public static class Answer
         try
         {
             var media = new List<IAlbumInputMedia>();
-            var streams = new List<Stream>(); // Список для хранения открытых потоков
+            var streams = new List<Stream>();
 
             int batchSize = 10; // Ограничение на количество изображений за одну отправку
             int totalBatches = (int)Math.Ceiling((double)count / batchSize);
             int generatedImages = 0;
-
-            // Если количество промптов меньше, чем count, создаём расширенный список промптов, заполняя его циклически
-            var extendedPrompts = new List<string>();
-            for (int i = 0; i < count; i++)
-            {
-                extendedPrompts.Add(imagePrompts[i % imagePrompts.Count]);
-            }
 
             for (int batchIndex = 0; batchIndex < totalBatches; batchIndex++)
             {
@@ -142,13 +135,13 @@ public static class Answer
 
                 for (int i = startIndex; i < endIndex; i++)
                 {
-                    string promptValue = extendedPrompts[i];
+                    string promptValue = imagePrompts[i];
 
                     // Генерация изображения с использованием ComfyUI_adapter
                     string filePath;
                     try
                     {
-                        filePath = await ComfyUI_adapter.GenerateImage(promptValue);
+                        filePath = await ComfyUI_adapter.GenerateImage(promptValue,message);
 
                         // Проверка существования и размера файла
                         if (!System.IO.File.Exists(filePath) || new FileInfo(filePath).Length == 0)
@@ -160,38 +153,16 @@ public static class Answer
                             continue;
                         }
 
-                        // Проверка формата изображения и, при необходимости, конвертация в поддерживаемый формат
-                        string extension = Path.GetExtension(filePath).ToLower();
-                        if (extension != ".jpg" && extension != ".jpeg" && extension != ".png")
+                        // Проверка веса файла
+                        long fileSize = new FileInfo(filePath).Length; // Вес файла в байтах
+                        if (fileSize < 1000) // Если файл меньше 1 KB, вероятно, он поврежден
                         {
                             await Chat.Bot.SendTextMessageAsync(
                                 chatId: message.Chat.Id,
-                                text: $"Ошибка: файл изображения '{filePath}' имеет неподдерживаемый формат '{extension}'. Пропускаю этот файл."
+                                text: $"Ошибка: файл изображения '{filePath}' слишком мал ({fileSize} байт). Пропускаю этот файл."
                             );
                             continue;
                         }
-
-                        // Проверка разрешения изображения
-                        using (var image = System.Drawing.Image.FromFile(filePath))
-                        {
-                            if (image.Width > 4096 || image.Height > 4096)
-                            {
-                                await Chat.Bot.SendTextMessageAsync(
-                                    chatId: message.Chat.Id,
-                                    text: $"Ошибка: изображение '{filePath}' превышает допустимое разрешение 4096x4096. Пропускаю этот файл."
-                                );
-                                continue;
-                            }
-                        }
-                    }
-                    catch (TimeoutException)
-                    {
-                        await Task.Delay(5500); // Задержка перед отправкой сообщения
-                        await Chat.Bot.SendTextMessageAsync(
-                            chatId: message.Chat.Id,
-                            text: $"Изображение по запросу '{promptValue}' не стало доступным в течение заданного времени."
-                        );
-                        continue;
                     }
                     catch (Exception ex)
                     {
@@ -205,22 +176,23 @@ public static class Answer
                     // Открываем поток для изображения
                     var stream = System.IO.File.OpenRead(filePath);
                     streams.Add(stream);
-
+                     
                     // Создаем InputMediaPhoto и добавляем в коллекцию media
                     media.Add(new InputMediaPhoto(InputFile.FromStream(stream, Path.GetFileName(filePath)))
                     {
-                        Caption = promptValue
+                        Caption = $"Промпт: {promptValue}\nРазмер файла: {new FileInfo(filePath).Length / 1024} KB"
                     });
 
                     // Обновляем статусное сообщение после генерации каждого изображения
                     generatedImages++;
-                    await Task.Delay(5500); // Задержка перед обновлением сообщения
+                    await Task.Delay(5500);
                     await Chat.Bot.EditMessageTextAsync(
                         chatId: message.Chat.Id,
                         messageId: statusMessage.MessageId,
                         text: $"Генерирую {count} изображений по следующим промптам:\n" +
                               $"Текущий промпт: {promptValue}\n" +
                               $"Готово [{generatedImages} из {count}]\n" +
+                              $"Размер файла: {new FileInfo(filePath).Length / 1024} KB\n" +
                               $"Общее время: {stopwatch.Elapsed.TotalSeconds:F2} секунд"
                     );
                 }
@@ -233,7 +205,9 @@ public static class Answer
                     try
                     {
                         Console.WriteLine($"Start Send Gallery for batch {batchIndex + 1}");
-                        await Task.Delay(5500); // Задержка перед отправкой группы изображений
+
+                        await Task.Delay(5500);
+
                         var messages = await Chat.Bot.SendMediaGroupAsync(
                             chatId: message.Chat.Id,
                             media: media.ToArray(),
@@ -242,10 +216,7 @@ public static class Answer
                     }
                     catch (Telegram.Bot.Exceptions.ApiRequestException ex) when (ex.Message.Contains("Too Many Requests"))
                     {
-                        // Если мы получаем ошибку "Too Many Requests", нужно дождаться указанного времени
-                        int retryAfter = 5; // Установка времени по умолчанию
-
-                        // Пытаемся извлечь время ожидания из сообщения об ошибке
+                        int retryAfter = 5;
                         var match = System.Text.RegularExpressions.Regex.Match(ex.Message, @"retry after (\d+)");
                         if (match.Success && int.TryParse(match.Groups[1].Value, out int waitTime))
                         {
@@ -253,13 +224,21 @@ public static class Answer
                         }
 
                         Console.WriteLine($"Too many requests. Retrying after {retryAfter} seconds.");
-                        await Task.Delay((retryAfter + 1) * 1000); // Задержка с увеличенным временем
-                        retry = true; // Устанавливаем флаг, чтобы повторить отправку
+                        await Task.Delay((retryAfter + 1) * 1000);
+                        retry = true;
+                    }
+                    catch (Telegram.Bot.Exceptions.ApiRequestException ex) when (ex.Message.Contains("IMAGE_PROCESS_FAILED"))
+                    {
+                        await Chat.Bot.SendTextMessageAsync(
+                            chatId: message.Chat.Id,
+                            text: $"Ошибка: не удалось обработать изображение номер {batchIndex + 1}. Пропускаю эту партию."
+                        );
+                        break;
                     }
                     catch (Exception ex)
                     {
                         Logger.AddLog("Exception while sending gallery: " + ex.Message);
-                        await Task.Delay(5500); // Задержка перед отправкой сообщения
+                        await Task.Delay(5500);
                         await Chat.Bot.SendTextMessageAsync(
                             chatId: message.Chat.Id,
                             text: $"Ошибка при отправке галереи: {ex.Message}\nСтек вызовов: {ex.StackTrace}"
@@ -275,12 +254,10 @@ public static class Answer
                     }
                 } while (retry);
 
-                // Задержка между отправками для избежания ограничений API Telegram
                 await Task.Delay(5500);
             }
 
-            // Обновляем статусное сообщение после завершения всех операций
-            await Task.Delay(5500); // Задержка перед обновлением сообщения
+            await Task.Delay(5500);
             await Chat.Bot.EditMessageTextAsync(
                 chatId: message.Chat.Id,
                 messageId: statusMessage.MessageId,
@@ -291,7 +268,7 @@ public static class Answer
         catch (Exception ex)
         {
             Logger.AddLog($"Error in GenerateImagesByFunctions: {ex.Message}\n{ex.StackTrace}");
-            await Task.Delay(5500); // Задержка перед отправкой сообщения
+            await Task.Delay(5500);
             await Chat.Bot.SendTextMessageAsync(
                 chatId: message.Chat.Id,
                 text: $"Произошла ошибка во время генерации изображений: {ex.Message}\n" +
@@ -299,6 +276,7 @@ public static class Answer
             );
         }
     }
+
 
 
 

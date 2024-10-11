@@ -8,26 +8,28 @@ using System.IO;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Collections.Generic;
-
+using Telegram.Bot;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 public static class ComfyUI_adapter
 {
     private static readonly HttpClient client = new HttpClient();
     private static int queueSize = 0;
     private static readonly object lockObject = new object();
 
-    public static async Task<string> GenerateImage(string prompt)
+    public static async Task<string> GenerateImage(string prompt, Message message )
     {
         string serverAddress = "http://5.129.157.224:8188";
         string clientId = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
 
         // Формируем корректный JSON, заменяя $prompt на фактический текст
-        if (!File.Exists("c:\\ComfyUI\\workflows\\workflow_flux.json"))
+        if (!System.IO.File.Exists("c:\\ComfyUI\\workflows\\workflow_flux.json"))
         {
             Console.WriteLine("Error: workflow file does not exist.");
             return null;
         }
 
-        string promptText = await File.ReadAllTextAsync("c:\\ComfyUI\\workflows\\workflow_flux.json");
+        string promptText = await System.IO.File.ReadAllTextAsync("c:\\ComfyUI\\workflows\\workflow_flux.json");
         if (string.IsNullOrEmpty(promptText))
         {
             Console.WriteLine("Error: workflow file is empty.");
@@ -67,6 +69,9 @@ public static class ComfyUI_adapter
         {
             Console.WriteLine($"Image generated and available at: {imageUrl}");
 
+
+
+            Chat.SendToApi(message, imageUrl);
             // Получаем имя файла из URL
             string fileName = Path.GetFileName(new Uri(imageUrl).AbsolutePath);
             string localImagePath = Path.Combine("c:\\comfyui\\output\\", fileName);
@@ -98,7 +103,7 @@ public static class ComfyUI_adapter
             if (response.IsSuccessStatusCode)
             {
                 byte[] imageBytes = await response.Content.ReadAsByteArrayAsync();
-                await File.WriteAllBytesAsync(localPath, imageBytes);
+                await System.IO.File.WriteAllBytesAsync(localPath, imageBytes);
                 return localPath;
             }
             else

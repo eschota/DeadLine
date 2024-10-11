@@ -16,6 +16,7 @@ using System.Xml.Linq;
 using Newtonsoft.Json.Linq; 
 using Telegram.Bot.Types.ReplyMarkups;
 using System.Net.Http.Json;
+using Telegram.Bot.Types.InlineQueryResults;
 
 
 public class iMessage
@@ -108,6 +109,7 @@ internal static class Chat
                 //else
             if (!isGroupChat || containsBotKeyword || containsBotKeywordinCaption || isAudio)
                 {
+                    Console.WriteLine("Start Cognitive Answer\n\n\n");
                     await Answer.CognitiveAnswer(update.Message);
                     SaveMessageToHistory(update.Message);
                 }
@@ -227,30 +229,38 @@ internal static class Chat
     }
      
 
-static void SendToApi(Message message)
-{
-    using (var client = new HttpClient())
+public static void SendToApi(Message message, string url="")
     {
-        var requestBody = new
+        try
         {
-            message_id = message.MessageId,
-            chat_id = message.Chat.Id,
-            user_id = message.From.Id,
-            date_ms = new DateTimeOffset(message.Date).ToUnixTimeMilliseconds(),
-            text = message.Text ?? ""
-        };
+            using (var client = new HttpClient())
+            {
+                var requestBody = new
+                {
+                    message_id = message.MessageId,
+                    chat_id = message.Chat.Id,
+                    user_id = message.From.Id,
+                    date_ms = new DateTimeOffset(message.Date).ToUnixTimeMilliseconds(),
+                    text = message.Text ?? "",
+                    image = url
+                };
 
-        var response = client.PostAsJsonAsync("http://77.238.234.201:3145/messages", requestBody).Result;
+                var response = client.PostAsJsonAsync("http://77.238.234.201:3145/messages", requestBody).Result;
 
-        if (response.IsSuccessStatusCode)
-        {
-            Console.WriteLine("Message sent successfully.");
+                if (response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine("Message sent successfully.");
+                }
+                else
+                {
+                    Console.WriteLine($"Failed to send message. Status code: {response.StatusCode}");
+                }
+            }
         }
-        else
+        catch (Exception ex)
         {
-            Console.WriteLine($"Failed to send message. Status code: {response.StatusCode}");
+            Chat.SendTextMessage(message.Chat.Id, "Ошибка отправки данных к Славе Александру на сервант: "+ex.Message);
         }
-    }
 }
     public static async Task<List<ThreadMessage>> GetFromApi(string text, double chatId, long messageDateMs)
     {
@@ -1411,7 +1421,7 @@ static void SendToApi(Message message)
                 
                 if (promptValue == "" || promptValue == null) promptValue = results[i];
                 // await StableDiffusion.StableDiffusionTxtToImage(promptValue, filePaths[i], 1);
-                filePaths[i]=await ComfyUI_adapter.GenerateImage(promptValue);
+                filePaths[i]=await ComfyUI_adapter.GenerateImage(promptValue, message);
                // ms += text_for_sd+ "\n";
 
                 string capt = ms;
