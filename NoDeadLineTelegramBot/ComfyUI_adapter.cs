@@ -13,9 +13,10 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 public class Server
 {
-    public string Address { get; private set; }
-    public string Name { get; private set; }
-    public string GPU { get; private set; }
+    public string Address { get; set; }
+    public string Name { get; set; }
+    public string GPU { get; set; }
+    public int CurrentQueueCount { get; private set; } // Размер текущей очереди
 
     private static readonly HttpClient client = new HttpClient();
 
@@ -24,92 +25,95 @@ public class Server
         Address = address;
         Name = name;
         GPU = gpu;
+        CurrentQueueCount = -1; // Инициализируем как -1, если данные еще не получены
+    }
+
+    // Метод для обновления размера очереди
+    public async Task UpdateQueueSizeAsync()
+    {
+        try
+        {
+            HttpResponseMessage response = await client.GetAsync($"{Address}/queue");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+                using JsonDocument document = JsonDocument.Parse(jsonResponse);
+
+                JsonElement root = document.RootElement;
+
+                int runningQueueSize = root.GetProperty("queue_running").GetArrayLength();
+                int pendingQueueSize = root.GetProperty("queue_pending").GetArrayLength();
+
+                // Обновляем текущее количество задач в очереди
+                CurrentQueueCount = runningQueueSize + pendingQueueSize;
+            }
+            else
+            {
+                Console.WriteLine($"Ошибка при получении данных очереди с сервера {Name}: {response.StatusCode}");
+                CurrentQueueCount = -1; // Ошибка при запросе
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка при обновлении очереди на сервере {Name}: {ex.Message}");
+            CurrentQueueCount = -1; // Ошибка при запросе
+        }
+    }
+    public async Task<int> GetQueueSize()
+    {
+        try
+        {
+            HttpResponseMessage response = await client.GetAsync($"{Address}/queue");
+
+            if (response.IsSuccessStatusCode)
+            {
+                string jsonResponse = await response.Content.ReadAsStringAsync();
+                using JsonDocument document = JsonDocument.Parse(jsonResponse);
+
+                JsonElement root = document.RootElement;
+
+                // Извлекаем количество задач в очереди, которые выполняются (queue_running)
+                int runningQueueSize = root.GetProperty("queue_running").GetArrayLength();
+
+                // Извлекаем количество задач, ожидающих выполнения (queue_pending)
+                int pendingQueueSize = root.GetProperty("queue_pending").GetArrayLength();
+
+                // Возвращаем общую длину очереди
+                return runningQueueSize + pendingQueueSize;
+            }
+            else
+            {
+                Console.WriteLine($"Error fetching queue size for server {Name}: {response.StatusCode}");
+                return -1; // Ошибка запроса
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error checking queue size for server {Name}: {ex.Message}");
+            return -1; // Ошибка
+        }
     }
 
     // Метод для проверки доступности сервера
-    public async Task<bool> IsAvailable()
+    public async Task<bool> IsAvailableAsync()
     {
         try
         {
-            var response = await client.GetAsync($"{Address}/status");
-            if (response.IsSuccessStatusCode)
-            {
-                var responseBody = await response.Content.ReadAsStringAsync();
-                // Проверяем, содержит ли статусный ответ информацию о доступности
-                var jsonDocument = JsonDocument.Parse(responseBody);
-                var root = jsonDocument.RootElement;
-
-                if (root.TryGetProperty("status", out JsonElement status) && status.GetString() == "ok")
-                {
-                    return true;
-                }
-            }
+            HttpResponseMessage response = await client.GetAsync($"{Address}/queue");
+            return response.IsSuccessStatusCode;
         }
-        catch (Exception ex)
+        catch
         {
-            Console.WriteLine($"Error checking availability of server {Name}: {ex.Message}");
+            return false;
         }
-
-        return false;
-    }
-
-    // Метод для получения текущей длины очереди на сервере
-    public async Task<int?> GetQueueSize()
-    {
-        try
-        {
-            var response = await client.GetAsync($"{Address}/queue");
-            if (response.IsSuccessStatusCode)
-            {
-                var responseBody = await response.Content.ReadAsStringAsync();
-                var jsonDocument = JsonDocument.Parse(responseBody);
-                var root = jsonDocument.RootElement;
-
-                if (root.TryGetProperty("queue_size", out JsonElement queueSize))
-                {
-                    return queueSize.GetInt32();
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error retrieving queue size from server {Name}: {ex.Message}");
-        }
-
-        return null;
-    }
-
-    // Метод для получения текущего статуса сервера
-    public async Task<string> GetServerStatus()
-    {
-        try
-        {
-            var response = await client.GetAsync($"{Address}/status");
-            if (response.IsSuccessStatusCode)
-            {
-                var responseBody = await response.Content.ReadAsStringAsync();
-                var jsonDocument = JsonDocument.Parse(responseBody);
-                var root = jsonDocument.RootElement;
-
-                if (root.TryGetProperty("status", out JsonElement status))
-                {
-                    return status.GetString();
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error retrieving status from server {Name}: {ex.Message}");
-        }
-
-        return "unknown";
     }
 }
 
 public static class ComfyUI_adapter
 {
     private static readonly HttpClient client = new HttpClient();
-    private static readonly List<Server> AvailableServers = new List<Server>
+    public static readonly List<Server> AvailableServers = new List<Server>
     {
         new Server("http://5.129.157.224:8188", "Vlad 3080rtx", "3080rtx"),
         new Server("http://5.129.157.224:8288", "Raptor 3070ti", "3070ti"),
@@ -118,19 +122,20 @@ public static class ComfyUI_adapter
 
     public static async Task<Server> GetLeastLoadedServer()
     {
+        Server leastLoadedServer = null;
+        int minQueueSize = int.MaxValue;
+
         foreach (var server in AvailableServers)
         {
-            if (await server.IsAvailable())
+            await server.UpdateQueueSizeAsync(); // Обновляем очередь для каждого сервера
+            if (server.CurrentQueueCount >= 0 && server.CurrentQueueCount < minQueueSize)
             {
-                var queueSize = await server.GetQueueSize();
-                if (queueSize.HasValue && queueSize == 0)
-                {
-                    return server;
-                }
+                minQueueSize = server.CurrentQueueCount;
+                leastLoadedServer = server;
             }
         }
 
-        return null;
+        return leastLoadedServer;
     }
 
     public static async Task<string> GenerateImage(string prompt, Message message, string serverAddress = "http://5.129.157.224:8188")

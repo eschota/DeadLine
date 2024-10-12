@@ -10,6 +10,9 @@ using System.Diagnostics;
 
 public static class Answer
 {
+    // Словарь для хранения количества генераций для каждого сервера
+    private static Dictionary<string, int> serverGenerationCounts = new Dictionary<string, int>();
+
     public static async Task<bool> CognitiveAnswer(Message message)
     {
         // Сразу отправляем статусное сообщение о начале обработки
@@ -55,8 +58,16 @@ public static class Answer
                 int count = Convert.ToInt32(assistantFunction.Parameters["count"]);
                 var imagePrompts = ((JArray)assistantFunction.Parameters["imagePrompts"]).ToObject<List<string>>();
 
-                // Подсчитываем количество символов в промптах
                 totalPromptChars += imagePrompts.Sum(prompt => prompt.Length);
+
+                // Инициализация счетчиков серверов
+                foreach (var server in ComfyUI_adapter.AvailableServers)
+                {
+                    if (!serverGenerationCounts.ContainsKey(server.Name))
+                    {
+                        serverGenerationCounts[server.Name] = 0;
+                    }
+                }
 
                 // Обновляем статусное сообщение перед началом генерации изображений
                 await Chat.Bot.EditMessageTextAsync(
@@ -72,7 +83,6 @@ public static class Answer
             {
                 string promptResponse = assistantFunction.Parameters["prompt"].ToString();
 
-                // Подсчитываем количество символов в промпте
                 totalPromptChars += promptResponse.Length;
 
                 // Обновляем статусное сообщение перед отправкой текста
@@ -84,10 +94,8 @@ public static class Answer
                 await Task.Delay(5500);
                 await Chat.Bot.SendTextMessageAsync(message.Chat.Id, promptResponse);
 
-                // Подсчитываем количество символов в ответе
                 totalResponseChars += promptResponse.Length;
 
-                // Обновляем статусное сообщение после отправки ответа
                 await Chat.Bot.EditMessageTextAsync(
                     chatId: message.Chat.Id,
                     messageId: statusMessage.MessageId,
@@ -96,11 +104,9 @@ public static class Answer
             }
         }
 
-        // Останавливаем таймер
         stopwatch.Stop();
         var elapsedTime = stopwatch.Elapsed;
 
-        // Обновляем статусное сообщение после выполнения всех функций
         string finalStatus = $"Все функции выполнены.\n" +
                              $"Затраченное время: {elapsedTime.TotalSeconds:F2} секунд\n" +
                              $"Количество символов в промптах: {totalPromptChars}\n" +
@@ -115,169 +121,100 @@ public static class Answer
         return true;
     }
 
-    public static async Task GenerateImagesByFunctions(Message message, int count, List<string> imagePrompts, Message statusMessage, Stopwatch stopwatch)
+    private static async Task<string> GenerateImageAndUpdateStatus(string prompt, Message message, Server server, Message statusMessage, Stopwatch stopwatch, int currentIndex, int totalCount)
     {
         try
         {
-            var media = new List<IAlbumInputMedia>();
-            var streams = new List<Stream>();
+            string filePath = await ComfyUI_adapter.GenerateImage(prompt, message, server.Address);
 
-            int batchSize = 10; // Ограничение на количество изображений за одну отправку
-            int totalBatches = (int)Math.Ceiling((double)count / batchSize);
-            int generatedImages = 0;
-
-            for (int batchIndex = 0; batchIndex < totalBatches; batchIndex++)
+            if (!System.IO.File.Exists(filePath) || new FileInfo(filePath).Length == 0)
             {
-                int startIndex = batchIndex * batchSize;
-                int endIndex = Math.Min(startIndex + batchSize, count);
-                media.Clear();
-                streams.Clear();
+                Console.WriteLine($"Первичная попытка не удалась для промпта: '{prompt}'. Повторная попытка...");
 
-                for (int i = startIndex; i < endIndex; i++)
+                filePath = await ComfyUI_adapter.GenerateImage(prompt, message, server.Address);
+                if (!System.IO.File.Exists(filePath) || new FileInfo(filePath).Length == 0)
                 {
-                    string promptValue = imagePrompts[i];
-
-                    // Генерация изображения с использованием ComfyUI_adapter
-                    string filePath;
-                    try
-                    {
-                        filePath = await ComfyUI_adapter.GenerateImage(promptValue,message);
-
-                        // Проверка существования и размера файла
-                        if (!System.IO.File.Exists(filePath) || new FileInfo(filePath).Length == 0)
-                        {
-                            await Chat.Bot.SendTextMessageAsync(
-                                chatId: message.Chat.Id,
-                                text: $"Ошибка: файл изображения по запросу '{promptValue}' не был создан или пустой. Пропускаю этот файл."
-                            );
-                            continue;
-                        }
-
-                        // Проверка веса файла
-                        long fileSize = new FileInfo(filePath).Length; // Вес файла в байтах
-                        if (fileSize < 1000) // Если файл меньше 1 KB, вероятно, он поврежден
-                        {
-                            await Chat.Bot.SendTextMessageAsync(
-                                chatId: message.Chat.Id,
-                                text: $"Ошибка: файл изображения '{filePath}' слишком мал ({fileSize} байт). Пропускаю этот файл."
-                            );
-                            continue;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        await Chat.Bot.SendTextMessageAsync(
-                            chatId: message.Chat.Id,
-                            text: $"Произошла ошибка при обработке изображения '{promptValue}': {ex.Message}"
-                        );
-                        continue;
-                    }
-
-                    // Открываем поток для изображения
-                    var stream = System.IO.File.OpenRead(filePath);
-                    streams.Add(stream);
-                     
-                    // Создаем InputMediaPhoto и добавляем в коллекцию media
-                    media.Add(new InputMediaPhoto(InputFile.FromStream(stream, Path.GetFileName(filePath)))
-                    {
-                        Caption = $"Промпт: {promptValue}\nРазмер файла: {new FileInfo(filePath).Length / 1024} KB"
-                    });
-
-                    // Обновляем статусное сообщение после генерации каждого изображения
-                    generatedImages++;
-                    await Task.Delay(5500);
-                    await Chat.Bot.EditMessageTextAsync(
+                    await Chat.Bot.SendTextMessageAsync(
                         chatId: message.Chat.Id,
-                        messageId: statusMessage.MessageId,
-                        text: $"Генерирую {count} изображений по следующим промптам:\n" +
-                              $"Текущий промпт: {promptValue}\n" +
-                              $"Готово [{generatedImages} из {count}]\n" +
-                              $"Размер файла: {new FileInfo(filePath).Length / 1024} KB\n" +
-                              $"Общее время: {stopwatch.Elapsed.TotalSeconds:F2} секунд"
+                        text: $"Ошибка: файл изображения по запросу '{prompt}' не был создан или пустой. Пропускаю этот файл."
                     );
+                    return null;
                 }
-
-                // Отправляем текущую партию изображений в Telegram с обработкой ошибок
-                bool retry;
-                do
-                {
-                    retry = false;
-                    try
-                    {
-                        Console.WriteLine($"Start Send Gallery for batch {batchIndex + 1}");
-
-                        await Task.Delay(5500);
-
-                        var messages = await Chat.Bot.SendMediaGroupAsync(
-                            chatId: message.Chat.Id,
-                            media: media.ToArray(),
-                            cancellationToken: default
-                        );
-                    }
-                    catch (Telegram.Bot.Exceptions.ApiRequestException ex) when (ex.Message.Contains("Too Many Requests"))
-                    {
-                        int retryAfter = 5;
-                        var match = System.Text.RegularExpressions.Regex.Match(ex.Message, @"retry after (\d+)");
-                        if (match.Success && int.TryParse(match.Groups[1].Value, out int waitTime))
-                        {
-                            retryAfter = waitTime;
-                        }
-
-                        Console.WriteLine($"Too many requests. Retrying after {retryAfter} seconds.");
-                        await Task.Delay((retryAfter + 1) * 1000);
-                        retry = true;
-                    }
-                    catch (Telegram.Bot.Exceptions.ApiRequestException ex) when (ex.Message.Contains("IMAGE_PROCESS_FAILED"))
-                    {
-                        await Chat.Bot.SendTextMessageAsync(
-                            chatId: message.Chat.Id,
-                            text: $"Ошибка: не удалось обработать изображение номер {batchIndex + 1}. Пропускаю эту партию."
-                        );
-                        break;
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.AddLog("Exception while sending gallery: " + ex.Message);
-                        await Task.Delay(5500);
-                        await Chat.Bot.SendTextMessageAsync(
-                            chatId: message.Chat.Id,
-                            text: $"Ошибка при отправке галереи: {ex.Message}\nСтек вызовов: {ex.StackTrace}"
-                        );
-                    }
-                    finally
-                    {
-                        // Закрываем все потоки
-                        foreach (var stream in streams)
-                        {
-                            stream.Dispose();
-                        }
-                    }
-                } while (retry);
-
-                await Task.Delay(5500);
             }
 
-            await Task.Delay(5500);
-            await Chat.Bot.EditMessageTextAsync(
-                chatId: message.Chat.Id,
-                messageId: statusMessage.MessageId,
-                text: "Все изображения успешно сгенерированы и отправлены.\n" +
-                      $"Общее время: {stopwatch.Elapsed.TotalSeconds:F2} секунд"
-            );
+            long fileSize = new FileInfo(filePath).Length;
+            if (fileSize < 1000)
+            {
+                await Chat.Bot.SendTextMessageAsync(
+                    chatId: message.Chat.Id,
+                    text: $"Ошибка: файл изображения '{filePath}' слишком мал ({fileSize} байт). Пропускаю этот файл."
+                );
+                return null;
+            }
+
+            var stream = System.IO.File.OpenRead(filePath);
+
+            var mediaItem = new InputMediaPhoto(InputFile.FromStream(stream, Path.GetFileName(filePath)))
+            {
+                Caption = $"Промпт: {prompt}\nРазмер файла: {fileSize / 1024} KB"
+            };
+
+            if (serverGenerationCounts.ContainsKey(server.Name))
+            {
+                serverGenerationCounts[server.Name]++;
+            }
+
+            await UpdateServerStatusAndProgress(message, statusMessage, totalCount, currentIndex, stopwatch);
+
+            return filePath;
         }
         catch (Exception ex)
         {
-            Logger.AddLog($"Error in GenerateImagesByFunctions: {ex.Message}\n{ex.StackTrace}");
-            await Task.Delay(5500);
             await Chat.Bot.SendTextMessageAsync(
                 chatId: message.Chat.Id,
-                text: $"Произошла ошибка во время генерации изображений: {ex.Message}\n" +
-                      $"Стек вызовов: {ex.StackTrace}"
+                text: $"Произошла ошибка при обработке изображения '{prompt}': {ex.Message}"
             );
+            return null;
         }
     }
 
+    private static async Task UpdateServerStatusAndProgress(Message message, Message statusMessage, int totalCount, int currentIndex, Stopwatch stopwatch)
+    {
+        var serverStatuses = new List<string>();
+        foreach (var server in ComfyUI_adapter.AvailableServers)
+        {
+            int queueSize = await server.GetQueueSize();
+            int generationCount = serverGenerationCounts.ContainsKey(server.Name) ? serverGenerationCounts[server.Name] : 0;
 
+            string status = queueSize >= 0
+                ? $"Сервер {server.Name} (GPU: {server.GPU}) - Очередь: {queueSize}, Генераций: {generationCount}"
+                : $"Сервер {server.Name} (GPU: {server.GPU}) - Недоступен";
 
+            serverStatuses.Add(status);
+        }
 
+        string newStatusText = $"Текущая загруженность серверов:\n" + string.Join("\n", serverStatuses) +
+                               $"\nГенерирую {totalCount} изображений. Готово [{currentIndex} из {totalCount}]. Общее время: {stopwatch.Elapsed.TotalSeconds:F2} секунд.";
+
+        try
+        {
+            // Проверяем, изменился ли статус перед отправкой
+            if (statusMessage.Text != newStatusText)
+            {
+                await Chat.Bot.EditMessageTextAsync(
+                    chatId: message.Chat.Id,
+                    messageId: statusMessage.MessageId,
+                    text: newStatusText
+                );
+            }
+        }
+        catch (Telegram.Bot.Exceptions.ApiRequestException ex) when (ex.Message.Contains("message is not modified"))
+        {
+            Console.WriteLine("Статусное сообщение не изменилось, пропускаем обновление.");
+        }
+        catch (Exception ex)
+        {
+            Logger.AddLog($"Ошибка обновления статуса: {ex.Message}");
+        }
+    }
 }
